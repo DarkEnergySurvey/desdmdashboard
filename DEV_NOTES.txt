@@ -1,0 +1,29 @@
+
+DESDM DASHBOARD - DEVELOPMENT NOTES
+===============================================================================
+
+### how a datapoint is specified
+
+* name : 'capacity'
+  source : 'desoper'
+  instrument (defines data type) : 'desdf'
+* value : '343224'
+
+
+
+
+TODO
+-------------------------------------------------------------------------------
+
+
+PACKAGES TO INSTALL
+-------------------------------------------------------------------------------
+rest_framework
+
+
+
+NOTES FROM TALK TO DON ON WEDNESDAY, March 12, 10pm
+Michael Freemon
+- rrd tool : round robin database
+- mrtg
+
