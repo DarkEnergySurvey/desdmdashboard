@@ -18,7 +18,8 @@ TODO
 
 PACKAGES TO INSTALL
 -------------------------------------------------------------------------------
-rest_framework
+-   rest_framework
+-   Requests
 
 
 

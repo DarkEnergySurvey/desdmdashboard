@@ -1,15 +1,16 @@
 from rest_framework.generics import CreateAPIView
 from rest_framework.authentication import SessionAuthentication
+from rest_framework import permissions
 
-from desdmdashboard import authentication, permissions
-from . import models, serializers
+from monitor import models, serializers
+from monitor.permissions import IsOwnerOrReadOnly
 
 
 class CreateMetricView(CreateAPIView):
     """Saves a new metric value (or values)"""
-    authentication_classes = (authentication.SettingsAuthentication,
-                              SessionAuthentication)
-    permission_classes = (permissions.DESDMDashboardPermission,)
+    permission_classes = (permissions.IsAuthenticated,
+            IsOwnerOrReadOnly, )
+
     model = models.Metric
     serializer_class = serializers.MetricSerializer
 
@@ -20,3 +21,5 @@ class CreateMetricView(CreateAPIView):
         return super(CreateMetricView, self).get_serializer(instance, data,
                                                             files, many,
                                                             partial)
+    def pre_save(self, obj):
+        obj.owner = self.request.user

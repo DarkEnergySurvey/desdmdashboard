@@ -6,73 +6,70 @@ Django data model for saving system snapshot data for monitoring purposes.
 
 '''
 
+from datetime import datetime
+
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-
-class Instrument(models.Model):
-    '''
-    A tool to measure a Metric.
-    '''
-    name = models.CharField(max_length=31, unique=True)
-    script = models.TextField()
+from django.utils.timezone import now
 
 
-class Source(models.Model):
-    '''
-    The source which is to be monitored.
-    '''
-    name = models.CharField(max_length=255, unique=True)
-    address = models.CharField(max_length=255, unique=True)
-
-    TYPE_DATABASE = 'DB'
-    TYPE_FILESYSTEM = 'FS'
-    TYPE_OTHER = 'OT'
-
-    TYPE_CHOICES =   (
-            (TYPE_DATABASE, 'database'),
-            (TYPE_FILESYSTEM, 'filesystem'),
-            (TYPE_OTHER, 'other type'),
-                        )
-
-    stype = models.CharField(max_length=2, choices=TYPE_CHOICES)
-    do_monitor = models.BooleanField(default=True)
-    log = models.TextField(blank = True, null = True)
-
-'''
 class MetricManager(models.Manager):
-    def get_by_natural_key(self, name, source, instrument):
-        return self.get(name=name, source__name=source,
-                instrument__name=instrument)
-'''
+    def get_by_natural_key(self, name, owner):
+        try:
+            return self.get(name=name, owner=owner)        
+        except ValueError:
+            try:
+                return self.get(name=name, owner__username=owner)        
+            except:
+                raise
+        except:
+            raise
 
 class Metric(models.Model):
     '''
     The time series measured.
     '''
-    name = models.CharField(max_length=255)
-    source = models.ForeignKey(Source, blank=True, null=True)
-    instrument  = models.ForeignKey(Instrument, blank=True, null=True)
+    objects = MetricManager()
 
-    UNIT_BYTES = 'bytes'
-    UNIT_SECONDS = 'seconds'
+    name = models.CharField(max_length=512)
+
+    owner = models.ForeignKey('auth.User', related_name='metrics')
+
+    no_update_within_secs = models.FloatField(default=10.)
+
+    latest_value = models.CharField(max_length=1024, null=True, blank=True)
+    last_updated = models.DateTimeField(null=True, blank=True)
+
+    latest_tags = models.CharField(max_length=256, blank=True, default='')
+
+    has_error = models.BooleanField(default=False)
+    error_message = models.CharField(null=True, blank=True, max_length=256)
+
+    #source = models.ForeignKey(Source, blank=True, null=True)
+    #source = models.CharField(max_length=512)
+    #instrument  = models.ForeignKey(Instrument, blank=True, null=True)
+    #instrument = models.CharField(max_length=512)
+
+    UNIT_BYTES = 1
+    UNIT_SECONDS = 2
 
     UNIT_CHOICES = (
             (UNIT_BYTES, 'bytes'),
             (UNIT_SECONDS, 'seconds'),
             )
-    unit = models.CharField(max_length=31, choices=UNIT_CHOICES)
+    unit = models.PositiveSmallIntegerField(choices=UNIT_CHOICES, null=True,
+            blank=True)
 
     VALUE_TYPE_CHOICES = models.Q(app_label='monitor', model='metricdataint') |\
             models.Q(app_label='monitor', model='metricdatafloat') |\
             models.Q(app_label='monitor', model='metricdatachar') |\
-            models.Q(app_label='monitor', model='metricdatadatetimegmt') |\
-            models.Q(app_label='monitor', model='metricdatatimedelta')
+            models.Q(app_label='monitor', model='metricdatadatetime')
     value_type = models.ForeignKey(generic.ContentType, 
             limit_choices_to=VALUE_TYPE_CHOICES)
 
-    is_measured = models.BooleanField(default=True)
+    show_on_dashboard = models.BooleanField(default=True)
 
     OPERATOR_CHOICES = (
         ('lt', 'value < alert'),
@@ -82,84 +79,167 @@ class Metric(models.Model):
         ('ge', 'value >= alert'),
         ('gt', 'value > alert'),
     )
-
     alert_operator = models.CharField(max_length=2, choices=OPERATOR_CHOICES,
             blank=True)
     alert_value = models.FloatField(null=True, blank=True)
     alert_triggered = models.BooleanField(default=False)
 
-    doc = models.TextField()
+    doc = models.TextField(blank=True, null=True)
 
-    timestamp_created_gmt = models.DateTimeField(auto_now_add=True)
-    timestamp_modified_gmt = models.DateTimeField(auto_now=True)
+    timestamp_created = models.DateTimeField(auto_now_add=True)
+    timestamp_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('name', 'source', 'instrument', ),)
+        unique_together = (('name', 'owner'), )
+
+    def natural_key(self):
+        return (self.name, self.owner.username)
 
     def __unicode__(self):
-        if self.source:
-            return u'{n} on {t}'.format(n=self.name, t=self.source.name)
-        else:
-            return u'{n}'.format(n=self.name)
+        return u'{n} of {u}'.format(n=self.name, u=self.owner.username)
 
-    '''
-    def natural_key(self):
-        return (self.name, self.source.name, self.instrument.name)
-    '''
-
-    def add_value(self, value=None, has_error=False,
-                    error_message='unspecified default error message'):
-        '''
-        Method to add a value to the corresponding table defined by value_type.
-        '''
-        if value is not None:
-            vt_obj = self.value_type.model_class()(value=value, metric=self)
-        elif value is None and has_error:
-            vt_obj = self.value_type.model_class()(has_error=True,
-                    error_message=error_message)
+    @classmethod
+    def create(cls, name, value_type):
+        obj = cls(name=name)
+        if value_type.lower() == 'int':
+            obj.value_type = ContentType.objects.get(model='metricdataint')
+        elif value_type.lower() == 'float':
+            obj.value_type = ContentType.objects.get(model='metricdatafloat')
+        elif value_type.lower() == 'char':
+            obj.value_type = ContentType.objects.get(model='metricdatachar')
+        elif value_type.lower() == 'datetime':
+            obj.value_type = ContentType.objects.get(model='metricdatadatetime')
         else:
-            err = ('You cannot provide a value and at '
-                    'the same time set has_error to True.')
-            raise ValueError(err)
-        vt_obj.save()
+            raise ValueError(("Cannot create Metric object with value_type %s . "
+                "It has to from ('int', 'char', 'float', 'datetime')") %
+                value_type )
+        return obj
+    
+    def create_value_obj(self):
+        return self.value_type.model_class()(metric=self)
+
+    @property
+    def can_be_updated(self):
+        last_datapoint = self.get_last_datapoint_from_table()
+        if last_datapoint:
+            seconds_since_last_save = (self.last_updated -
+                    last_datapoint.time).total_seconds()
+            if seconds_since_last_save > self.no_update_within_secs:
+                return True
+            else:
+                return False
+        else:
+            return True
+
+    def set_latest_measurements(self, value=None, tags='', has_error=False,
+            error_message='', time=None):
+        ''' '''
+
+        if has_error and value:
+            raise ValueError('You cannot provide a value and an error')
+        elif has_error and not error_message:
+            raise ValueError(('You need to provide an error message if you '
+                    'want to set has_error to true'))
+        elif value and error_message:
+            raise ValueError(('You cannot provide a value and an error '
+                ' message'))
+        elif type(time) != datetime:
+            raise ValueError(('You have to provide a "time" keyword argument '
+                'of type datetime.'))
+        else:
+            self.latest_value = value
+            self.latest_tags = tags
+            self.has_error = has_error
+            self.error_message = error_message
+            self.last_updated = time
+
+    def _save_latest_values_to_data_table(self):
+        ''' '''
+        dobj = self.create_value_obj()
+        dobj.time = self.last_updated
+        dobj.has_error = self.has_error
+        dobj.error_message = self.error_message
+        if not dobj.has_error:    
+            dobj.value_from_string(self.latest_value)
+        dobj.save()
 
     def get_data_queryset(self):
         vtclass = self.value_type.model_class()
         return vtclass.objects.filter(metric=self)
 
+    def get_last_datapoint_from_table(self):
+        data = self.get_data_queryset().order_by('-time')
+        if any(data):
+            return data[0] 
+        else:
+            return None
+
         
-
-
 class MetricDataBase(models.Model):
 
     metric = models.ForeignKey(Metric)
-
-    timepoint_gmt = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField()
     
     has_error = models.BooleanField(default=False)
-    error_message = models.CharField(null=True, blank=True, max_length=255)
+    error_message = models.CharField(null=True, blank=True, max_length=512)
+
+    tags = models.CharField(max_length=256, default='', blank=True,
+            help_text='Comma separated tags.')
 
     class Meta:
         abstract = True
 
     def __unicode__(self):
-        return u'{v} : {m} at {t}'.format(
+        return u'{m} : {v} / {t}'.format(
                 v=self.value,
                 m=self.metric,
-                t=self.timepoint_gmt.isoformat(sep=' ').rsplit('.')[0])
+                t=self.time.isoformat(sep=' ').rsplit('.')[0])
 
+    def value_from_string(self, value):
+        raise NotImplementedError()
+
+    def get_tags(self):
+        return self.tags.rsplit(',')
+
+    def has_tag(self, tag):
+        return tag in self.get_tags()
 
 class MetricDataInt(MetricDataBase):
     value = models.PositiveIntegerField(null=True, blank=True)
 
+    def value_from_string(self, value):
+        try:
+            self.value = int(value.rstrip())
+        except:
+            raise
+
+
 class MetricDataFloat(MetricDataBase):
     value = models.FloatField(null=True, blank=True)
 
+    def value_from_string(self, value):
+        try:
+            self.value = float(value.rstrip())
+        except:
+            raise
+
+
 class MetricDataChar(MetricDataBase):
-    value = models.CharField(null=True, blank=True, max_length=511)
+    value = models.CharField(null=True, blank=True, max_length=1024)
 
-class MetricDataDatetimeGMT(MetricDataBase):
+    def value_from_string(self, value):
+        try:
+            self.value = value.rstrip()
+        except:
+            raise
+
+
+class MetricDataDatetime(MetricDataBase):
     value = models.DateTimeField(null=True, blank=True)
 
-class MetricDataTimeDelta(MetricDataBase):
-    value = models.DateTimeField(null=True, blank=True)
+    def value_from_string(self, value):
+        try:
+            self.value = datetime_from_isoformat(value) 
+            datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
+        except:
+            raise

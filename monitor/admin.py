@@ -1,37 +1,129 @@
 from django.contrib import admin
 
-from monitor.models import Source, Metric, Instrument,\
-        MetricDataInt, MetricDataChar, MetricDataFloat, MetricDataDatetimeGMT,\
-        MetricDataTimeDelta 
+from monitor.models import Metric, MetricDataInt, MetricDataChar,\
+        MetricDataFloat, MetricDataDatetime
+#       MetricDataTimeDelta, Source, Instrument
 
-class InstrumentAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Instrument, InstrumentAdmin)
 
-class SourceAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Source, SourceAdmin)
+class MetricDataIntInline(admin.TabularInline):
+    model = MetricDataInt
+    fields = ('value', 'time', 'has_error', 'error_message',)
+    readonly_fields = ('value', 'time', 'has_error', 'error_message',)
+    extra = 0
+
+class MetricDataFloatInline(admin.TabularInline):
+    model = MetricDataFloat 
+    fields = ('value', 'time', 'has_error', 'error_message', )
+    readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    extra = 0
+
+class MetricDataCharInline(admin.TabularInline):
+    model = MetricDataChar 
+    fields = ('value', 'time', 'has_error', 'error_message', )
+    readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    extra = 0
+
+class MetricDataDatetimeInline(admin.TabularInline):
+    model = MetricDataDatetime 
+    fields = ('value', 'time', 'has_error', 'error_message', )
+    readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    extra = 0
+
 
 class MetricAdmin(admin.ModelAdmin):
-    pass
+
+    def __init__(self, *args, **kwargs):
+        super(MetricAdmin, self).__init__(*args, **kwargs)
+        # select inlines dynamically here : HOW?
+    
+    fields = (
+            ('name', 'owner'),
+            ('doc', ),
+            ('latest_value', 'last_updated', 'latest_tags', 'has_error',
+                'error_message'),
+            ('no_update_within_secs', ),
+            ('unit', 'show_on_dashboard', ),
+            ('value_type', ),
+            ('alert_operator', 'alert_value', 'alert_triggered', ),
+            ('timestamp_modified', 'timestamp_created', ),
+            )
+    
+    search_fields = ('name', 'doc', 'latest_tags', )
+
+    list_display = ( 'name', 'owner', 'latest_value', 'last_updated',
+            'has_error', 'alert_triggered')
+    
+    readonly_fields = ('alert_triggered', 'timestamp_modified',
+            'timestamp_created', )
+    
+
+    inlines = (MetricDataIntInline, MetricDataFloatInline,
+            MetricDataCharInline, MetricDataDatetimeInline)
+
+        
 admin.site.register(Metric, MetricAdmin)
 
+
 class MetricDataIntAdmin(admin.ModelAdmin):
-    pass
+
+    fields = (
+            ('metric', ), 
+            ('value', 'time', ), 
+            ('tags', ), 
+            ('has_error', 'error_message', ), 
+            )
+
+    list_display = ('metric', 'value', 'time', 'has_error', )
+
+    list_filter = ('has_error', 'metric', )
+
+
 admin.site.register(MetricDataInt, MetricDataIntAdmin)
 
+
 class MetricDataFloatAdmin(admin.ModelAdmin):
-    pass
+
+    fields = (
+            ('metric', ), 
+            ('value', 'time', ), 
+            ('tags', ), 
+            ('has_error', 'error_message', ), 
+            )
+
+    list_display = ('metric', 'value', 'time', 'has_error', )
+
+    list_filter = ('has_error', 'metric', )
+
 admin.site.register(MetricDataFloat, MetricDataFloatAdmin)
 
+
 class MetricDataCharAdmin(admin.ModelAdmin):
-    pass
+
+    fields = (
+            ('metric', ), 
+            ('value', 'time', ), 
+            ('tags', ), 
+            ('has_error', 'error_message', ), 
+            )
+
+    list_display = ('metric', 'value', 'time', 'has_error', )
+
+    list_filter = ('has_error', 'metric', )
+
 admin.site.register(MetricDataChar, MetricDataCharAdmin)
 
-class MetricDataDatetimeGMTAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(MetricDataDatetimeGMT, MetricDataDatetimeGMTAdmin)
 
-class MetricDataTimeDeltaAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(MetricDataTimeDelta, MetricDataTimeDeltaAdmin)
+class MetricDataDatetimeAdmin(admin.ModelAdmin):
+
+    fields = (
+            ('metric', ), 
+            ('value', 'time', ), 
+            ('tags', ), 
+            ('has_error', 'error_message', ), 
+            )
+
+    list_display = ('metric', 'value', 'time', 'has_error', )
+
+    list_filter = ('has_error', 'metric', )
+
+admin.site.register(MetricDataDatetime, MetricDataDatetimeAdmin)
