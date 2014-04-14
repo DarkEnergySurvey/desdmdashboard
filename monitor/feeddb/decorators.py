@@ -57,6 +57,7 @@ class Monitor(object):
             # stuff before func execution
             started_at = time.time()
             # func execution
+            # TODO : enable tags, catching errors & error messages
             value = func(*args, **kwargs)
             # stuff after func execution
             exectime = time.time() - started_at

@@ -11,27 +11,17 @@ from datetime import datetime
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-
 from django.utils.timezone import now
 
+from .managers import MetricManager, MetricDataManager
 
-class MetricManager(models.Manager):
-    def get_by_natural_key(self, name, owner):
-        try:
-            return self.get(name=name, owner=owner)        
-        except ValueError:
-            try:
-                return self.get(name=name, owner__username=owner)        
-            except:
-                raise
-        except:
-            raise
 
 class Metric(models.Model):
     '''
     The time series measured.
     '''
     objects = MetricManager()
+    data = MetricDataManager()
 
     name = models.CharField(max_length=512)
 
@@ -203,6 +193,7 @@ class MetricDataBase(models.Model):
 
     def has_tag(self, tag):
         return tag in self.get_tags()
+
 
 class MetricDataInt(MetricDataBase):
     value = models.PositiveIntegerField(null=True, blank=True)
