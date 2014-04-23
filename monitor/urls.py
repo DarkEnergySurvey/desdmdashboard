@@ -1,24 +1,25 @@
 from django.conf.urls import patterns, include, url
 
-from monitor.views.api import CreateMetricView
+from monitor.views import api
 from monitor.views.users import UserList, UserDetail
 
 
-urlpatterns = patterns('monitor.views.main',
-    url(r'^dashboard/$', 'dashboard', {}, 'dashboard'),
-    #url(r'^api/$', api_view.CreateMetricView.as_view()),
-)
+urlpatterns = patterns('monitor.views',
+    url(r'^$', 'main.dashboard', {}, name='dashboard'),
+    url(r'^api/$', api.CreateMetricView.as_view(), {}, name='api'),
+    url(r'^api-auth/', include('rest_framework.urls',
+                               namespace='rest_framework')),
+    )
 
-urlpatterns += patterns('monitor.views.api',
-    url(r'^api/$', CreateMetricView.as_view()),
-)
+urlpatterns += patterns('monitor.views.main',
+    url(r'^(?P<owner>\w+)/*$', 'dashboard', {}, name='owner_dashboard',),
+    url(r'^(?P<owner>\w+)/(?P<name>\w+)/*$', 'metric_detail', {},
+        name='metric_detail',),
+    )
 
+'''
 urlpatterns += patterns('monitor.views.users',
     url(r'^users/$', UserList.as_view()),
     url(r'^users/(?P<pk>[0-9]+)/$', UserDetail.as_view()),
 )
-
-urlpatterns += patterns('',
-    url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),
-)
+'''

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div id='dashboard-metric'>
+    <h2>{{ metric.name }} </h2>
+    <p>
+    <ul>
+        <li><b>Status:</b>
+            {% if metric.has_error %}    
+            <img class='icon' src="{% static "img/error_icon.png" %}" height='16px' alt="logo"/>
+            <b class='error'>{{ metric.error_message }}</b>
+            {% else %}
+            <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
+            {% endif %}</li>
+            <li>No update within seconds: {{ metric.no_update_within_secs }}</li>
+            <li>Latest value: {{ metric.get_last_datapoint_from_table.value }}</li>
+            <li>Latest tags: {{ metric.get_last_datapoint_from_table.tags }}</li>
+            <li>Last measured at: {{ metric.get_last_datapoint_from_table.time }}</li>
+            <li>Value Type: {{ metric.value_type }}
+    </ul>
+    </p>
+    {% if metric.doc %}<h4>Doc:</h4> {{ metric.doc }}</p>{% endif %}
+    <p>{{ figure|safe }}</p>
+</div>    
+
+{% endblock %}

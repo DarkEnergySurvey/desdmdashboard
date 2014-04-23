@@ -1,5 +1,4 @@
 from rest_framework.generics import CreateAPIView
-from rest_framework.authentication import SessionAuthentication
 from rest_framework import permissions
 
 from monitor import models, serializers

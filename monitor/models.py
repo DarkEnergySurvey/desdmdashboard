@@ -12,6 +12,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.timezone import now
+from django.core.urlresolvers import reverse
 
 from .managers import MetricManager, MetricDataManager
 
@@ -82,11 +83,16 @@ class Metric(models.Model):
     class Meta:
         unique_together = (('name', 'owner'), )
 
+
     def natural_key(self):
         return (self.name, self.owner.username)
 
     def __unicode__(self):
         return u'{n} of {u}'.format(n=self.name, u=self.owner.username)
+
+    def get_absolute_url(self):
+        return reverse('monitor.views.main.metric_detail',
+                kwargs={'name': self.name, 'owner': self.owner.username})
 
     @classmethod
     def create(cls, name, value_type):

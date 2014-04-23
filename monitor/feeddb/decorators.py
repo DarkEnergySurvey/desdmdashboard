@@ -4,10 +4,18 @@
 import requests
 import time
 
-API_URL = 'http://127.0.0.1:8000/monitor/api/'
+try:
+    from coreutils import serviceaccess
+    creds = serviceaccess.parse(None, 'desdmdashboard')
+    USERNAME = creds['user']
+    PASSWORD = creds['passwd']
+    API_URL = creds['api_url']
+except:
+    USERNAME = 'michael'
+    PASSWORD = 'dummypwd'
+    API_URL = 'http://127.0.0.1:8000/monitor/api/'
 
-USERNAME = 'michael'
-PASSWORD = 'dummypwd'
+
 
 DATA_TEMPLATE = {
     'name': u'',
