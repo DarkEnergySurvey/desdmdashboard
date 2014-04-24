@@ -1,6 +1,6 @@
 from django.db import models
 
-from django_pandas.managers import DataFrameQuerySet
+from django_pandas.managers import DataFrameQuerySet, PassThroughManager
 
 
 class MetricManager(models.Manager):
