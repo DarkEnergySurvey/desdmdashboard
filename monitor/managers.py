@@ -1,6 +1,5 @@
 from django.db import models
 
-from model_utils.managers import PassThroughManager
 from django_pandas.managers import DataFrameQuerySet
 
 
