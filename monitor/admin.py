@@ -78,7 +78,7 @@ class MetricDataIntAdmin(admin.ModelAdmin):
     list_filter = ('has_error', 'metric', )
 
 
-admin.site.register(MetricDataInt, MetricDataIntAdmin)
+#admin.site.register(MetricDataInt, MetricDataIntAdmin)
 
 
 class MetricDataFloatAdmin(admin.ModelAdmin):
@@ -94,7 +94,7 @@ class MetricDataFloatAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
-admin.site.register(MetricDataFloat, MetricDataFloatAdmin)
+#admin.site.register(MetricDataFloat, MetricDataFloatAdmin)
 
 
 class MetricDataCharAdmin(admin.ModelAdmin):
@@ -110,7 +110,7 @@ class MetricDataCharAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
-admin.site.register(MetricDataChar, MetricDataCharAdmin)
+#admin.site.register(MetricDataChar, MetricDataCharAdmin)
 
 
 class MetricDataDatetimeAdmin(admin.ModelAdmin):
@@ -126,4 +126,4 @@ class MetricDataDatetimeAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
-admin.site.register(MetricDataDatetime, MetricDataDatetimeAdmin)
+#admin.site.register(MetricDataDatetime, MetricDataDatetimeAdmin)

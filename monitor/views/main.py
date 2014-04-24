@@ -1,5 +1,6 @@
 import StringIO
 
+import pandas
 import matplotlib.pyplot as plt
 
 from django.shortcuts import render, render_to_response, get_object_or_404
@@ -17,16 +18,17 @@ def dashboard(request, owner=None):
 
     metrices = []
     for metric in ms:
-        m = {
-            'name': metric.name.upper(),
-            'has_error': metric.has_error,
-            'doc' : metric.doc,
-            'svgplot': plot_svgbuf_for_metric(metric),
-            'owner': metric.owner.username,
-            'get_absolute_url': metric.get_absolute_url()
-            }
 
-        metrices.append(m)
+        if metric.show_on_dashboard:
+            m = {
+                'name': metric.name,
+                'is_in_trouble_status': metric.is_in_trouble_status,
+                'doc' : metric.doc,
+                'svgplot': plot_svgbuf_for_metric(metric),
+                'owner': metric.owner.username,
+                'get_absolute_url': metric.get_absolute_url()
+                }
+            metrices.append(m)
 
     return render_to_response('dashboard.html',\
             { 'metrices': metrices })
@@ -34,11 +36,45 @@ def dashboard(request, owner=None):
 
 def metric_detail(request, owner=None, name=None):
 
-    metric = get_object_or_404(Metric, name=name, owner__username=owner)
-    imdata = plot_svgbuf_for_metric(metric)
+    ms = name.rsplit('&')
 
-    return render_to_response('metric.html',\
-            { 'metric': metric, 'figure': imdata })
+    if len(ms) == 1:
+        metric = get_object_or_404(Metric, name=name, owner__username=owner)
+        imdata = plot_svgbuf_for_metric(metric)
+
+        return render_to_response('metric.html',\
+                { 'metric': metric, 'figure': imdata })
+
+    else:
+        dfs = {}
+        unit = None
+        for i, m in enumerate(ms):
+            metric = get_object_or_404(Metric, name=m, owner__username=owner)
+            if metric.get_unit_display() != None:
+                unit = metric.get_unit_display()
+            mdata = Metric.data.get_queryset(metric.name, metric.owner)
+            dfs[metric.name] = mdata.to_timeseries(
+                    index='time', fieldnames=('value',))
+
+        df = pandas.concat(dfs.values(), join='outer', axis=1,).resample('D')
+        df.columns = dfs.keys()
+
+        imgdata = StringIO.StringIO()
+        ax = df.plot(
+                fontsize=2,
+                figsize=(8,4),
+                lw=1.5,
+                )
+        #ax.legend(dfs.keys())
+        ax.set_ylabel(unit)
+
+        fig = ax.get_figure()
+
+        fig.savefig(imgdata, format='svg')
+        imgdata.seek(0)
+    
+        return render_to_response('multimetric.html',\
+                { 'figure': imgdata.buf, })
 
 
 font = {'family' : 'normal',
@@ -59,8 +95,17 @@ def plot_svgbuf_for_metric(metric):
 
     ax = df.plot(
             fontsize=2,
-            figsize=(9,4),
+            figsize=(8,4),
+            lw=1.5,
+            color=(0, 0, 0.6),
             )
+
+    if metric.value_type.model in ['metricdataint', 'metricdatafloat', ]:
+        if metric.alert_value:
+            yav = [metric.alert_value, metric.alert_value, ]
+            xav = [min(df.index), max(df.index),]
+            ax.plot(xav,yav, 'r--')
+
     ax.legend((metric.name,))
 
     if metric.unit:

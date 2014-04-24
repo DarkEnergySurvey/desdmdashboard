@@ -1,11 +1,11 @@
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import ListCreateAPIView
 from rest_framework import permissions
 
 from monitor import models, serializers
 from monitor.permissions import IsOwnerOrReadOnly
 
 
-class CreateMetricView(CreateAPIView):
+class ListCreateMetricView(ListCreateAPIView):
     """Saves a new metric value (or values)"""
     permission_classes = (permissions.IsAuthenticated,
             IsOwnerOrReadOnly, )
@@ -17,7 +17,7 @@ class CreateMetricView(CreateAPIView):
                        many=False, partial=False):
         if isinstance(data, list):
             many = True
-        return super(CreateMetricView, self).get_serializer(instance, data,
+        return super(ListCreateMetricView, self).get_serializer(instance, data,
                                                             files, many,
                                                             partial)
     def pre_save(self, obj):

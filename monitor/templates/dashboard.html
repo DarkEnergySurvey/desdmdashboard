@@ -4,7 +4,7 @@
 {% block content %}
 
 {% for metric in metrices %}
-<div id='dashboard-metric'>
+<div id='dashboard-metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
     <h2>
         <a href="{{ metric.get_absolute_url }}">
             {{ metric.name }}
@@ -13,14 +13,16 @@
     </h2>
     <p>
     <b>Status:</b>
-    {% if metric.has_error %}    
+    {% if metric.is_in_trouble_status %}    
     <img class='icon' src="{% static "img/error_icon.png" %}" height='16px' alt="logo"/>
     {% else %}
     <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
     {% endif %}
     </p>
     {% if metric.doc %}<p>{{ metric.doc }}</p>{% endif %}
-    <p>{{ metric.svgplot|safe }}</p>
+    <div id='figure'>
+        {{ metric.svgplot|safe }}
+    </div>
 </div>    
 {% endfor %}
 

@@ -5,6 +5,7 @@ Django data model for saving system snapshot data for monitoring purposes.
 
 
 '''
+import operator
 
 from datetime import datetime
 
@@ -83,16 +84,22 @@ class Metric(models.Model):
     class Meta:
         unique_together = (('name', 'owner'), )
 
-
     def natural_key(self):
         return (self.name, self.owner.username)
 
     def __unicode__(self):
-        return u'{n} of {u}'.format(n=self.name, u=self.owner.username)
+        return u'{n} ({u})'.format(n=self.name, u=self.owner.username)
 
     def get_absolute_url(self):
         return reverse('monitor.views.main.metric_detail',
                 kwargs={'name': self.name, 'owner': self.owner.username})
+
+    @property
+    def is_in_trouble_status(self):
+        '''
+        either has an error or an alert was triggered or both
+        '''
+        return bool(self.has_error) or bool(self.alert_triggered)
 
     @classmethod
     def create(cls, name, value_type):
@@ -126,6 +133,13 @@ class Metric(models.Model):
                 return False
         else:
             return True
+
+    def check_alert(self):
+        if not self.alert_operator:
+            return
+        oper = getattr(operator, self.alert_operator)
+        latest_value = self.get_last_datapoint_from_table().value
+        return oper(latest_value, self.alert_value)
 
     def set_latest_measurements(self, value=None, tags='', has_error=False,
             error_message='', time=None):
@@ -169,6 +183,12 @@ class Metric(models.Model):
             return data[0] 
         else:
             return None
+
+    def save(self, *args, **kwargs):
+        self.alert_triggered = bool(self.check_alert())
+        obj = super(Metric, self).save(*args, **kwargs)
+        return obj
+    
 
         
 class MetricDataBase(models.Model):

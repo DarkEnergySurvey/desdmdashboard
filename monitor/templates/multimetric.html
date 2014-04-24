@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div id='dashboard-metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
+    <h2>Multi Metric Plot</h2>
+    <div id='figure'>
+        {{ figure|safe }}
+    </div>
+</div>    
+
+{% endblock %}

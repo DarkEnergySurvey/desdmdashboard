@@ -3,12 +3,12 @@
 
 {% block content %}
 
-<div id='dashboard-metric'>
+<div id='dashboard-metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
     <h2>{{ metric.name }} </h2>
     <p>
     <ul>
         <li><b>Status:</b>
-            {% if metric.has_error %}    
+            {% if metric.is_in_trouble_status %}    
             <img class='icon' src="{% static "img/error_icon.png" %}" height='16px' alt="logo"/>
             <b class='error'>{{ metric.error_message }}</b>
             {% else %}
@@ -19,10 +19,15 @@
             <li>Latest tags: {{ metric.get_last_datapoint_from_table.tags }}</li>
             <li>Last measured at: {{ metric.get_last_datapoint_from_table.time }}</li>
             <li>Value Type: {{ metric.value_type }}
+            <li>Alert Operator: {{ metric.get_alert_operator_display }}
+            <li>Alert Value: {{ metric.alert_value }}
+            <li>ALERT: {{ metric.in_alert_state }}
     </ul>
     </p>
     {% if metric.doc %}<h4>Doc:</h4> {{ metric.doc }}</p>{% endif %}
-    <p>{{ figure|safe }}</p>
+    <div id='figure'>
+        {{ figure|safe }}
+    </div>
 </div>    
 
 {% endblock %}

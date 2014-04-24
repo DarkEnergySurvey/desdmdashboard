@@ -2,25 +2,28 @@
 DESDM DASHBOARD - DEVELOPMENT NOTES
 ===============================================================================
 
-### how a datapoint is specified
-
-* name : 'capacity'
-  source : 'desoper'
-  instrument (defines data type) : 'desdf'
-* value : '343224'
-
-
-
-
 TODO
 -------------------------------------------------------------------------------
+
+
+
+IDEAS
+-------------------------------------------------------------------------------
+-   we need to have an eups package that allows quick access data
+    desdmdashboard data : open api for data download, direct conversion to df
+-   multiple timeseries in one plot !! 
+-   quick access to plotting on dashboard : (plotting) code field
+
+
+IDEAS
+-------------------------------------------------------------------------------
+
 
 
 PACKAGES TO INSTALL
 -------------------------------------------------------------------------------
 -   rest_framework
 -   Requests
--   django-model-utils
 
 
 

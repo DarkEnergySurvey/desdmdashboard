@@ -4,6 +4,8 @@
 import requests
 import time
 
+# import the credentials via coreutils from the local .desservices file if
+# possible
 try:
     from coreutils import serviceaccess
     creds = serviceaccess.parse(None, 'desdmdashboard')
@@ -25,6 +27,7 @@ DATA_TEMPLATE = {
     'value': u'',
     'tags': u''
     }
+
 
 
 class WebAPIFeeder(object):

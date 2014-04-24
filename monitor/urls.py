@@ -6,14 +6,14 @@ from monitor.views.users import UserList, UserDetail
 
 urlpatterns = patterns('monitor.views',
     url(r'^$', 'main.dashboard', {}, name='dashboard'),
-    url(r'^api/$', api.CreateMetricView.as_view(), {}, name='api'),
+    url(r'^api/*$', api.ListCreateMetricView.as_view(), {}, name='api'),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
     )
 
 urlpatterns += patterns('monitor.views.main',
     url(r'^(?P<owner>\w+)/*$', 'dashboard', {}, name='owner_dashboard',),
-    url(r'^(?P<owner>\w+)/(?P<name>\w+)/*$', 'metric_detail', {},
+    url(r'^(?P<owner>\w+)/(?P<name>[a-zA-Z0-9_&]+)/*$', 'metric_detail', {},
         name='metric_detail',),
     )
 
