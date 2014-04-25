@@ -4,7 +4,6 @@ import pandas
 import matplotlib.pyplot as plt
 
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.template import RequestContext
 
 from monitor.models import Metric
 
@@ -23,15 +22,14 @@ def dashboard(request, owner=None):
             m = {
                 'name': metric.name,
                 'is_in_trouble_status': metric.is_in_trouble_status,
-                'doc' : metric.doc,
                 'svgplot': plot_svgbuf_for_metric(metric),
                 'owner': metric.owner.username,
                 'get_absolute_url': metric.get_absolute_url()
                 }
             metrices.append(m)
 
-    return render_to_response('dashboard.html',\
-            { 'metrices': metrices })
+    return render_to_response('monitor_dashboard.html',\
+            { 'metrices': metrices, })
 
 
 def metric_detail(request, owner=None, name=None):
@@ -42,7 +40,7 @@ def metric_detail(request, owner=None, name=None):
         metric = get_object_or_404(Metric, name=name, owner__username=owner)
         imdata = plot_svgbuf_for_metric(metric)
 
-        return render_to_response('metric.html',\
+        return render_to_response('metric_detail.html',\
                 { 'metric': metric, 'figure': imdata })
 
     else:
@@ -59,7 +57,6 @@ def metric_detail(request, owner=None, name=None):
         df = pandas.concat(dfs.values(), join='outer', axis=1,).resample('D')
         df.columns = dfs.keys()
 
-        imgdata = StringIO.StringIO()
         ax = df.plot(
                 fontsize=2,
                 figsize=(8,4),
@@ -67,9 +64,9 @@ def metric_detail(request, owner=None, name=None):
                 )
         #ax.legend(dfs.keys())
         ax.set_ylabel(unit)
-
         fig = ax.get_figure()
 
+        imgdata = StringIO.StringIO()
         fig.savefig(imgdata, format='svg')
         imgdata.seek(0)
     

@@ -1,0 +1,16 @@
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+
+{% for name, figstring in figures.items %}
+
+<div id='dashboard-metric'>
+    <h2>{{ name }} </h2>
+    <div id='figure'>
+        {{ figstring|safe }}
+    </div>
+</div>    
+
+{% endfor %}
+
+{% endblock %}

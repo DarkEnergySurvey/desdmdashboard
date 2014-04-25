@@ -2,7 +2,7 @@
 <html>
 <head>
     {% load staticfiles %}
-    <title>DESDM MONITORING{% block head_title %}{% endblock %}</title>
+    <title>DESDM Monitoring{% block head_title %}{% endblock %}</title>
     <meta charset="utf-8">
     <style type="text/css">
         
@@ -14,17 +14,13 @@
             margin: 0;
         }
         	
-        a { 
-        	text-decoration: none;
-            color: #4c83d1;
-        }
-        	
         #container {
         	background:#ffffff; 
             max-width: 900px;
         	padding: 2em 4em 4em 4em; 
         	margin-left: auto;
         	margin-right: auto;
+            border-top: 1px solid black;
         }
         	
         #header {
@@ -35,12 +31,12 @@
             overflow: hidden;
             padding: 0 0 0.1em 0;
             border-bottom: 1px  solid black;
-            margin: 0 0 0.1em 0;
+            margin: 0 0 0.5em 0;
         }
-        
-        .error {
-            color: #ff0000;
-            font-weight: bold;
+
+        #header a { 
+        	text-decoration: none;
+            color: #000000;
         }
 
 		#site_logo {
@@ -51,8 +47,37 @@
             margin-left: 1em;
             float: left;
         }
-        #site_title_addon {
-            color: #a0a0a0;
+
+        #navigationbar {
+        	font-size: 50%;
+        	font-weight: bold;
+        }
+
+        #navigationbar .activesection {
+            color: #f00000;
+        }
+
+        #navigationbar ul {
+            list-style-type: none;
+        }
+
+        #navigationbar li {
+            float: right;
+            margin: 0 1em 0 1em;
+        }
+
+        #navigationbar a:hover {
+            color: #f00000;
+        }
+
+        #content a { 
+        	text-decoration: none;
+            color: #4c83d1;
+        }
+        	
+        .error {
+            color: #ff0000;
+            font-weight: bold;
         }
 
         #dashboard-metric {
@@ -110,11 +135,20 @@
         <div id='site_logo'>
         <a href="/">
             <img src="{% static "img/des_logo.png" %}" width='70pt' height='70pt' alt="logo" />
-        </a>
         </div>
         <div id="site_title">
-            {% block site_title %}DESDM Monitoring Dashboard{% endblock %}
-            <div id='site_title_addon'><br>{% block site_title_addon %}{% endblock %}</div>
+            {% block site_title %}DESDM Monitoring{% endblock %}
+        </div>
+        </a>
+        <div id="navigationbar">
+            {% block navigationbar %}
+            <ul>
+                <a href='/admin/'><li>admin</li></a>
+                <a href='/monitor/api/'><li>metric api</li></a>
+                <a href='/monitor/'><li {% ifequal section 'metrics' %}class='activesection'{% endifequal %}>metrics</li></a>
+                <a href='/'><li {% ifequal section 'dashboard' %}class='activesection'{% endifequal %}>dashboard</li></a>
+            </ul>
+            {% endblock %}
         </div>
     </div>
     </nav>
@@ -150,7 +184,7 @@
     <!-- FOOTER -->
     <div class="row" id="footer">
         <p class="fine-print">
-            {% block footer %}last updated: {% endblock %}
+            {% block footer %}site was created on {% now 'D, M d, Y' %}{% endblock %}
             <span id="last-update"></span>
         </p>
     </div>

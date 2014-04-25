@@ -1,9 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_monitor.html' %}
 {% load staticfiles %}
 
 {% block content %}
 
 {% for metric in metrices %}
+
 <div id='dashboard-metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
     <h2>
         <a href="{{ metric.get_absolute_url }}">
@@ -19,7 +20,6 @@
     <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
     {% endif %}
     </p>
-    {% if metric.doc %}<p>{{ metric.doc }}</p>{% endif %}
     <div id='figure'>
         {{ metric.svgplot|safe }}
     </div>

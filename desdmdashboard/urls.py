@@ -6,9 +6,13 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url('^$', RedirectView.as_view(
-        url='monitor/', permanent=False), name='index'),
-    url(r'^monitor/', include('monitor.urls')),
 
+     url('^$', RedirectView.as_view(
+         url='dashboard/', permanent=False), name='index'),
+    url('^dashboard/*$', 'desdmdashboard.views.dashboard.entrance', {},
+        name='dashboard_entrance'),
+
+    url(r'^monitor/', include('monitor.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
 )
