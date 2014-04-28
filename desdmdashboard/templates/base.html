@@ -17,19 +17,17 @@
         #container {
         	background:#ffffff; 
             max-width: 900px;
-        	padding: 2em 4em 4em 4em; 
+        	padding: 1.5em 4em 4em 4em; 
         	margin-left: auto;
         	margin-right: auto;
-            border-top: 1px solid black;
+            border-top: 2px solid black;
         }
-        	
+
         #header {
-        	font-size: 200%;
         	font-weight: bold;
         	vertical-align: middle;
-        	height: '70pt';
             overflow: hidden;
-            padding: 0 0 0.1em 0;
+            padding: 0 0 1em 0;
             border-bottom: 1px  solid black;
             margin: 0 0 0.5em 0;
         }
@@ -44,12 +42,14 @@
 		}
 		
         #site_title {
-            margin-left: 1em;
             float: left;
+        	font-size: 200%;
+            margin-left: 1em;
         }
 
         #navigationbar {
-        	font-size: 50%;
+            float: right;
+        	font-size: 100%;
         	font-weight: bold;
         }
 
@@ -132,9 +132,10 @@
     <!-- SITE HEADER -->
     <nav role="navigation">
     <div id="header" >
+
         <div id='site_logo'>
         <a href="/">
-            <img src="{% static "img/des_logo.png" %}" width='70pt' height='70pt' alt="logo" />
+            <img src="{% static "img/des_logo.png" %}" width='40pt' height='40pt' alt="logo" />
         </div>
         <div id="site_title">
             {% block site_title %}DESDM Monitoring{% endblock %}
@@ -143,13 +144,13 @@
         <div id="navigationbar">
             {% block navigationbar %}
             <ul>
-                <a href='/admin/'><li>admin</li></a>
-                <a href='/monitor/api/'><li>metric api</li></a>
-                <a href='/monitor/'><li {% ifequal section 'metrics' %}class='activesection'{% endifequal %}>metrics</li></a>
-                <a href='/'><li {% ifequal section 'dashboard' %}class='activesection'{% endifequal %}>dashboard</li></a>
+                <li>menu item 1</li>
+                <li>menu item 2</li>
+                <li>menu item 3</li>
             </ul>
             {% endblock %}
         </div>
+
     </div>
     </nav>
 

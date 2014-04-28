@@ -50,7 +50,29 @@ class WebAPIFeeder(object):
 class Monitor(object):
     '''
     A function decorator class to feed function output into the monitoring
-    database via a web api.
+    database via its web api.
+
+    USAGE:
+    1. specify your desdmdashboard credentials in your .desservices like this
+
+        [desdmdashboard]
+        user = michael
+        passwd = dummypassword
+
+    2. decorate a any function producing a value you would like to feed to the
+    dashboard with the decorator like this: 
+
+        @Monitor('MyMetric')
+        def metric_measurement_function(*args, **kwargs):
+            
+            x = ...
+
+            return x
+
+    whenever `metric_measurement_function` will be executed, x will be fed into
+    the metric 'MyMetric' in the database.
+
+
     '''
     
     def __init__(self, metric_name, auth=(USERNAME, PASSWORD), api_url=API_URL,

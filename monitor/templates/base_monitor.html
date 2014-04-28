@@ -2,9 +2,9 @@
 
 {% block navigationbar %}
 <ul>
-    <a href='/admin/'><li>admin</li></a>
-    <a href='/monitor/api/'><li>metric api</li></a>
-    <a href='/monitor/'><li class='activesection'>metrics</li></a>
-    <a href='/'><li>dashboard</li></a>
+    <a href='{% url "admin:index" %}'><li>admin</li></a>
+    <a href='{% url "api" %}'><li>metric api</li></a>
+    <a href='{% url "monitor_dashboard" %}' class='activesection'><li>metrics</li></a>
+    <a href='{% url "dashboard_entrance" %}'><li>dashboard</li></a>
 </ul>
 {% endblock %}
