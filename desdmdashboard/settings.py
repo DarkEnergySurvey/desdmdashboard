@@ -49,6 +49,11 @@ INSTALLED_APPS = (
     'rest_framework',
 
     'monitor',
+
+    # testing the following two packages
+    'debug_toolbar',
+    'django_extensions',
+
 )
 
 MIDDLEWARE_CLASSES = (

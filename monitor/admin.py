@@ -41,7 +41,7 @@ class MetricAdmin(admin.ModelAdmin):
             ('doc', ),
             ('latest_value', 'last_updated', 'latest_tags', 'has_error',
                 'error_message'),
-            ('no_update_within_secs', ),
+            ('warning_if_no_value_after_seconds', ),
             ('unit', 'show_on_dashboard', ),
             ('value_type', ),
             ('alert_operator', 'alert_value', 'alert_triggered', ),

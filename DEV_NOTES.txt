@@ -15,8 +15,9 @@ IDEAS
 -   quick access to plotting on dashboard : (plotting) code field
 
 
-IDEAS
+django extentsions (super cool)
 -------------------------------------------------------------------------------
+python manage.py graph_models monitor auth | dot -Tpng -o test.png
 
 
 

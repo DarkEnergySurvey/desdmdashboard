@@ -29,7 +29,8 @@ class Metric(models.Model):
 
     owner = models.ForeignKey('auth.User', related_name='metrics')
 
-    no_update_within_secs = models.FloatField(default=10.)
+    warning_if_no_value_after_seconds = models.PositiveIntegerField(
+            default=60*60*24*7, null=True, blank=True)
 
     latest_value = models.CharField(max_length=1024, null=True, blank=True)
     last_updated = models.DateTimeField(null=True, blank=True)
@@ -95,11 +96,25 @@ class Metric(models.Model):
                 kwargs={'name': self.name, 'owner': self.owner.username})
 
     @property
+    def has_no_value_warning(self):
+        '''
+        '''
+        dp = self.get_last_datapoint_from_table()
+        delta_t = now() - dp.time
+        if self.warning_if_no_value_after_seconds:
+            return delta_t.total_seconds() >= self.warning_if_no_value_after_seconds
+        else:
+            return False
+        
+    @property
     def is_in_trouble_status(self):
         '''
         either has an error or an alert was triggered or both
         '''
-        return bool(self.has_error) or bool(self.alert_triggered)
+        err = bool(self.has_error)
+        alert = bool(self.alert_triggered)
+        warn = bool(self.has_no_value_warning)
+        return (err or alert or warn)
 
     @classmethod
     def create(cls, name, value_type):
