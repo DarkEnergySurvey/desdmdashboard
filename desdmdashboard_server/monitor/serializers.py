@@ -55,8 +55,5 @@ class MetricSerializer(serializers.ModelSerializer):
     def save_object(self, obj, **kwargs):
         if 'force_insert' in kwargs:
             del(kwargs['force_insert'])
-        if obj.can_be_updated:
-            super(MetricSerializer, self).save_object(obj, **kwargs)
-            obj._save_latest_values_to_data_table()
-        else:
-            print 'Cannot be updated yet!!'
+        super(MetricSerializer, self).save_object(obj, **kwargs)
+        obj._save_latest_values_to_data_table()

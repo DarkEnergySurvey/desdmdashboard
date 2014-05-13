@@ -136,19 +136,6 @@ class Metric(models.Model):
     def create_value_obj(self):
         return self.value_type.model_class()(metric=self)
 
-    @property
-    def can_be_updated(self):
-        last_datapoint = self.get_last_datapoint_from_table()
-        if last_datapoint:
-            seconds_since_last_save = (self.last_updated -
-                    last_datapoint.time).total_seconds()
-            if seconds_since_last_save > self.no_update_within_secs:
-                return True
-            else:
-                return False
-        else:
-            return True
-
     def check_alert(self):
         if not self.alert_operator:
             return
