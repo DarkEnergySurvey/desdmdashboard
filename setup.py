@@ -4,19 +4,14 @@ from distutils.core import setup
 
 setup(name='desdmdashboard',
       version='0.1.0',
-      description='Web App for timeseries of snapshot data monitoring for DESDM.',
+      description=('Web App for timeseries of snapshot data monitoring for '
+                    'DESDM. \nRemote components only!',
       author='Michael Graber',
       author_email='michael.graber@fhnw.ch',
       packages=[
-          'desdmdashboard.monitor.feeddb',
-#         'desdmreportingframework.templates',
-#         'desdmreportingframework.utils',
+          'desdmdashboard_remote',
+          'desdmdashboard_remote.feeddb',
           ],
-#     package_dir = {'': 'packages'},
-#     package_data = {
-#         'css':['*.css'],
-#         'desdmreportingframework': ['templates/jinja2/*.html'],
-#         },
 #     scripts=['bin/ReportingFW',]
      )
 
