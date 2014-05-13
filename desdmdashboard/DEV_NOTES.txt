@@ -23,7 +23,6 @@ python manage.py graph_models monitor auth | dot -Tpng -o test.png
 PACKAGES TO INSTALL
 -------------------------------------------------------------------------------
 -   rest_framework
--   Requests
 
 
 
