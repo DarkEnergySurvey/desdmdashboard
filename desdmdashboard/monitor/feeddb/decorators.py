@@ -1,11 +1,15 @@
 '''
 '''
 
-import requests
+#import requests
 import time
 
+import urllib2
+import urllib
+from base64 import b64encode
+
 # import the credentials via coreutils from the local .desservices file if
-# possible
+# possible, otherwise I assume I am locally developing on my machine ..
 try:
     from coreutils import serviceaccess
     creds = serviceaccess.parse(None, 'desdmdashboard')
@@ -44,7 +48,11 @@ class WebAPIFeeder(object):
     def dispatch_request(self, data=None):
         if type(data)==dict:
             self.data.update(data)
-        self.request = requests.post(self.api_url, self.data, auth=self.auth)
+        #self.request = requests.post(self.api_url, self.data, auth=self.auth)
+        urllib_req = urllib2.Request(self.api_url)
+        urllib_req.add_header('Authorization',
+                'Basic ' + b64encode(self.auth[0]+':'+self.auth[1]))
+        self.request = urllib2.urlopen(urllib_req, urllib.urlencode(self.data))
 
 
 class Monitor(object):
