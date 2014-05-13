@@ -20,6 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'ohp-j_n1-@5^if!#a*%ha40&#dujs%7ushfca@^9ed19ka37u*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+### FIXME
 DEBUG = True
 
 TEMPLATE_DEBUG = True
@@ -50,9 +51,10 @@ INSTALLED_APPS = (
 
     'monitor',
 
+    ### FIXME
     # testing the following two packages
-    'debug_toolbar',
-    'django_extensions',
+#   'debug_toolbar',
+#   'django_extensions',
 
 )
 
@@ -63,6 +65,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'desdmdashboard.middleware.ProfileMiddleware',
 )
 
 ROOT_URLCONF = 'desdmdashboard.urls'

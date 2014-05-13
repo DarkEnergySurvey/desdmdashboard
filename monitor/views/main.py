@@ -7,8 +7,23 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 
 from monitor.models import Metric
 
+from datetime import datetime
+
+'''
+font = {
+    'family' : 'sans-serif',
+#   'weight' : 'bold',
+    'size'   : 8,
+    }
+
+plt.rc('font', **font)
+'''
+
 
 def dashboard(request, owner=None):
+
+    #print '\n\nDASHBOARD CALLED!!'
+    initime = datetime.now()
 
     if owner:
         ms = Metric.objects.filter(owner__username=owner)
@@ -27,6 +42,11 @@ def dashboard(request, owner=None):
                 'get_absolute_url': metric.get_absolute_url()
                 }
             metrices.append(m)
+
+
+    #print 'DASHBOARD BEFORE RETURN:'
+    #offtime = datetime.now()
+    #print 'time spent : ', offtime - initime
 
     return render_to_response('monitor_dashboard.html',\
             { 'metrices': metrices, })
@@ -74,14 +94,10 @@ def metric_detail(request, owner=None, name=None):
                 { 'figure': imgdata.buf, })
 
 
-font = {'family' : 'normal',
-#        'weight' : 'bold',
-        'size'   : 8, }
-
-plt.rc('font', **font)
-
-
 def plot_svgbuf_for_metric(metric):
+
+    init = datetime.now()
+
     # get the data for the metric
     mdata = Metric.data.get_queryset(metric.name, metric.owner)
     # get the pandas timeseries
@@ -110,6 +126,10 @@ def plot_svgbuf_for_metric(metric):
     fig = ax.get_figure()
 
     fig.savefig(imgdata, format='svg')
+    plt.close(fig)
     imgdata.seek(0)
+    
+    endt = datetime.now()
+    #print 'create metric plot in (s): ', endt - init
 
     return imgdata.buf
