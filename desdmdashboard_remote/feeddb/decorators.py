@@ -43,7 +43,7 @@ class WebAPIFeeder(object):
         self.api_url = api_url
         self.auth = auth
         self.data = data
-        self.request = None
+        self.response = None
 
     def dispatch_request(self, data=None):
         if type(data)==dict:
@@ -52,7 +52,7 @@ class WebAPIFeeder(object):
         urllib_req = urllib2.Request(self.api_url)
         urllib_req.add_header('Authorization',
                 'Basic ' + b64encode(self.auth[0]+':'+self.auth[1]))
-        self.request = urllib2.urlopen(urllib_req, urllib.urlencode(self.data))
+        self.response = urllib2.urlopen(urllib_req, urllib.urlencode(self.data))
 
 
 class Monitor(object):
@@ -106,13 +106,7 @@ class Monitor(object):
                 self.data['value'] = value
                 decorator_self.feeder.dispatch_request(
                         data=self.data)
-                if not decorator_self.feeder.request.ok:
-                    raise APIFeedError()
             except:
                 raise
 
         return wrappee
-
-
-class APIFeedError(Exception):
-    pass
