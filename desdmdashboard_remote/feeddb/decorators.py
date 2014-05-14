@@ -80,6 +80,11 @@ class Monitor(object):
     whenever `metric_measurement_function` will be executed, x will be fed into
     the metric 'MyMetric' in the database.
 
+    3. set up a cron job executing a python file in which monitor function
+    executions follow after if __name__ == '__main__':, like here:
+
+    if __name__ == '__main__':
+        metric_measurement_function()
 
     '''
     
@@ -96,14 +101,19 @@ class Monitor(object):
 
         def wrappee(*args, **kwargs):
             # stuff before func execution
-            started_at = time.time()
+            # started_at = time.time()
             # func execution
             # TODO : enable tags, catching errors & error messages
-            value = func(*args, **kwargs)
-            # stuff after func execution
-            exectime = time.time() - started_at
             try:
-                self.data['value'] = value
+                self.data['value'] = func(*args, **kwargs)
+            except Exception, e:
+                value = ''
+                self.data['has_error'] = True
+                self.data['error_message'] = e
+                
+            # stuff after func execution
+            # exectime = time.time() - started_at
+            try:
                 decorator_self.feeder.dispatch_request(
                         data=self.data)
             except:
