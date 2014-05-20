@@ -34,10 +34,14 @@ def dashboard(request, owner=None):
     for metric in ms:
 
         if metric.show_on_dashboard:
+            try:
+                figure = plot_svgbuf_for_metric(metric)
+            except Exception, e:
+                figure = e
             m = {
                 'name': metric.name,
                 'is_in_trouble_status': metric.is_in_trouble_status,
-                'svgplot': plot_svgbuf_for_metric(metric),
+                'svgplot': figure,
                 'owner': metric.owner.username,
                 'get_absolute_url': metric.get_absolute_url()
                 }
@@ -58,7 +62,10 @@ def metric_detail(request, owner=None, name=None):
 
     if len(ms) == 1:
         metric = get_object_or_404(Metric, name=name, owner__username=owner)
-        imdata = plot_svgbuf_for_metric(metric)
+        try:
+            imdata = plot_svgbuf_for_metric(metric)
+        except Exception, e:
+            imdata = e
 
         return render_to_response('metric_detail.html',\
                 { 'metric': metric, 'figure': imdata })
