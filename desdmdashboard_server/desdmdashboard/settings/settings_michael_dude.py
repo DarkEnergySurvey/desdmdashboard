@@ -9,15 +9,11 @@ from common_settings import *
 # =============================================================================
 
 INSTALLED_APPS += (
-
     # testing the following two packages
     'debug_toolbar',
     'django_extensions',
-
     )
 
 MIDDLEWARE_CLASSES += (
-
     'desdmdashboard.middleware.ProfileMiddleware',
-
     )

@@ -15,7 +15,10 @@ from django.contrib.contenttypes import generic
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 
+from jsonfield.fields import JSONField
+
 from .managers import MetricManager, MetricDataManager
+
 
 
 class Metric(models.Model):
@@ -58,6 +61,7 @@ class Metric(models.Model):
     VALUE_TYPE_CHOICES = models.Q(app_label='monitor', model='metricdataint') |\
             models.Q(app_label='monitor', model='metricdatafloat') |\
             models.Q(app_label='monitor', model='metricdatachar') |\
+            models.Q(app_label='monitor', model='metricdatajson') |\
             models.Q(app_label='monitor', model='metricdatadatetime')
     value_type = models.ForeignKey(generic.ContentType, 
             limit_choices_to=VALUE_TYPE_CHOICES)
@@ -262,3 +266,14 @@ class MetricDataDatetime(MetricDataBase):
             datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
         except:
             raise
+
+class MetricDataJSON(MetricDataBase):
+    value = JSONField()
+
+    def value_from_string(self, value):
+        try:
+            self.value = datetime_from_isoformat(value) 
+            datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
+        except:
+            raise
+

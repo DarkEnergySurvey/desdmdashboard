@@ -1,3 +1,4 @@
+import django
 from django.db import models
 from django.db.models.query import QuerySet
 from .io import read_frame

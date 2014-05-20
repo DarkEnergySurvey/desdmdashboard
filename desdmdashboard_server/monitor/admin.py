@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from monitor.models import Metric, MetricDataInt, MetricDataChar,\
-        MetricDataFloat, MetricDataDatetime
+        MetricDataFloat, MetricDataDatetime, MetricDataJSON
 #       MetricDataTimeDelta, Source, Instrument
 
 
@@ -29,6 +29,11 @@ class MetricDataDatetimeInline(admin.TabularInline):
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
     extra = 0
 
+class MetricDataJSONInline(admin.TabularInline):
+    model = MetricDataJSON
+    fields = ('value', 'time', 'has_error', 'error_message', )
+    readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    extra = 0
 
 class MetricAdmin(admin.ModelAdmin):
 
@@ -58,7 +63,8 @@ class MetricAdmin(admin.ModelAdmin):
     
 
     inlines = (MetricDataIntInline, MetricDataFloatInline,
-            MetricDataCharInline, MetricDataDatetimeInline)
+            MetricDataCharInline, MetricDataDatetimeInline,
+            MetricDataJSONInline, )
 
         
 admin.site.register(Metric, MetricAdmin)
@@ -78,7 +84,7 @@ class MetricDataIntAdmin(admin.ModelAdmin):
     list_filter = ('has_error', 'metric', )
 
 
-#admin.site.register(MetricDataInt, MetricDataIntAdmin)
+admin.site.register(MetricDataInt, MetricDataIntAdmin)
 
 
 class MetricDataFloatAdmin(admin.ModelAdmin):
@@ -94,7 +100,7 @@ class MetricDataFloatAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
-#admin.site.register(MetricDataFloat, MetricDataFloatAdmin)
+admin.site.register(MetricDataFloat, MetricDataFloatAdmin)
 
 
 class MetricDataCharAdmin(admin.ModelAdmin):
@@ -110,7 +116,7 @@ class MetricDataCharAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
-#admin.site.register(MetricDataChar, MetricDataCharAdmin)
+admin.site.register(MetricDataChar, MetricDataCharAdmin)
 
 
 class MetricDataDatetimeAdmin(admin.ModelAdmin):
@@ -126,4 +132,20 @@ class MetricDataDatetimeAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
-#admin.site.register(MetricDataDatetime, MetricDataDatetimeAdmin)
+admin.site.register(MetricDataDatetime, MetricDataDatetimeAdmin)
+
+
+class MetricDataJSONAdmin(admin.ModelAdmin):
+
+    fields = (
+            ('metric', ), 
+            ('value', 'time', ), 
+            ('tags', ), 
+            ('has_error', 'error_message', ), 
+            )
+
+    list_display = ('metric', 'value', 'time', 'has_error', )
+
+    list_filter = ('has_error', 'metric', )
+
+admin.site.register(MetricDataJSON, MetricDataJSONAdmin)
