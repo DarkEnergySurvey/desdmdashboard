@@ -77,7 +77,7 @@ def metric_detail(request, owner=None, name=None):
             metric = get_object_or_404(Metric, name=m, owner__username=owner)
             if metric.get_unit_display() != None:
                 unit = metric.get_unit_display()
-            mdata = Metric.data.get_queryset(metric.name, metric.owner)
+            mdata = Metric.data.get_dataframe_queryset(metric.name, metric.owner)
             dfs[metric.name] = mdata.to_timeseries(
                     index='time', fieldnames=('value',))
 
@@ -106,7 +106,7 @@ def plot_svgbuf_for_metric(metric):
     init = datetime.now()
 
     # get the data for the metric
-    mdata = Metric.data.get_queryset(metric.name, metric.owner)
+    mdata = Metric.data.get_dataframe_queryset(metric.name, metric.owner)
     # get the pandas timeseries
     df = mdata.to_timeseries(index='time', fieldnames=('value', ))
     #df = df.resample('h')

@@ -30,7 +30,7 @@ class MetricDataManager(PassThroughManager):
         except:
             raise
 
-    def get_queryset(self, name, owner):
+    def get_dataframe_queryset(self, name, owner):
         m = self.get_by_natural_key(name, owner)
         vtclass = m.value_type.model_class()
         return DataFrameQuerySet(vtclass).filter(metric=m)

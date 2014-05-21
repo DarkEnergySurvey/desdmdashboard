@@ -12,7 +12,7 @@ def deshist():
     '''
     '''
 
-    mquery = models.Metric.data.get_queryset('deshist', 'don')
+    mquery = models.Metric.data.get_dataframe_queryset('deshist', 'don')
     recs = [r[0] for r in list(mquery.values_list('value'))]
     ddicts = [json.loads(json.loads(r)) for r in recs]
     df = pandas.io.json.json_normalize(ddicts)
