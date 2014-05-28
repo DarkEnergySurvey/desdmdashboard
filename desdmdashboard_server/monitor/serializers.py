@@ -19,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MetricSerializer(serializers.ModelSerializer):
 
+    pk = serializers.Field()
     value_type_ = serializers.CharField(source='value_type', required=False) 
     tags = serializers.CharField(source='latest_tags', required=False) 
     value = serializers.CharField(source='latest_value', required=False) 
@@ -26,7 +27,7 @@ class MetricSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Metric
-        fields = ('name', 'has_error', 'error_message', 'value_type_',
+        fields = ('pk', 'name', 'has_error', 'error_message', 'value_type_',
                 'value', 'tags', 'owner', )
 
     def restore_object(self, attrs, instance=None):
@@ -57,3 +58,28 @@ class MetricSerializer(serializers.ModelSerializer):
             del(kwargs['force_insert'])
         super(MetricSerializer, self).save_object(obj, **kwargs)
         obj._save_latest_values_to_data_table()
+
+
+class MetricDataJSONSerializer(serializers.ModelSerializer):
+
+    def transform_value(self, obj, value):
+        return obj.value
+
+    class Meta:
+        model = models.MetricDataJSON
+
+class MetricDataIntSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MetricDataInt
+
+class MetricDataFloatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MetricDataFloat
+
+class MetricDataDatetimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MetricDataDatetime
+
+class MetricDataCharSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MetricDataDatetime

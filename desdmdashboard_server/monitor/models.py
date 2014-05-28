@@ -6,6 +6,7 @@ Django data model for saving system snapshot data for monitoring purposes.
 
 '''
 import operator
+import json
 
 from datetime import datetime
 
@@ -194,7 +195,6 @@ class Metric(models.Model):
         self.alert_triggered = bool(self.check_alert())
         obj = super(Metric, self).save(*args, **kwargs)
         return obj
-    
 
         
 class MetricDataBase(models.Model):
@@ -262,18 +262,18 @@ class MetricDataDatetime(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            self.value = datetime_from_isoformat(value) 
-            datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
+            self.value = datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
         except:
             raise
+
 
 class MetricDataJSON(MetricDataBase):
     value = JSONField()
 
     def value_from_string(self, value):
         try:
-            self.value = datetime_from_isoformat(value) 
-            datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
+            json_obj = json.loads(value)
+            self.value = json_obj
         except:
             raise
 

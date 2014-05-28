@@ -4,6 +4,8 @@ DESDM DASHBOARD - DEVELOPMENT NOTES
 
 TODO
 -------------------------------------------------------------------------------
+-   dashboard app
+-   json to pandas dataframe functions
 
 
 
@@ -20,14 +22,9 @@ python manage.py graph_models monitor auth | dot -Tpng -o test.png
 
 
 
-PACKAGES TO INSTALL
+PACKAGES TO INSTALL SERVERSIDE
 -------------------------------------------------------------------------------
--   rest_framework
-
-
-
-NOTES FROM TALK TO DON ON WEDNESDAY, March 12, 10pm
-Michael Freemon
-- rrd tool : round robin database
-- mrtg
-
+-   djangorestframework 2.3.7+1
+-   pygments 1.6+3
+-   pandas 0.13.1+1
+-   django 1.6.2+1

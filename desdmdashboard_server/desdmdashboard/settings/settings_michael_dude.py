@@ -7,6 +7,11 @@ from common_settings import *
 
 # Application definition - EXTENSIONS
 # =============================================================================
+'''
+DEBUG = False
+
+ALLOWED_HOSTS = ['127.0.0.1', ]
+'''
 
 INSTALLED_APPS += (
     # testing the following two packages

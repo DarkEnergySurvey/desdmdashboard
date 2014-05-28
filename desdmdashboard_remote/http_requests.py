@@ -73,7 +73,8 @@ class Request(object):
         else:
             self.url = url
 
-        url_params = '?'+'&'.join([k+'='+v for k, v in params.iteritems()])
+        url_params = '?'+'&'.join([str(k)+'='+str(v) for k, v in 
+                                                 params.iteritems()])
         urllib_req = urllib2.Request(self.url+url_params)
         urllib_req.add_header('Authorization',
                 'Basic ' + b64encode(self.auth[0]+':'+self.auth[1]))
