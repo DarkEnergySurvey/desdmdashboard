@@ -1,0 +1,24 @@
+{% extends 'dashboard_base.html' %}
+
+{% block menubar %}
+    {% for sec in sections %}
+    <a href='{% url "dashboard_section" sec %}'{% if sec == section %} class='activesection'{% endif %}><li>{{ sec }}</li></a>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<h3>{{ section }}</h3>
+
+{% for name, outstring in outputs.items %}
+
+<div id='dashboard-metric'>
+    <h2>{{ name }} </h2>
+    <div id='figure'>
+        {{ outstring|safe }}
+    </div>
+</div>    
+
+{% endfor %}
+
+{% endblock %}

@@ -17,7 +17,7 @@
         	
         #container {
         	background:#ffffff; 
-            max-width: 900px;
+            max-width: 1100px;
         	padding: 1.5em 4em 4em 4em; 
         	margin-left: auto;
         	margin-right: auto;
@@ -29,7 +29,6 @@
         	vertical-align: middle;
             overflow: hidden;
             padding: 0 0 1em 0;
-            border-bottom: 1px  solid black;
             margin: 0 0 0.5em 0;
         }
 
@@ -69,6 +68,37 @@
 
         #navigationbar a:hover {
             color: #f00000;
+        }
+
+        #menubar {
+            width: 100%;
+            margin: 0.7em 0 0 0;
+            float: right;
+            color: #f0f0f0;
+            background:#000000;
+        	font-size: 80%;
+        	font-weight: bold;
+        }
+
+        #menubar .activesection {
+            color: #f00000;
+        }
+
+        #menubar ul {
+            list-style-type: none;
+        }
+
+        #menubar li {
+            float: right;
+            margin: 0 1em 0 1em;
+        }
+
+        #menubar a:hover {
+            color: #f00f0f;
+        }
+
+        #menubar a {
+            color: #ffffff;
         }
 
         #content a { 
@@ -148,7 +178,7 @@
     <div id="header" >
 
         <div id='site_logo'>
-        <a href="{% url "monitor_dashboard" %}">
+        <a href="{% url "dashboard_home" %}">
             <img src="{% static "img/des_logo.png" %}" width='40pt' height='40pt' alt="logo" />
         </div>
         <div id="site_title">
@@ -164,8 +194,12 @@
             </ul>
             {% endblock %}
         </div>
-
-    </div>
+        <div id="menubar">
+            <ul>
+            {% block menubar %}
+            {% endblock %}
+            </ul>
+        </div>
     </nav>
 
     {% block precontent %}{% endblock %}

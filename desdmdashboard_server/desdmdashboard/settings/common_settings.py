@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'desdmdashboard', 'templates'),
     os.path.join(BASE_DIR, 'monitor', 'templates'),
+    os.path.join(BASE_DIR, 'dashboard', 'templates'),
 )
 
 
