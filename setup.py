@@ -10,7 +10,8 @@ setup(name='desdmdashboard',
       author_email='michael.graber@fhnw.ch',
       packages=[
           'desdmdashboard_remote',
-          'desdmdashboard_remote.feeddb',
+          'desdmdashboard_remote.senddata',
+          'desdmdashboard_remote.receivedata',
           ],
 #     scripts=['bin/ReportingFW',]
      )
