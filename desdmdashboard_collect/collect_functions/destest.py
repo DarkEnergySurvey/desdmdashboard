@@ -11,7 +11,6 @@ from desdmdashboard_remote.senddata.functions import send_metric_value
 from desdmdashboard_collect.collect_utils.database import make_db_query
 
 
-#@Monitor('file_archive_info__file_size__archive_name')
 def file_archive_info__sum_filesize__archive_name():
     '''
     '''
@@ -32,8 +31,6 @@ def file_archive_info__sum_filesize__archive_name():
         metric_name = 'destest__file_archive_info__size__'+archive_name
 
         req = send_metric_value(metric_name, archive_size, value_type='int')
-
-        print req.error_status
         
     return
 
