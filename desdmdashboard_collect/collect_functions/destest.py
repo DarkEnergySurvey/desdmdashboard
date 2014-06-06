@@ -8,8 +8,7 @@ DESDMDASHBOARD DATA COLLECTION FUNCTIONS
 from coreutils import DesDbi
 
 from desdmdashboard_remote.senddata.decorators import Monitor
-
-from ..collect_utils.database import make_db_query
+from desdmdashboard_collect.collect_utils.database import make_db_query
 
 
 #@Monitor('file_archive_info__file_size__archive_name')
@@ -25,7 +24,18 @@ def file_archive_info__sum_filesize__archive_name():
 
     records = make_db_query(QUERY, section='db-destest')
 
-    return records
+    for record in records:
+
+        archive_name = record[0]
+        archive_size = record[1]
+
+        metric_name = 'destest__file_archive_info__size__'+archive_name
+
+        @Monitor()
+
+    print records
+
+    return
 
 
 if __name__ == '__main__':

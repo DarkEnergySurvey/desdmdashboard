@@ -58,8 +58,8 @@ class Monitor(object):
         self.request = Request()
         self.data = DATA_TEMPLATE
         self.data['name'] = metric_name
-        self.data['tags'] = kwargs.get('tags', '')
-        self.data['value_type_'] = kwargs.get('value_type_', '')
+        self.data['tags'] = kwargs.get('tags', u'')
+        self.data['value_type_'] = kwargs.get('value_type', u'')
 
     def __call__(self, func):
         decorator_self = self
