@@ -31,10 +31,10 @@ def file_archive_info__sum_filesize__archive_name():
 
         metric_name = 'destest__file_archive_info__size__'+archive_name
 
-        @Monitor()
+        req = send_metric_value(metric_name, archive_size)
 
-    print records
-
+        print req.error_status
+        
     return
 
 
