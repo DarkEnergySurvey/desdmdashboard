@@ -30,6 +30,7 @@ class Metric(models.Model):
     data = MetricDataManager()
 
     name = models.CharField(max_length=512)
+    slug = models.SlugField(max_length=512)
 
     owner = models.ForeignKey('auth.User', related_name='metrics')
 

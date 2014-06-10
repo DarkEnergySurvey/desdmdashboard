@@ -1,7 +1,12 @@
+
 from django import db 
+
 from django.utils.timezone import now
+from django.utils.text import slugify
+
 from django.contrib import contenttypes
 from django.contrib.auth.models import User
+
 
 from rest_framework import serializers
 
@@ -43,6 +48,7 @@ class MetricSerializer(serializers.ModelSerializer):
                     ' you have to provide a value type.') % attrs['name'])
             instance = self.opts.model.create(attrs['name'],
                     attrs['value_type'])
+            instance.slug = slugify(instance.name)
 
         instance.set_latest_measurements(
                 value=attrs['latest_value'],

@@ -42,7 +42,7 @@ class MetricAdmin(admin.ModelAdmin):
         # select inlines dynamically here : HOW?
     
     fields = (
-            ('name', 'owner'),
+            ('name', 'owner', 'slug', ),
             ('doc', ),
             ('latest_value', 'last_updated', 'latest_tags', 'has_error',
                 'error_message'),
@@ -52,6 +52,8 @@ class MetricAdmin(admin.ModelAdmin):
             ('alert_operator', 'alert_value', 'alert_triggered', ),
             ('timestamp_modified', 'timestamp_created', ),
             )
+
+    prepopulated_fields = {'slug': ('name', ), }
     
     search_fields = ('name', 'doc', 'latest_tags', )
 
