@@ -28,7 +28,7 @@ def file_archive_info__sum_filesize__archive_name():
         archive_name = record[0]
         archive_size = record[1]
 
-        metric_name = 'destest__file_archive_info__size__'+archive_name
+        metric_name = 'size '+archive_name
 
         req = send_metric_value(metric_name, archive_size, value_type='int')
         
