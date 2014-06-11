@@ -16,7 +16,7 @@ urlpatterns = patterns('monitor.views',
 
 urlpatterns += patterns('monitor.views.main',
     url(r'^(?P<owner>\w+)/*$', 'dashboard', {}, name='owner_dashboard',),
-    url(r'^(?P<owner>\w+)/(?P<name>[a-zA-Z0-9_&]+)/*$', 'metric_detail', {},
+    url(r'^(?P<owner>\w+)/(?P<nameslug>[\w-]+)/*$', 'metric_detail', {},
         name='metric_detail',),
     )
 

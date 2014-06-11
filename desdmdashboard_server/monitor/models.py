@@ -99,7 +99,7 @@ class Metric(models.Model):
 
     def get_absolute_url(self):
         return reverse('monitor.views.main.metric_detail',
-                kwargs={'name': self.name, 'owner': self.owner.username})
+                kwargs={'nameslug': self.slug, 'owner': self.owner.username})
 
     @property
     def has_no_value_warning(self):

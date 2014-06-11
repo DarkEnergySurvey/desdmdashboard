@@ -56,12 +56,12 @@ def dashboard(request, owner=None):
             { 'metrices': metrices, })
 
 
-def metric_detail(request, owner=None, name=None):
+def metric_detail(request, owner=None, nameslug=None):
 
-    ms = name.rsplit('&')
+    ms = nameslug.rsplit('&')
 
     if len(ms) == 1:
-        metric = get_object_or_404(Metric, name=name, owner__username=owner)
+        metric = get_object_or_404(Metric, slug=nameslug, owner__username=owner)
         try:
             imdata = plot_svgbuf_for_metric(metric)
         except Exception, e:
@@ -74,7 +74,7 @@ def metric_detail(request, owner=None, name=None):
         dfs = {}
         unit = None
         for i, m in enumerate(ms):
-            metric = get_object_or_404(Metric, name=m, owner__username=owner)
+            metric = get_object_or_404(Metric, nameslug=m, owner__username=owner)
             if metric.get_unit_display() != None:
                 unit = metric.get_unit_display()
             mdata = Metric.data.get_dataframe_queryset(metric.name, metric.owner)
