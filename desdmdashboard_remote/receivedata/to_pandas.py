@@ -4,7 +4,7 @@
 import json
 import pandas
 
-from ..http_requests import Request, API_URL 
+from ..http_requests import Request, GET_URL
 
 
 def get_metric_dataframe(name, owner=None, fields=('time', 'value'),
@@ -16,9 +16,9 @@ def get_metric_dataframe(name, owner=None, fields=('time', 'value'),
     # we have to do that to get the pk of the metric
     meta_request = Request()
     if owner is None:
-        meta_request.GET(url=API_URL, params={'name': name, 'format': 'json', })
+        meta_request.GET(url=GET_URL, params={'name': name, 'format': 'json', })
     else:
-        meta_request.GET(url=API_URL, params={'name': name, 'format': 'json',
+        meta_request.GET(url=GET_URL, params={'name': name, 'format': 'json',
             'owner': owner })
     meta_response = json.loads(meta_request.response.read())
 
