@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# make sure we source the 
-source home/michael/eups/desdm_eups_setup.sh 
+# we need to source the eups setup script first
+source /eeups/eups/desdm_eups_setup.sh
 
 setup desdmdashboard trunk+0
 
