@@ -11,7 +11,7 @@ called in main().
 :: Author :: michael.graber@fhnw.ch
 '''
 
-from ..collect_functions.destest import file_archive_info__sum_filesize__archive_name
+from collect_functions.destest import file_archive_info__sum_filesize__archive_name
 
 
 def main():

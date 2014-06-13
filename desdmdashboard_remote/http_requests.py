@@ -25,7 +25,7 @@ try:
     PASSWORD = creds['passwd']
     API_URL = creds['api_url']
 except:
-    USERNAME = 'michael'
+    USERNAME = 'mgraber'
     PASSWORD = 'dummypwd'
     API_URL = 'http://127.0.0.1:8000/monitor/api/'
 
