@@ -133,6 +133,8 @@ class Metric(models.Model):
             obj.value_type = ContentType.objects.get(model='metricdatachar')
         elif value_type.lower() == 'datetime':
             obj.value_type = ContentType.objects.get(model='metricdatadatetime')
+        elif value_type.lower() == 'json':
+            obj.value_type = ContentType.objects.get(model='metricdatajson')
         else:
             raise ValueError(("Cannot create Metric object with value_type %s . "
                 "It has to from ('int', 'char', 'float', 'datetime')") %
