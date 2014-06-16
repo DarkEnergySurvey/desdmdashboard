@@ -38,11 +38,10 @@ def get_section_modules():
 
 def dashboard_home(request):
     section_modules = get_section_modules()
-
-    home_module = import_module( 'dashboard.views.sections.home')
+    home_module = import_module('dashboard.views.sections.home')
     outputs = get_module_function_outputs(home_module)
     context = {
-            'sections': section_modules.keys(),
+            'sections': section_names,
             'outputs' : outputs,
             }
     return render_to_response('dashboard.html', context)
@@ -50,13 +49,16 @@ def dashboard_home(request):
 
 def dashboard_section(request, section=None):
     section_modules = get_section_modules()
+    outputs = get_module_function_outputs(section_modules[section])
     #section = get_object_or_404(models.DashboardSection, slug=section)
+    section_names = {s: s.replace('_', ' ').title() for s in section_modules.keys() }
     context = {
-            'sections': section_modules.keys(),
+            'sections': section_names,
+            'section_name': section.replace('_', ' ').title(),
             'section': section,
+            'outputs': outputs,
             }
     return render_to_response('dashboard.html', context)
-
 
 
 def get_module_function_outputs(module):
@@ -67,7 +69,7 @@ def get_module_function_outputs(module):
         if f.__module__ == module.__name__:
             try:
                 outputstring = str(f())
-                outputs[' '.join(name.rsplit('_'))] = outputstring 
+                outputs[' '.join(name.rsplit('_')).title()] = outputstring 
             except Exception, e:
-                outputs[' '.join(name.rsplit('_'))] = e
+                outputs[' '.join(name.rsplit('_')).title()] = e
     return outputs
