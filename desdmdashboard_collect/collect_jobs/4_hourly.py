@@ -7,16 +7,18 @@ timestamped data in the DESDMDASHBOARD.
 All functions that are supposed to be executed when this file is run have to be
 called in main().
 
-SETTING UP A CRONJOB ::
-    You can use the script collect_cron_job.sh to run a cronjob in the correct
-    eups setup:
+$ crontab -e
+07 0,4,8,12,16,20 * * * /desdmdashboard_collect/desdmdashboard_collect/collect_cron_job /desdmdashboard_collect/desdmdashboard_collect/collect_jobs/4_hourly.py
 
-    -   $crontab -e
-    -   edit the file that is being opened with 
+general crontab syntax:
 
-
-
-
+ +---------------- minute (0 - 59)
+ |  +------------- hour (0 - 23)
+ |  |  +---------- day of month (1 - 31)
+ |  |  |  +------- month (1 - 12)
+ |  |  |  |  +---- day of week (0 - 6) (Sunday=0 or 7)
+ |  |  |  |  |
+ *  *  *  *  *  command to be executed
 
 :: Author :: michael.graber@fhnw.ch
 '''
