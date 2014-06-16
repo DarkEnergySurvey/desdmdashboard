@@ -7,6 +7,16 @@ timestamped data in the DESDMDASHBOARD.
 All functions that are supposed to be executed when this file is run have to be
 called in main().
 
+SETTING UP A CRONJOB ::
+    You can use the script collect_cron_job.sh to run a cronjob in the correct
+    eups setup:
+
+    -   $crontab -e
+    -   edit the file that is being opened with 
+
+
+
+
 
 :: Author :: michael.graber@fhnw.ch
 '''
