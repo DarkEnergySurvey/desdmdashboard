@@ -24,10 +24,7 @@ class ListCreateMetricView(ListCreateAPIView):
         obj.owner = self.request.user
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
+        """ """
         name = self.request.QUERY_PARAMS.get('name', None)
         owner = self.request.QUERY_PARAMS.get('owner', None)
         if owner is None:
@@ -60,10 +57,7 @@ class ListMetricDataView(ListAPIView):
                                 'serializer.'))
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
-        """
+        """ """
         metric_pk = self.request.QUERY_PARAMS.get('metric_pk', None)
         value_type = self.request.QUERY_PARAMS.get('value_type', None)
         if not value_type and metric_pk:
