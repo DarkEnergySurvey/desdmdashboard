@@ -5,11 +5,11 @@ DESDMDASHBOARD DATA COLLECTION FUNCTIONS
 :: Author :: michael.graber@fhnw.ch
 '''
 
-from coreutils import DesDbi
-
 from desdmdashboard_remote.senddata.functions import send_metric_value 
 from desdmdashboard_collect.collect_utils.database import make_db_query
 
+from desdmdashboard_collect.collect_utils import log 
+logger = log.get_logger('desdmdashboard_collect')
 
 def file_archive_info__sum_filesize__archive_name():
     '''
@@ -21,7 +21,11 @@ def file_archive_info__sum_filesize__archive_name():
         GROUP BY archive_name
         '''
 
-    records = make_db_query(QUERY, section='db-destest')
+    logger.debug('executing db query')
+    try:
+        records = make_db_query(QUERY, section='db-destest')
+    except:
+        logger.error('db query not successful')
 
     for record in records:
 
@@ -30,7 +34,10 @@ def file_archive_info__sum_filesize__archive_name():
 
         metric_name = 'size '+archive_name
 
+        logger.debug('sending value for metric %s to db' % metric_name)
         req = send_metric_value(metric_name, archive_size, value_type='int')
+        if req.error_status[0]:
+            logger.error(req.error_status[1])
         
     return
 

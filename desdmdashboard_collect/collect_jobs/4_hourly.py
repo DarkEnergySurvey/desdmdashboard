@@ -23,11 +23,18 @@ general crontab syntax:
 :: Author :: michael.graber@fhnw.ch
 '''
 
+from desdmdashboard_collect.collect_utils import log 
+logger = log.get_logger('desdmdashboard_collect')
+
+
 from collect_functions.destest import file_archive_info__sum_filesize__archive_name
 
 
 def main():
     file_archive_info__sum_filesize__archive_name()
+    
 
 if __name__ == '__main__':
+    logger.info('Start 4 hourly data collection script.')
     main()
+    logger.info('4 hourly data collection script finished.')
