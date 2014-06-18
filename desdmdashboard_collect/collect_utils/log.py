@@ -1,20 +1,34 @@
 '''
 '''
 
+import os
 import logging
+
+loggers = {}
 
 
 def get_logger(name):
+    global loggers
 
-    logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(name)
+    if name in loggers:
+        return loggers.get(name)
 
-    handler = logging.FileHandler('desdmdashboard_collect.log')
-    handler.setLevel(logging.DEBUG)
+    else:
+	logging.basicConfig(level=logging.DEBUG)
+	logger = logging.getLogger(name)
 
-    formatter = logging.Formatter("[ %(asctime)s ] [ %(levelname)s ] [ %(module)s ] : %(message)s",
-                              "%Y-%m-%d %H:%M:%S")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+        logfile = 'desdmdashboard_collect.log'
+	desdash_logfile_path = os.path.normpath('/desdmdashboard_collect/log/')
+        if os.path.exists(desdash_logfile_path):
+	    logfile = os.path.join(desdash_logfile_path, logfile)
+	handler = logging.FileHandler(logfile)
+	handler.setLevel(logging.DEBUG)
 
-    return logger
+	formatter = logging.Formatter("[ %(asctime)s ] [ %(levelname)s ] [ %(module)s ] : %(message)s",
+	    		      "%Y-%m-%d %H:%M:%S")
+	handler.setFormatter(formatter)
+	logger.addHandler(handler)
+
+        loggers[name] = logger
+
+	return logger

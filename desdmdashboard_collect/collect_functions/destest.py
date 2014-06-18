@@ -6,14 +6,15 @@ DESDMDASHBOARD DATA COLLECTION FUNCTIONS
 '''
 
 from desdmdashboard_remote.senddata.functions import send_metric_value 
-from desdmdashboard_collect.collect_utils.database import make_db_query
+from collect_utils.database import make_db_query
 
-from desdmdashboard_collect.collect_utils import log 
+from collect_utils import log 
 logger = log.get_logger('desdmdashboard_collect')
 
 def file_archive_info__sum_filesize__archive_name():
     '''
     '''
+    logger.info('file_archive_info__sum_filesize__archive_name entered.')
 
     QUERY = '''
         SELECT archive_name, SUM(filesize)
@@ -24,8 +25,10 @@ def file_archive_info__sum_filesize__archive_name():
     logger.info('executing db query')
     try:
         records = make_db_query(QUERY, section='db-destest')
+        logger.info('db query successfully executed.')
     except:
-        logger.error('db query not successfull')
+        logger.error('db query not successfull.')
+	return
 
     for record in records:
 

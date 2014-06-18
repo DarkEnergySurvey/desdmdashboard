@@ -23,7 +23,7 @@ general crontab syntax:
 :: Author :: michael.graber@fhnw.ch
 '''
 
-from desdmdashboard_collect.collect_utils import log 
+from collect_utils import log 
 logger = log.get_logger('desdmdashboard_collect')
 
 
