@@ -12,8 +12,8 @@ setup(name='desdmdashboard',
           'desdmdashboard_remote',
           'desdmdashboard_remote.senddata',
           'desdmdashboard_remote.receivedata',
-          'desdmdashboard_collect',
-          'desdmdashboard_collect.collect_utils',
+#         'desdmdashboard_collect',
+#         'desdmdashboard_collect.collect_utils',
           ],
 #     scripts=['bin/ReportingFW',]
      )

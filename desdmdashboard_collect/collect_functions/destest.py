@@ -21,11 +21,11 @@ def file_archive_info__sum_filesize__archive_name():
         GROUP BY archive_name
         '''
 
-    logger.debug('executing db query')
+    logger.info('executing db query')
     try:
         records = make_db_query(QUERY, section='db-destest')
     except:
-        logger.debug('db query not successfull')
+        logger.error('db query not successfull')
 
     for record in records:
 
@@ -34,10 +34,10 @@ def file_archive_info__sum_filesize__archive_name():
 
         metric_name = 'size '+archive_name
 
-        logger.debug('sending value for metric %s to db' % metric_name)
+        logger.info('sending value for metric %s to db' % metric_name)
         req = send_metric_value(metric_name, archive_size, value_type='int')
         if req.error_status[0]:
-            logger.debug(req.error_status[1])
+            logger.error(req.error_status[1])
         
     return
 
