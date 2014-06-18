@@ -20,5 +20,7 @@ def make_db_query(QUERY,
 
     if not records:
         logger.warning('empty record set returned: %s' % records)
+        logger.debug('.desservices.ini section %s' % section)
+        logger.debug('QUERY : %s' % QUERY )
 
     return records
