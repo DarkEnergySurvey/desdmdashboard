@@ -25,7 +25,7 @@ def file_archive_info__sum_filesize__archive_name():
     try:
         records = make_db_query(QUERY, section='db-destest')
     except:
-        logger.error('db query not successful')
+        logger.debug('db query not successfull')
 
     for record in records:
 
@@ -37,7 +37,7 @@ def file_archive_info__sum_filesize__archive_name():
         logger.debug('sending value for metric %s to db' % metric_name)
         req = send_metric_value(metric_name, archive_size, value_type='int')
         if req.error_status[0]:
-            logger.error(req.error_status[1])
+            logger.debug(req.error_status[1])
         
     return
 
