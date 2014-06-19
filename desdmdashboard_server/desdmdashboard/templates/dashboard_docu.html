@@ -2,10 +2,18 @@
 
 {% block navigationbar %}
 <ul>
-    <a href='{% url "docu" %}'><li>docu</li></a>
+    <a href='{% url "docu" %}'><li class='activesection'>docu</li></a>
     <a href='{% url "admin:index" %}'><li>admin</li></a>
     <a href='{% url "api" %}'><li>metric api</li></a>
     <a href='{% url "monitor_dashboard" %}'><li>metrics</li></a>
-    <a href='{% url "dashboard_home" %}'><li class='activesection'>dashboard</li></a>
+    <a href='{% url "dashboard_home" %}'><li>dashboard</li></a>
 </ul>
+{% endblock %}
+
+{% block content %}
+<div id='docu'>
+
+{{ docu_content|safe }}
+
+</div>
 {% endblock %}

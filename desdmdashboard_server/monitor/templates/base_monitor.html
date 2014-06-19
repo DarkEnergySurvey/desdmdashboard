@@ -2,6 +2,7 @@
 
 {% block navigationbar %}
 <ul>
+    <a href='{% url "docu" %}'><li>docu</li></a>
     <a href='{% url "admin:index" %}'><li>admin</li></a>
     <a href='{% url "api" %}'><li>metric api</li></a>
     <a href='{% url "monitor_dashboard" %}' class='activesection'><li>metrics</li></a>
