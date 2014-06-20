@@ -211,6 +211,10 @@ class MetricDataBase(models.Model):
     tags = models.CharField(max_length=256, default='', blank=True,
             help_text='Comma separated tags.')
 
+    # FIXME
+#   timestamp_created = models.DateTimeField(auto_now_add=True)
+#   timestamp_modified = models.DateTimeField(auto_now=True)
+
     class Meta:
         abstract = True
 
