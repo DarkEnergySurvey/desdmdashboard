@@ -10,51 +10,54 @@ def docu(request):
     '''
     '''
     
-    help_html = publish_parts(HELP_STRING, writer_name='html', 
+    docu_html = publish_parts(DOCU_STRING, writer_name='html', 
             settings_overrides={'doctitle_xform':False,
             'initial_header_level': 1,} )['html_body']
-    context = { 'docu_content': help_html }
+    context = { 'docu_content': docu_html }
 
     return render_to_response('dashboard_docu.html', context) 
 
 
-HELP_STRING = '''
+DOCU_STRING = '''
 
 ===============================================================================
 DESDMDashboard Documentation - v0.0.1
 ===============================================================================
 
-DESDMDashboard is a tool for monitoring (timeseries) data. It provides
+DESDMDashboard is a tool for (timeseries) data monitoring. It provides
 functionality to easily store snapshot measurements in a database, to display
 them over time and to detect alert states.
 
 DESDMDashboard consists of three components:
-    -  desdmdashboard_server
-    -  desdmdashboard_remote
-    -  desdmdashboard_collect
+    -  `DESDMDashboard Server`_
+    -  `DESDMDashboard Remote`_
+    -  `DESDMDashboard Collect`_
 
 They correspond with three directories in the desdmdashboard svn repository.
 
-When installing the desdmdashboard eups package you install only the
+When installing the **desdmdashboard eups package** you install only the
 desdmdasboard_remote part and its dependencies (ipython, pandas, CoreUtils). It
-allows you to send and receive data from the database (see below).
+allows you to send and receive data to and from the database (see below).
 
+In the first few sections of this documentation we are going to have a look at
+the three components of the DESDMDashboard to clarify the concepts and terms
+used. Thereafter we show in the Cookbook_ how to acquire new data, how to
+display it on the dashboard etc.
 
 -------------------------------------------------------------------------------
 DESDMDashboard Server
 -------------------------------------------------------------------------------
 
 The desdmdashboard_server svn directory contains all the code to run the django
-web application on a server. The server currently used is
+web application on a server. The server machine currently used is
 **desdash.cosmology.illinois.edu**. An eups metapackage called
 **DASHBOARDSERVER** contains all dependencies of the desdmdashboard_server
 code.
 
 Datamodel
 -------------------------------------------------------------------------------
-
 The underlaying datamodel for storing data consists of a table for metric meta
-information called ``Metric`` and 5 tables for the storage metric data in
+information called ``Metric`` and 5 tables for the storage of metric data in
 native database formats: ``MetricDataInt``, ``MetricDataFloat``, ``MetricDataChar``,
 ``MetricDataDatetime``, ``MetricDataJSON``. Each ``Metric`` object needs to
 declare a ``value_type`` defining in which data table associated data is going
@@ -88,6 +91,7 @@ this process: ipython (notebook), pandas, matplotlib, ..
     -   sending data to the database
 
 
+-------------------------------------------------------------------------------
 DESDMDashboard Collect
 -------------------------------------------------------------------------------
     -   data collection in principal
@@ -96,6 +100,7 @@ DESDMDashboard Collect
     -   setting up new collection jobs 
 
 
+-------------------------------------------------------------------------------
 Cookbook
 -------------------------------------------------------------------------------
 
