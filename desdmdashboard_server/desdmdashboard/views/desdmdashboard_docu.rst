@@ -14,9 +14,9 @@ DESDMDashboard consists of three components:
 They correspond with three directories in the desdmdashboard svn repository.
 
 When installing the **desdmdashboard eups package** you install only the
-desdmdasboard_remote part and its dependencies (ipython, pandas, CoreUtils). It
-allows you to send and receive data to and from the database (see below) from
-any client machine via http requests.
+`DESDMDashboard Remote`_ component and its dependencies (ipython, pandas,
+CoreUtils). It allows you to send and receive data to and from the database
+(see below) from any client machine via http requests.
 
 In the first few sections of this documentation we are going to have a look at
 the three components of the DESDMDashboard to clarify the concepts and terms
@@ -33,9 +33,11 @@ framework.
 The web application provides the possibility to put on views of summary data
 displays that consist of multiple metrics in the **dashboard** section. These
 summary data displays have to implemented individually as part of the web app
-view code. However, tools that allow you to achieve that with only a few lines
-of code are at hand. The **metric** section shows out of the box information
-for each ``Metric`` measured.
+view code. Each subsection (black menubar) is dynamically created by an
+individual python file. However, tools that allow you to achieve that with only
+a few lines of code are at hand. The **metric** section shows out of the box
+information for each ``Metric`` measured, most importantly maybe about its
+alert status.
 
 Datamodel
 -------------------------------------------------------------------------------
@@ -57,19 +59,35 @@ Furthermore the ``Metric`` model allows you to set
     -   ``alert_operator`` : the operator used to compare the ``alert_value``
     -   ``doc`` : some documentation text
 
-``MetricDataXYZ``` models 
+A metric additionally has an ``owner``. It typically gets set automatically
+through authentication but can be changed in the `Admin Interface`_.
+
+
+``MetricDataXYZ``` models have the following  attributes:
+
+    -   ``value`` : the value measured in a native database format
+    -   ``time`` : the timepoint of the measurement (is set automatically)
+    -   ``has_error`` : measuring the metric led to an error
+    -   ``error_message`` : can store the error_message originating from metric
+        data measurement
+    -   ``tags`` : you can label individual measurements with comma separated
+        tags
 
 
 REST web api
 -------------------------------------------------------------------------------
-The web application implements a REST web api.
+The web application implements a REST web api that allows sending and receiving
+data to and from the database. A browser web interface for the api can be found
+in the **metric api** section.
 
+The utilities in the `DESDMDashboard Remote`_ component make use of this api.
 
 
 Admin Interface
 -------------------------------------------------------------------------------
-Django provides an almost ready to use web interface to the database. It can be
-customized in ``admin.py`` files for every django webapp.
+The DESDMDashboard web application comes with a customized django admin
+interface which provides database access. It can be found in the **admin**
+section.
 
 
 Server Setup
@@ -81,12 +99,7 @@ currently used is **desdash.cosmology.illinois.edu**.
 
 Server Configuration
 ''''''''''''''''''''
-
-
-..  sourcecode:: bash
-
-    $ blabla
-
+Resposible persons for the server setup and administration are Greg Daues and Michael Graber.
 
 
 
@@ -95,17 +108,43 @@ DESDMDashboard Remote
 -------------------------------------------------------------------------------
 When installing the **eups package desdmdashboard** (trunk+0) you get tools to
 send and receive data via the web api of the desdmdashboard server application.
-This provides you with the opportunity to send data from arbitraty client
+This provides you with the capability to send data from an arbitraty client
 machine but also to inspect data stored on the server for investigation
-purposes on any machine. The eups package contains third party tools to enable
-this process: ipython (notebook), pandas, matplotlib, ..
+purposes. The eups package contains third party tools to enable this process:
+ipython (notebook), pandas, matplotlib, ..
 
+While accessing the views on the DESDMDashboard website is open for everybody,
+sending and receiving data through the web api requires authentication. The
+package makes use of CoreUtils to automatically access your login credentials
+for DESDMDashboard access. Therefore you need on your client machine a
+``.desservices.ini`` file in your home directory. Add a section
+``desdmdashboard`` as follows:
+
+.. sourcecode:: ini
+    
+    [desdmdashboard]
+    user = dito 
+    passwd = dito
+    api_url = http://desdash.cosmology.illinois.edu/dev/desdmdashboard/monitor/api
+
+Please be aware that the ``api_url`` is correct for the currently developed
+``/dev/`` version of DESDMDashboard only. As soon as we'll release a first
+stable version of the dashboard, the ``api_url`` will need to be changed!
+
+
+Sending Data
+-------------------------------------------------------------------------------
+
+.. sourcecode:: python
+
+    from desdmdashboard_remote.senddata.functions import send_metric_to_database
+
+    send_metric_to_database('destest', 99)
+Receiving Data
+-------------------------------------------------------------------------------
     -   sending and receiving data
     -   installing the desdmdashboard eups package
     -   starting an ipython notenbook
-    -   receiving data from the database
-    -   sending data to the database
-
 
 -------------------------------------------------------------------------------
 DESDMDashboard Collect
@@ -114,6 +153,7 @@ DESDMDashboard Collect
     -   cron jobs on desdash
     -   the cronjob log
     -   setting up new collection jobs 
+
 
 
 -------------------------------------------------------------------------------
@@ -126,6 +166,13 @@ Cookbook
 
     send_metric_to_database('destest', 99)
 
+
 blablabla
+
+
+
+..  sourcecode:: bash
+
+    $ blabla
 
 

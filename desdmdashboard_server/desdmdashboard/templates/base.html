@@ -109,39 +109,29 @@
             line-height: 1.2;
         }
 
-        #docu {
-            border: dashed black 1pt;
-            padding: 0 2em;
-        }
-
         #content a { 
         	text-decoration: none;
             color: #4c83d1;
         }
 
-        #content h1 {
-            font-size: 180%;
-            color: #700000;
-            padding: 1em 0 0 0;
-        }
-        #content h2 {
-            font-size: 150%;
-            color: #700000;
-            padding: 1em 0 0 0;
-        }
-        #content h3 {
-            font-size: 120%;
-            color: #700000;
-            padding: 1em 0 0 0;
-        }
-        #content h4 {
-            font-size: 100%;
+        #content h1, h2, h3, h4, h5 {
             color: #700000;
             padding: 1em 0 0 0;
         }
 
+        #content h1 { font-size: 180%; }
+        #content h2 { font-size: 150%; }
+        #content h3 { font-size: 120%; }
+        #content h4 { font-size: 100%; }
+
         #content strong { 
             font-weight: bold;
+        }
+
+        #docu {
+            border: dashed black 1pt;
+            padding: 0 3em 3em 3em;
+            text-align: justify;
         }
 
         .error {
@@ -201,7 +191,7 @@
         }
 
         /* PYGMENTS tango syntax highlighting */
-        .highlight { padding: 1em 2em; background-color: #f0f0f0; }
+        .highlight { padding: 0.5em 2em; background-color: #f0f0f0; }
         .hll { background-color: #ffffcc }
         .c { color: #8f5902; font-style: italic } /* Comment */
         .err { color: #a40000; border: 1px solid #ef2929 } /* Error */
