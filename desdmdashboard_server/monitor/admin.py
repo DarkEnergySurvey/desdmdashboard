@@ -85,6 +85,9 @@ class MetricDataIntAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
+    readonly_fields = ('timestamp_modified', 'timestamp_created', )
+    
+
 
 admin.site.register(MetricDataInt, MetricDataIntAdmin)
 
@@ -102,6 +105,8 @@ class MetricDataFloatAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
+    readonly_fields = ('timestamp_modified', 'timestamp_created', )
+
 admin.site.register(MetricDataFloat, MetricDataFloatAdmin)
 
 
@@ -117,6 +122,8 @@ class MetricDataCharAdmin(admin.ModelAdmin):
     list_display = ('metric', 'value', 'time', 'has_error', )
 
     list_filter = ('has_error', 'metric', )
+
+    readonly_fields = ('timestamp_modified', 'timestamp_created', )
 
 admin.site.register(MetricDataChar, MetricDataCharAdmin)
 
@@ -134,6 +141,8 @@ class MetricDataDatetimeAdmin(admin.ModelAdmin):
 
     list_filter = ('has_error', 'metric', )
 
+    readonly_fields = ('timestamp_modified', 'timestamp_created', )
+
 admin.site.register(MetricDataDatetime, MetricDataDatetimeAdmin)
 
 
@@ -149,5 +158,7 @@ class MetricDataJSONAdmin(admin.ModelAdmin):
     list_display = ('metric', 'value', 'time', 'has_error', )
 
     list_filter = ('has_error', 'metric', )
+
+    readonly_fields = ('timestamp_modified', 'timestamp_created', )
 
 admin.site.register(MetricDataJSON, MetricDataJSONAdmin)

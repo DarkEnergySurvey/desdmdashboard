@@ -212,8 +212,8 @@ class MetricDataBase(models.Model):
             help_text='Comma separated tags.')
 
     # FIXME
-#   timestamp_created = models.DateTimeField(auto_now_add=True)
-#   timestamp_modified = models.DateTimeField(auto_now=True)
+    timestamp_created = models.DateTimeField(auto_now_add=True)
+    timestamp_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

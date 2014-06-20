@@ -133,8 +133,10 @@ stable version of the dashboard, the ``api_url`` will need to be changed!
 
 Sending Data
 -------------------------------------------------------------------------------
-There are two different approaches to sending data to the DESDMDashboard
-database:
+If you are the owner of a given metric and would like to append data to its
+data table or if you would like to create a new metric, you can do so by the
+use of the ``senddata`` submodule. There are two different approaches to
+sending data to the DESDMDashboard database:
 
 First, you can use the straightforward function ``send_metric_value()``:
 
@@ -171,9 +173,9 @@ Second, you can use a python function decoration:
         return value
 
 Now, whenever ``this_function_measures_something()`` is executed, ``value`` is
-automatically written into the ``DESDMDashboard`` database. You could use this
-for example to declare a function in python file that is supposed to be
-executed as a script and would then have to only add the function name into the
+automatically written into the DESDMDashboard database. You could use this
+for example to declare a function in a python file that is supposed to be
+executed as a script. You would then have to only add the function name into the
 ``if __name__ == '__main__':`` part, like:
 
 .. sourcecode:: python
@@ -187,11 +189,47 @@ A ``Profile()`` decorator is in development, but not fully ripe yet. It will
 allow to decorate an arbitrary function. Function execution will then be
 automatically profiled and the profiling information will be sent to the db.
 
-Receiving Data
+The decorators take the same keyword arguments like the ``send_metric_value()``
+function.
+
+Receiving Data - Local Data Exploration
 -------------------------------------------------------------------------------
-    -   sending and receiving data
-    -   installing the desdmdashboard eups package
-    -   starting an ipython notenbook
+Receiving data is intended to enable playing around on a local machine with the
+datasets acquired. This can most powerfully be done by the use of third party
+packages like pandas, matplotlib etc. Therefore these packages are dependencies
+of the desdmdashboard eups package. Also, the functions provided return pandas
+DataFrames right away:
+
+.. sourcecode:: python
+
+    from desdmdashboard_remote.receivedata.to_pandas import get_metric_dataframe, get_multimetric_dataframe 
+
+    df1 = get_metric_dataframe('destest')
+
+    df2 = get_multimetric_dataframe(
+            (('metricA', 'owner_username'),
+            ('metricB', 'owner_username'),
+            ('metricC', 'owner_username'),),
+            resample='D',
+            )
+
+
+Receiving data requires authentication as well, however you can read data from
+arbitrary owners.
+
+The desdmdashboard eups package
+-------------------------------------------------------------------------------
+Currently there is no tagged eups desdmdashboard package available yet, but
+there is trunk package ready for use. It can be installed through eups using 
+
+.. sourcecode:: bash
+
+   -bash-$ eups distrib install desdmdashboard trunk+0
+
+
+
+Using the IPython notenbook
+-------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 DESDMDashboard Collect
