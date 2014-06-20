@@ -60,7 +60,7 @@ Furthermore the ``Metric`` model allows you to set
     -   ``doc`` : some documentation text
 
 A metric additionally has an ``owner``. It typically gets set automatically
-through authentication but can be changed in the `Admin Interface`_.
+through authentication but can be changed in the `Admin Interface`_, like the attributes mentioned above.
 
 
 ``MetricDataXYZ``` models have the following  attributes:
@@ -131,15 +131,62 @@ Please be aware that the ``api_url`` is correct for the currently developed
 ``/dev/`` version of DESDMDashboard only. As soon as we'll release a first
 stable version of the dashboard, the ``api_url`` will need to be changed!
 
-
 Sending Data
 -------------------------------------------------------------------------------
+There are two different approaches to sending data to the DESDMDashboard
+database:
+
+First, you can use the straightforward function ``send_metric_value()``:
 
 .. sourcecode:: python
 
-    from desdmdashboard_remote.senddata.functions import send_metric_to_database
+    from desdmdashboard_remote.senddata.functions import send_metric_value
 
-    send_metric_to_database('destest', 99)
+    send_metric_value('destest', 99)
+
+Executing this code will send ``99`` to a metric called ``destest`` and write
+the value in the corresponding ``MetricData`` table. In case said metric does
+not exist yet **you have to declare the** ``value_type`` keyword argument:
+``value_type`` can be ``int``, ``float``, ``char``, ``datetime`` or ``json``.
+In the case of ``json`` the value argument has to be a valid json string, in
+the case of ``datetime`` the api expects an isoformat datetime string, ie a
+value of the form ``'YYYY-MM-DDTHH:mm:ss'``. Don't miss the ``T`` between the
+date and the time ..
+
+Furthermore, ``send_metric_value()`` accepts a number of keyword arguments: 
+``tags``, ``has_error``, ``error_message``, ie basically all the attributes
+that can be stored with an individual ``MetricData`` value. Thereby you get the
+opportunity to partly relay data acquisition failure information.
+
+Second, you can use a python function decoration:
+
+.. sourcecode:: python
+
+    from desdmdashboard_remote.senddata.decoraters import Monitor 
+
+    @Monitor('destest')
+    def this_function_measures_something():
+        # your data gathering routine
+        value = do_something()
+        return value
+
+Now, whenever ``this_function_measures_something()`` is executed, ``value`` is
+automatically written into the ``DESDMDashboard`` database. You could use this
+for example to declare a function in python file that is supposed to be
+executed as a script and would then have to only add the function name into the
+``if __name__ == '__main__':`` part, like:
+
+.. sourcecode:: python
+
+   # the above
+
+   if __name__ == '__main__':
+       this_function_measures_something()
+
+A ``Profile()`` decorator is in development, but not fully ripe yet. It will
+allow to decorate an arbitrary function. Function execution will then be
+automatically profiled and the profiling information will be sent to the db.
+
 Receiving Data
 -------------------------------------------------------------------------------
     -   sending and receiving data
