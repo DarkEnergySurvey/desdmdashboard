@@ -13,12 +13,12 @@
         {% else %}
         <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
         {% endif %}</td></tr>
-        <tr><th>Warning if not value within seconds:</th> <td>{{ metric.warning_if_no_value_after_seconds}}</td></tr>
-        <tr><th>Latest value:</th><td>{{ metric.get_last_datapoint_from_table.value }}</td></tr>
+        <tr><th>Value Type:</th><td>{{ metric.value_type }}</td></tr>
         <tr><th>Unit:</th><td>{{ metric.get_unit_display }}</td></tr>
+        <tr><th>Latest value:</th><td>{{ metric.get_last_datapoint_from_table.value }}</td></tr>
         <tr><th>Latest tags:</th><td>{{ metric.get_last_datapoint_from_table.tags }}</td></tr>
         <tr><th>Last measured:</th><td>{{ metric.get_last_datapoint_from_table.time }}</td></tr>
-        <tr><th>Value Type:</th><td>{{ metric.value_type }}</td></tr>
+        <tr><th>Warning if not value within seconds:</th> <td>{{ metric.warning_if_no_value_after_seconds}}</td></tr>
         <tr><th>Alert Operator</th><td>{{ metric.get_alert_operator_display }}</td></tr>
         <tr><th>Alert Value:</th><td>{{ metric.alert_value }}</td></tr>
         <tr><th>Trouble Messages:</th><td class='trouble_message'>{% for tr in metric.get_trouble_statements %}{{ tr }}<br>{% endfor %}</td></tr>
