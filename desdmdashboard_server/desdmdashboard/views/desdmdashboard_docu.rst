@@ -30,6 +30,8 @@ The central unit of the DESDMDashboard is its web application. It is
 implemented using the `django <http://www.djangoproject.com>`_ python web
 framework.
 
+The DESDMDashboard website
+-------------------------------------------------------------------------------
 The web application provides the possibility to put on views of summary data
 displays that consist of multiple metrics in the **dashboard** section. These
 summary data displays have to implemented individually as part of the web app
@@ -39,9 +41,25 @@ a few lines of code are at hand. The **metric** section shows out of the box
 information for each ``Metric`` measured, most importantly maybe about its
 alert status.
 
-Datamodel
+REST web api
+```````````````````````````````````````````````````````````````````````````````
+The web application implements a REST web api that allows sending and receiving
+data to and from the database. A browser web interface for the api can be found
+in the **metric api** section.
+
+The utilities in the `DESDMDashboard Remote`_ component make use of this api.
+
+
+Admin Interface
+```````````````````````````````````````````````````````````````````````````````
+The DESDMDashboard web application comes with a customized django admin
+interface which provides database access. It can be found in the **admin**
+section.
+
+
+Data model
 -------------------------------------------------------------------------------
-The underlaying datamodel for storing data consists of a table for metric meta
+The underlaying data model for storing data consists of a table for metric meta
 information called ``Metric`` and 5 tables for the storage of metric data in
 native database formats: ``MetricDataInt``, ``MetricDataFloat``, ``MetricDataChar``,
 ``MetricDataDatetime``, ``MetricDataJSON``. Each ``Metric`` object needs to
@@ -73,23 +91,6 @@ through authentication but can be changed in the `Admin Interface`_, like the at
     -   ``tags`` : you can label individual measurements with comma separated
         tags
 
-
-REST web api
--------------------------------------------------------------------------------
-The web application implements a REST web api that allows sending and receiving
-data to and from the database. A browser web interface for the api can be found
-in the **metric api** section.
-
-The utilities in the `DESDMDashboard Remote`_ component make use of this api.
-
-
-Admin Interface
--------------------------------------------------------------------------------
-The DESDMDashboard web application comes with a customized django admin
-interface which provides database access. It can be found in the **admin**
-section.
-
-
 Server Setup
 -------------------------------------------------------------------------------
 The desdmdashboard_server svn directory contains the code to run the django web
@@ -98,7 +99,7 @@ contains all dependencies of the desdmdashboard_server code. The server machine
 currently used is **desdash.cosmology.illinois.edu**. 
 
 Server Configuration
-''''''''''''''''''''
+```````````````````````````````````````````````````````````````````````````````
 Resposible persons for the server setup and administration are Greg Daues and Michael Graber.
 
 
@@ -109,8 +110,8 @@ DESDMDashboard Remote
 When installing the **eups package desdmdashboard** (trunk+0) you get tools to
 send and receive data via the web api of the desdmdashboard server application.
 This provides you with the capability to send data from an arbitraty client
-machine but also to inspect data stored on the server for investigation
-purposes. The eups package contains third party tools to enable this process:
+machine but also to receive and inspect data stored on the server on a local
+machine. The eups package contains third party tools to enable this process:
 ipython (notebook), pandas, matplotlib, ..
 
 While accessing the views on the DESDMDashboard website is open for everybody,
@@ -217,6 +218,7 @@ DataFrames right away:
 Receiving data requires authentication as well, however you can read data from
 arbitrary owners.
 
+
 The desdmdashboard eups package
 -------------------------------------------------------------------------------
 Currently there is no tagged eups desdmdashboard package available yet, but
@@ -226,10 +228,39 @@ there is trunk package ready for use. It can be installed through eups using
 
    -bash-$ eups distrib install desdmdashboard trunk+0
 
+The desdmdashboard eups package comes with the dependencies
+
+    -   pandas
+    -   ipython
+    -   CoreUtils
+
+and of course the eups dependencies (e.g. matplotlib) of these packages.
+
+After installation use
+
+.. sourcecode:: bash
+
+   -bash-$ setup desdmdashboard trunk+0
+
+to make the packages available on your machine.
 
 
-Using the IPython notenbook
+Using the IPython notebook
 -------------------------------------------------------------------------------
+A powerful way to play around with your data is in the setting of an `IPython
+<http://www.ipython.org>`_ notebook. An IPython notebook server can be run on
+your local machine using
+
+.. sourcecode:: bash
+
+   -bash-$ ipython notebook 
+
+Find documentation about how IPython notebooks on the website of the IPython
+project.
+
+Since the ``receivedata.to_pandas`` functions return pandas DataFrames having a
+look at the `pandas <http://pandas.pydata.org>`_ docu pages might be helpful.
+
 
 -------------------------------------------------------------------------------
 DESDMDashboard Collect
