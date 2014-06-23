@@ -71,12 +71,12 @@ class Metric(models.Model):
     show_on_dashboard = models.BooleanField(default=True)
 
     OPERATOR_CHOICES = (
-        ('lt', 'value < alert'),
-        ('le', 'value <= alert'),
-        ('eq', 'value == alert'),
-        ('ne', 'value != alert'),
-        ('ge', 'value >= alert'),
-        ('gt', 'value > alert'),
+        ('lt', 'latest value < alert value'),
+        ('le', 'latest value <= alert value'),
+        ('eq', 'latest value == alert value'),
+        ('ne', 'latest value != alert value'),
+        ('ge', 'latest value >= alert value'),
+        ('gt', 'latest value > alert value'),
     )
     alert_operator = models.CharField(max_length=2, choices=OPERATOR_CHOICES,
             blank=True)
@@ -121,6 +121,20 @@ class Metric(models.Model):
         alert = bool(self.alert_triggered)
         warn = bool(self.has_no_value_warning)
         return (err or alert or warn)
+
+    def get_trouble_statements(self):
+        ## FIXME !!
+        troubles = []
+        if self.has_error:
+            troubles.append('ERROR MESSAGE: ' + self.error_message)
+        if self.alert_triggered:
+            alert_str = ('ALERT TRIGGERED: {op} !').format(
+                    op=self.get_alert_operator_display())
+            troubles.append(alert_str)
+        if self.has_no_value_warning:
+            troubles.append('NO VALUE UPDATE!! within %s seconds' %\
+                    self.warning_if_no_value_after_seconds)
+        return troubles
 
     @classmethod
     def create(cls, name, value_type):

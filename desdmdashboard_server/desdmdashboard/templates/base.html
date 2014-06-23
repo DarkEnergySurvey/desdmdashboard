@@ -116,7 +116,6 @@
 
         #content h1, h2, h3, h4, h5 {
             color: #700000;
-            padding: 1em 0 0 0;
         }
 
         #content h1 { font-size: 180%; }
@@ -130,7 +129,7 @@
 
         #docu {
             border: dashed black 1pt;
-            padding: 0 3em 3em 3em;
+            padding: 1em 3em;
             text-align: justify;
         }
 
@@ -139,9 +138,24 @@
             font-weight: bold;
         }
 
-        #dashboard-metric {
+        #dashboard_metric {
             padding: 1em;
-            margin: 1em 0 1em 0;
+        }
+
+        .dashboard_metric table, tr, td, th {
+            font-size: 150%;
+            border: 0;
+            padding: 0 3em 0 0;
+            line-height: 1.3em;
+        }
+
+        .dashboard_metric table, th {
+            font-weigth: 100; 
+            float: left;
+        }
+
+        .trouble_message {
+            color: #E00000;
         }
 
         .dataframe table, td, th {
@@ -176,6 +190,7 @@
         #figure {
             width: 576pt;
             position: relative;
+            padding: 3em;
             margin-left: auto;
             margin-right: auto;
         }

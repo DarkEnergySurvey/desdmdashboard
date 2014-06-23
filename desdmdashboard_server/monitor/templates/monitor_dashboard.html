@@ -5,7 +5,7 @@
 
 {% for metric in metrices %}
 
-<div id='dashboard-metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
+<div id='dashboard_metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
     <h2>
         <a href="{{ metric.get_absolute_url }}">
             {{ metric.name }}

@@ -3,26 +3,26 @@
 
 {% block content %}
 
-<div id='dashboard-metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
+<div id='dashboard_metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
     <h2>{{ metric.name }} </h2>
     <p>
-    <ul>
-        <li><b>Status:</b>
-            {% if metric.is_in_trouble_status %}    
-            <img class='icon' src="{% static "img/error_icon.png" %}" height='16px' alt="logo"/>
-            <b class='error'>{{ metric.error_message }}</b>
-            {% else %}
-            <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
-            {% endif %}</li>
-            <li>No update within seconds: {{ metric.no_update_within_secs }}</li>
-            <li>Latest value: {{ metric.get_last_datapoint_from_table.value }}</li>
-            <li>Latest tags: {{ metric.get_last_datapoint_from_table.tags }}</li>
-            <li>Last measured at: {{ metric.get_last_datapoint_from_table.time }}</li>
-            <li>Value Type: {{ metric.value_type }}
-            <li>Alert Operator: {{ metric.get_alert_operator_display }}
-            <li>Alert Value: {{ metric.alert_value }}
-            <li>ALERT: {{ metric.in_alert_state }}
-    </ul>
+    <table class='metric_detail'>
+        <tr><th>Status:</th>
+        <td>{% if metric.is_in_trouble_status %}    
+        <img class='icon' src="{% static "img/error_icon.png" %}" height='16px' alt="logo"/>
+        {% else %}
+        <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
+        {% endif %}</td></tr>
+        <tr><th>Warning if not value within seconds:</th> <td>{{ metric.warning_if_no_value_after_seconds}}</td></tr>
+        <tr><th>Latest value:</th><td>{{ metric.get_last_datapoint_from_table.value }}</td></tr>
+        <tr><th>Unit:</th><td>{{ metric.get_unit_display }}</td></tr>
+        <tr><th>Latest tags:</th><td>{{ metric.get_last_datapoint_from_table.tags }}</td></tr>
+        <tr><th>Last measured:</th><td>{{ metric.get_last_datapoint_from_table.time }}</td></tr>
+        <tr><th>Value Type:</th><td>{{ metric.value_type }}</td></tr>
+        <tr><th>Alert Operator</th><td>{{ metric.get_alert_operator_display }}</td></tr>
+        <tr><th>Alert Value:</th><td>{{ metric.alert_value }}</td></tr>
+        <tr><th>Trouble Messages:</th><td class='trouble_message'>{% for tr in metric.get_trouble_statements %}{{ tr }}<br>{% endfor %}</td></tr>
+    </table>
     </p>
     {% if metric.doc %}<h4>Doc:</h4> {{ metric.doc }}</p>{% endif %}
     <div id='figure'>
