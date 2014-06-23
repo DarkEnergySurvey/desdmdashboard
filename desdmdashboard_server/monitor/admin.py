@@ -9,30 +9,35 @@ class MetricDataIntInline(admin.TabularInline):
     model = MetricDataInt
     fields = ('value', 'time', 'has_error', 'error_message',)
     readonly_fields = ('value', 'time', 'has_error', 'error_message',)
+    ordering = ('-time', )
     extra = 0
 
 class MetricDataFloatInline(admin.TabularInline):
     model = MetricDataFloat 
     fields = ('value', 'time', 'has_error', 'error_message', )
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    ordering = ('-time', )
     extra = 0
 
 class MetricDataCharInline(admin.TabularInline):
     model = MetricDataChar 
     fields = ('value', 'time', 'has_error', 'error_message', )
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    ordering = ('-time', )
     extra = 0
 
 class MetricDataDatetimeInline(admin.TabularInline):
     model = MetricDataDatetime 
     fields = ('value', 'time', 'has_error', 'error_message', )
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    ordering = ('-time', )
     extra = 0
 
 class MetricDataJSONInline(admin.TabularInline):
     model = MetricDataJSON
     fields = ('value', 'time', 'has_error', 'error_message', )
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
+    ordering = ('-time', )
     extra = 0
 
 class MetricAdmin(admin.ModelAdmin):
@@ -61,7 +66,8 @@ class MetricAdmin(admin.ModelAdmin):
             'has_error', 'alert_triggered')
     
     readonly_fields = ('alert_triggered', 'timestamp_modified',
-            'timestamp_created', )
+            'timestamp_created', 'last_updated', 'latest_value', 'latest_tags',
+            'has_error', 'error_message', )
     
 
     inlines = (MetricDataIntInline, MetricDataFloatInline,
@@ -87,7 +93,6 @@ class MetricDataIntAdmin(admin.ModelAdmin):
 
     readonly_fields = ('timestamp_modified', 'timestamp_created', )
     
-
 
 admin.site.register(MetricDataInt, MetricDataIntAdmin)
 
