@@ -294,7 +294,7 @@ The ``collect_jobs`` can be run in the correct eups environment by using the bas
     
 using the crontab job declaration scheme:
 
-.. code
+.. sourcecode:: cron
 
      +---------------- minute (0 - 59)
      |  +------------- hour (0 - 23)
