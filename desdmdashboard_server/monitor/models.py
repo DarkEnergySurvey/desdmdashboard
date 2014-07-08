@@ -249,7 +249,7 @@ class MetricDataBase(models.Model):
 
 
 class MetricDataInt(MetricDataBase):
-    value = models.PositiveIntegerField(null=True, blank=True)
+    value = models.BigIntegerField(null=True, blank=True)
 
     def value_from_string(self, value):
         try:
