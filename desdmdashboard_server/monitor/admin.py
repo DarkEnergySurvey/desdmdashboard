@@ -49,12 +49,13 @@ class MetricAdmin(admin.ModelAdmin):
     fields = (
             ('name', 'owner', 'slug', ),
             ('doc', ),
-            ('latest_value', 'last_updated', 'latest_tags', 'has_error',
+            ('latest_value', 'latest_time', 'latest_tags', 'has_error',
                 'error_message'),
             ('warning_if_no_value_after_seconds', ),
-            ('unit', 'show_on_dashboard', ),
+            ('unit', 'dashboard_display_option', ),
             ('value_type', ),
             ('alert_operator', 'alert_value', 'alert_triggered', ),
+            ('expression_string', 'expression_evaluation'),
             ('timestamp_modified', 'timestamp_created', ),
             )
 
@@ -62,12 +63,12 @@ class MetricAdmin(admin.ModelAdmin):
     
     search_fields = ('name', 'doc', 'latest_tags', )
 
-    list_display = ( 'name', 'owner', 'latest_value', 'last_updated',
+    list_display = ( 'name', 'owner', 'latest_value', 'latest_time',
             'has_error', 'alert_triggered')
     
     readonly_fields = ('alert_triggered', 'timestamp_modified',
-            'timestamp_created', 'last_updated', 'latest_value', 'latest_tags',
-            'has_error', 'error_message', )
+            'timestamp_created', 'latest_time', 'latest_value', 'latest_tags',
+            'has_error', 'error_message', 'expression_evaluation')
     
 
     inlines = (MetricDataIntInline, MetricDataFloatInline,

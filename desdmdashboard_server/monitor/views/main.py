@@ -33,19 +33,25 @@ def dashboard(request, owner=None):
     metrices = []
     for metric in ms:
 
-        if metric.show_on_dashboard:
+        if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_PLOT:
             try:
-                figure = plot_svgbuf_for_metric(metric)
+                data_display = plot_svgbuf_for_metric(metric)
             except Exception, e:
-                figure = e
-            m = {
-                'name': metric.name,
-                'is_in_trouble_status': metric.is_in_trouble_status,
-                'svgplot': figure,
-                'owner': metric.owner.username,
-                'get_absolute_url': metric.get_absolute_url()
-                }
-            metrices.append(m)
+                data_display = e
+        if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_TABLE:
+            try:
+                df = metric.get_data_dataframe()
+                data_display =
+            except Exception, e:
+                data_display = e
+        m = {
+            'name': metric.name,
+            'is_in_trouble_status': metric.is_in_trouble_status,
+            'datadisplay': figure,
+            'owner': metric.owner.username,
+            'get_absolute_url': metric.get_absolute_url()
+            }
+        metrices.append(m)
 
 
     #print 'DASHBOARD BEFORE RETURN:'

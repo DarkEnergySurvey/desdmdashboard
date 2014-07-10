@@ -38,7 +38,7 @@ class Metric(models.Model):
             default=60*60*24*7, null=True, blank=True)
 
     latest_value = models.CharField(max_length=1024, null=True, blank=True)
-    last_updated = models.DateTimeField(null=True, blank=True)
+    latest_time = models.DateTimeField(null=True, blank=True)
 
     latest_tags = models.CharField(max_length=256, blank=True, default='')
 
@@ -50,12 +50,14 @@ class Metric(models.Model):
     #instrument  = models.ForeignKey(Instrument, blank=True, null=True)
     #instrument = models.CharField(max_length=512)
 
-    UNIT_BYTES = 1
-    UNIT_SECONDS = 2
+    UNIT_SECONDS = 1
+    UNIT_BYTES = 2
+    UNIT_MEGABYTES = 3
 
     UNIT_CHOICES = (
-            (UNIT_BYTES, 'bytes'),
             (UNIT_SECONDS, 'seconds'),
+            (UNIT_BYTES, 'bytes'),
+            (UNIT_MEGABYTES, 'Mbytes'),
             )
     unit = models.PositiveSmallIntegerField(choices=UNIT_CHOICES, null=True,
             blank=True)
@@ -64,11 +66,27 @@ class Metric(models.Model):
             models.Q(app_label='monitor', model='metricdatafloat') |\
             models.Q(app_label='monitor', model='metricdatachar') |\
             models.Q(app_label='monitor', model='metricdatajson') |\
+            models.Q(app_label='monitor', model='metricdataboolean') |\
             models.Q(app_label='monitor', model='metricdatadatetime')
     value_type = models.ForeignKey(generic.ContentType, 
             limit_choices_to=VALUE_TYPE_CHOICES)
 
-    show_on_dashboard = models.BooleanField(default=True)
+    DASHBOARD_DISPLAY_OPTION_NOSHOW = 0
+    DASHBOARD_DISPLAY_OPTION_TABLE = 1
+    DASHBOARD_DISPLAY_OPTION_PLOT = 2
+
+    DASHBOARD_DISPLAY_OPTION_CHOICES = (
+            (DASHBOARD_DISPLAY_OPTION_NOSHOW, "don't show"),
+            (DASHBOARD_DISPLAY_OPTION_TABLE, "table"),
+            (DASHBOARD_DISPLAY_OPTION_PLOT, "plot"),
+            )
+
+    dashboard_display_option = models.PositiveSmallIntegerField(
+            choices=DASHBOARD_DISPLAY_OPTION_CHOICES,
+            default=DASHBOARD_DISPLAY_OPTION_PLOT)
+
+    dashboard_display_window_length_days = models.PositiveSmallIntegerField(
+            default=180)
 
     OPERATOR_CHOICES = (
         ('lt', 'latest value < alert value'),
@@ -82,6 +100,8 @@ class Metric(models.Model):
             blank=True)
     alert_value = models.FloatField(null=True, blank=True)
     alert_triggered = models.BooleanField(default=False)
+
+    expression_string = models.CharField(null=True, blank=True, max_length=512)
 
     doc = models.TextField(blank=True, null=True)
 
@@ -122,6 +142,15 @@ class Metric(models.Model):
         warn = bool(self.has_no_value_warning)
         return (err or alert or warn)
 
+    @property
+    def expression_evaluation(self):
+        try:
+            df = self.get_data_dataframe()
+            r = eval(self.expression_string, {}, { 'data': df })
+            return r
+        except Exception, err:
+            return err
+
     def get_trouble_statements(self):
         ## FIXME !!
         troubles = []
@@ -149,6 +178,8 @@ class Metric(models.Model):
             obj.value_type = ContentType.objects.get(model='metricdatadatetime')
         elif value_type.lower() == 'json':
             obj.value_type = ContentType.objects.get(model='metricdatajson')
+        elif value_type.lower() == 'boolean':
+            obj.value_type = ContentType.objects.get(model='metricdataboolean')
         else:
             raise ValueError(("Cannot create Metric object with value_type %s . "
                 "It has to from ('int', 'char', 'float', 'datetime')") %
@@ -185,12 +216,12 @@ class Metric(models.Model):
             self.latest_tags = tags
             self.has_error = has_error
             self.error_message = error_message
-            self.last_updated = time
+            self.latest_time = time
 
     def _save_latest_values_to_data_table(self):
         ''' '''
         dobj = self.create_value_obj()
-        dobj.time = self.last_updated
+        dobj.time = self.latest_time
         dobj.has_error = self.has_error
         dobj.error_message = self.error_message
         if not dobj.has_error:    
@@ -200,6 +231,15 @@ class Metric(models.Model):
     def get_data_queryset(self):
         vtclass = self.value_type.model_class()
         return vtclass.objects.filter(metric=self)
+
+    def get_data_dataframe(self):
+        try:
+            import pandas
+            return pandas.DataFrame.from_records(
+                    self.get_data_queryset().values(),
+                    index='time')
+        except:
+            raise
 
     def get_last_datapoint_from_table(self):
         data = self.get_data_queryset().order_by('-time')
@@ -283,7 +323,7 @@ class MetricDataDatetime(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            self.value = datetime.strptime(value.rstrip(), '%Y-%m-%dT%H:%M:%S')
+            self.value = datetime.strptime(value.rstrip(), '%Y-%m-%d %H:%M:%S')
         except:
             raise
 
@@ -295,6 +335,19 @@ class MetricDataJSON(MetricDataBase):
         try:
             json_obj = json.loads(value)
             self.value = json_obj
+        except:
+            raise
+
+
+class MetricDataBoolean(MetricDataBase):
+    value = models.BooleanField(default=False)
+
+    def value_from_string(self, value):
+        try:
+            if value in ['1', 'True', ]:
+                self.value = True
+            else:
+                self.value = False
         except:
             raise
 

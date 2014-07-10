@@ -1,4 +1,6 @@
 
+from datetime import datetime
+
 from django import db 
 
 from django.utils.timezone import now
@@ -29,11 +31,12 @@ class MetricSerializer(serializers.ModelSerializer):
     tags = serializers.CharField(source='latest_tags', required=False) 
     value = serializers.CharField(source='latest_value', required=False) 
     owner = serializers.Field(source='owner.username')
+    time_ = serializers.CharField(source='latest_time', required=False) 
 
     class Meta:
         model = models.Metric
         fields = ('pk', 'name', 'has_error', 'error_message', 'value_type_',
-                'value', 'tags', 'owner', )
+                'value', 'time_', 'tags', 'owner', )
 
     def restore_object(self, attrs, instance=None):
 
@@ -50,12 +53,17 @@ class MetricSerializer(serializers.ModelSerializer):
                     attrs['value_type'])
             instance.slug = slugify(instance.name)
 
+        if attrs['latest_time']:
+            t = datetime.strptime(attrs['latest_time'].rstrip(), '%Y-%m-%d %H:%M:%S')
+        else:
+            t = now()
+
         instance.set_latest_measurements(
                 value=attrs['latest_value'],
                 tags=attrs['latest_tags'],
                 has_error=attrs['has_error'],
                 error_message=attrs['error_message'],
-                time=now())
+                time=t)
 
         return instance
 
