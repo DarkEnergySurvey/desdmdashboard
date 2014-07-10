@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# we need to source the eups setup script first
+# read the config file
 source collect_cron_job.cfg
-source $EUPSDIR'/desdm_eups_setup.sh'
+
+# we need to source the eups setup script first
+source $EUPS_HOME/desdm_eups_setup.sh
 
 # add the path of this script to the pythonpath
 MY_PATH="`dirname \"$0\"`"
