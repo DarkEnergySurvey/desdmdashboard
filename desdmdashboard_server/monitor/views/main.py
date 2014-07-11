@@ -41,13 +41,14 @@ def dashboard(request, owner=None):
         if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_TABLE:
             try:
                 df = metric.get_data_dataframe()
-                data_display =
+                df = df[['value', 'has_error', 'error_message']]
+                data_display = df.to_html()
             except Exception, e:
                 data_display = e
         m = {
             'name': metric.name,
             'is_in_trouble_status': metric.is_in_trouble_status,
-            'datadisplay': figure,
+            'data_display': data_display,
             'owner': metric.owner.username,
             'get_absolute_url': metric.get_absolute_url()
             }
