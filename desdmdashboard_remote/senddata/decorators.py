@@ -17,7 +17,7 @@ DATA_TEMPLATE = {
     'error_message': u'',
     'value_type_': u'',
     'value': u'',
-    'tags': u''
+    'tags': u'',
     'time_': u'',
     }
 
@@ -80,19 +80,31 @@ class Monitor(object):
             # func execution
             try:
                 self.data['value'] = func(*args, **kwargs)
-                self.logger.info('function successfully executed.')
+                if self.logger:
+                    self.logger.info('function successfully executed.')
             except Exception, err:
                 value = ''
                 self.data['has_error'] = True
                 self.data['error_message'] = err
-                self.logger.error(err)
+                if self.logger:
+                    self.logger.error(err)
                 
             # stuff after func execution
             # exectime = time.time() - started_at
+            if self.logger:
+                mess = 'sending value {val} to metric {met}'
+                self.logger.info(mess.format(
+                    val=self.data['value'], met=self.data['name'])
+                    )
             try:
                 decorator_self.request.POST(data=self.data)
-                self.logger.info('metric value successfully sent.')
+                if self.logger:
+                    if decorator_self.request.error_status[0]:
+                        self.logger.error(decorator_self.request.error_status[1])
+                    else:
+                        self.logger.info('metric value successfully sent.')
             except Exception, err:
-                self.logger.error(err)
+                if self.logger:
+                    self.logger.error(err)
 
         return wrappee
