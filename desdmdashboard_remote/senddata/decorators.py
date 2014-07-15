@@ -58,11 +58,19 @@ class Monitor(object):
     def __init__(self, metric_name, **kwargs):
         self.request = Request()
         self.data = DATA_TEMPLATE
-        self.data['name'] = metric_name
+        self.logger = kwargs.get('logger', None)
+        if type(metric_name) == str:
+            self.data['name'] = metric_name
+            self.metric_name_generator = None
+        elif hasattr(metric_name, '__call__'):
+            self.metric_name_generator = metric_name
+        else:
+            mess = 'metric_name has to be either a string or a callable.'
+            if self.logger:
+                self.logger.error(mess)
+            raise ValueError(mess)
         self.data['tags'] = kwargs.get('tags', u'')
         self.data['value_type_'] = kwargs.get('value_type', u'')
-        self.metric_name_generator = kwargs.get('metric_name_generator', None)
-        self.logger = kwargs.get('logger', None)
 
     def __call__(self, func):
         decorator_self = self
