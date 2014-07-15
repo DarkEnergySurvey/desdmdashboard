@@ -2,4 +2,4 @@ setupRequired(ipython 2.1.0+1)
 setupRequired(pandas 0.13.1+2)
 setupRequired(CoreUtils 0.8.3+0)
 
-envPrepend(PYTHONPATH, ${PRODUCT_DIR}/lib/python2.7/site-packages)
+envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
