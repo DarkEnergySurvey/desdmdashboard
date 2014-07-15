@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 svn export $SVNROOT/$PRODUCT/$SVN_PATH $PRODUCT
 cd $PRODUCT
-mkdir -p ${PRODUCT_DIR}/lib/python2.7/site-packages
-export PYTHONPATH=$PYTHONPATH:$PRODUCT_DIR/lib/python2.7/site-packages
+export PYTHONPATH=$PYTHONPATH:$PRODUCT_DIR/python
 python setup.py build
-python setup.py install --prefix=$PRODUCT_DIR
+python setup.py install --prefix=$PRODUCT_DIR --install-lib=$PRODUCT_DIR/python
 
