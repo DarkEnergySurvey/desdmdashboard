@@ -18,6 +18,7 @@ DATA_TEMPLATE = {
     'value_type_': u'',
     'value': u'',
     'tags': u''
+    'time_': u'',
     }
 
 
@@ -60,6 +61,8 @@ class Monitor(object):
         self.data['name'] = metric_name
         self.data['tags'] = kwargs.get('tags', u'')
         self.data['value_type_'] = kwargs.get('value_type', u'')
+        self.metric_name_generator = kwargs.get('metric_name_generator', None)
+        self.logger = kwargs.get('logger', None)
 
     def __call__(self, func):
         decorator_self = self
@@ -67,20 +70,29 @@ class Monitor(object):
         def wrappee(*args, **kwargs):
             # stuff before func execution
             # started_at = time.time()
+
+            if self.metric_name_generator:
+                self.data['name'] = self.metric_name_generator(*args, **kwargs)
+
+            if self.logger:
+                self.logger.info('function execution in Monitor decorator: ' + func.func_name)
+                self.logger.debug('args: ' + str(args) + ' kwargs: ' + str(kwargs) )
             # func execution
-            # TODO : enable tags, catching errors & error messages
             try:
                 self.data['value'] = func(*args, **kwargs)
-            except Exception, e:
+                self.logger.info('function successfully executed.')
+            except Exception, err:
                 value = ''
                 self.data['has_error'] = True
-                self.data['error_message'] = e
+                self.data['error_message'] = err
+                self.logger.error(err)
                 
             # stuff after func execution
             # exectime = time.time() - started_at
             try:
                 decorator_self.request.POST(data=self.data)
-            except:
-                raise
+                self.logger.info('metric value successfully sent.')
+            except Exception, err:
+                self.logger.error(err)
 
         return wrappee
