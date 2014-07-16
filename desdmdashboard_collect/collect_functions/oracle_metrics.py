@@ -1,4 +1,6 @@
 """
+
+
 This file contains routines that collect metrics from the 
 ORACLE system 
 
@@ -15,13 +17,15 @@ import os
 import coreutils
 import cx_Oracle #needed to catch execptions
 from desdmdashboard_remote.senddata.decorators import Monitor
+from desdmdashboard_collect.collect_utils import log
 
+logger = log.get_logger('desdmdashboard_collect')
 
 def main():
-   print read_requests('db-desoper')
-   print read_requests('db-dessci')
-   print write_requests('db-desoper')
-   print write_requests('db-dessci')
+   print read_GB('db-desoper')
+   print read_GB('db-dessci')
+   print write_GB('db-desoper')
+   print write_GB('db-dessci')
    print mydb_GB('db-desoper')
    print mydb_GB('db-dessci')
 
@@ -45,10 +49,18 @@ def _query_one_row(query, section):
    dbh.close()
    return row[0]
 
+
 #
-#@Monitor('desar_httpd_cpu', value_type='int')
+# Collect total reads from a database
 #
-def read_requests(section):
+def create_read_GB_metric_name(section):
+   from coreutils import serviceaccess as sa
+   db_name = sa.parse(os.path.join(os.getenv("HOME"),".desservices.ini"),section)["name"]
+   metric_name = "{db_name}_read_GB".format(db_name=db_name)
+   return metric_name
+
+@Monitor(create_read_GB_metric_name,value_type="int", logger=logger)
+def read_GB(section):
    """ return the GB read from disk  for all queries """
    q = """SELECT 
              sys_context('userenv','db_name'), 
@@ -62,7 +74,17 @@ def read_requests(section):
    reads  = (small_reads  + large_reads)/1024
    return reads 
 
-def write_requests(section):
+#
+# Collect total writes to a database
+#
+def create_write_GB_metric_name(section):
+   from coreutils import serviceaccess as sa
+   db_name = sa.parse(os.path.join(os.getenv("HOME"),".desservices.ini"),section)["name"]
+   metric_name = "{db_name}_read_GB".format(db_name=db_name)
+   return metric_name
+
+@Monitor(create_write_GB_metric_name,value_type="int", logger=logger)
+def write_GB(section):
    """ return the GB read from disk  for all queries """
    q = """SELECT 
              sys_context('userenv','db_name'), 
@@ -76,7 +98,16 @@ def write_requests(section):
    writes = (small_writes + large_writes)/1024
    return writes
 
+#
+# Collect total size of "mydb" for a database
+#
+def create_mydb_GB_metric_name(section):
+   from coreutils import serviceaccess as sa
+   db_name = sa.parse(os.path.join(os.getenv("HOME"),".desservices.ini"),section)["name"]
+   metric_name = "{db_name}_read_GB".format(db_name=db_name)
+   return metric_name
 
+@Monitor(create_mydb_GB_metric_name,value_type="int", logger=logger)
 def mydb_GB(section):
    "return the total GB of allocated mydb data table space for a schema"
    q = """SELECT  
