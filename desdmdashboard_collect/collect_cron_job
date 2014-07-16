@@ -1,16 +1,56 @@
+#! /bin/sh
+
+# defaults -- provide them up here, and they can be used in the help printoutrepository= ~donaldp/devel2
+update=True
+
+# Help can be extracted by running
+
+printHelp () {
+cat - <<EOF
+run a program in various modes
+    ./debug.sh program
+Options
+   -h,    print help and exit
+   -x     debugme : turn on shell tracing (e.g. set -x)
+   -u     the u switch takes an argument for update
+   -v     
+EOF
+}
+
+# option processing  $OPTARG fetches the argument
+
+while getopts hxvu: opt
+do
+  case "$opt" in
+      h) printHelp ; exit 0 ;;
+      x) set -x ;;
+      u) UPDATE=$OPTARG ;;
+      v) VERBOSE=1 ;;
+  esac;
+done
+
+#get rid of processed  options $* is now arguements.
+shift `expr $OPTIND - 1`
+
+
+
+
+
+
 #!/bin/bash
 
+CURRENT_DIR= switch option $HOME
+CONFIG_FILE=$1
+JOB_FILE=$2
+
 # read the config file
-source $1 
+source $CONFIG_FILE 
 
 # we need to source the eups setup script first
 source $EUPS_HOME/desdm_eups_setup.sh
 
-# add the path of this script to the pythonpath
-MY_PATH="`dirname \"$0\"`"
-MY_PATH="`( cd \"$MY_PATH\" && pwd )`"
 export PYTHONPATH=$MY_PATH:$PYTHONPATH
 
-setup desdmdashboard trunk+0
+setup -r $CURRENT_DIR
 
-python $2
+python $CONFIG_JOB
