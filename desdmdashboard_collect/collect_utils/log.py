@@ -4,8 +4,9 @@
 import os
 import logging
 
-LOG_DIR = os.environ['COLLECT_LOG_DIR']
-LOG_FILE = os.environ['COLLECT_LOG_FILE']
+HOME_DIR = os.environ.get('HOME', '.')
+LOG_DIR = os.environ.get('COLLECT_LOG_DIR', HOME_DIR)
+LOG_FILE = os.environ.get('COLLECT_LOG_FILE', 'desdmdashboard_collect.log')
 
 loggers = {}
 
