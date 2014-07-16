@@ -6,9 +6,9 @@ DESDMDASHBOARD DATA COLLECTION FUNCTIONS
 '''
 
 from desdmdashboard_remote.senddata.functions import send_metric_value 
-from collect_utils.database import make_db_query
 
-from collect_utils import log 
+from desdmdashboard_collect.collect_utils.database import make_db_query
+from desdmdashboard_collect.collect_utils import log 
 logger = log.get_logger('desdmdashboard_collect')
 
 def file_archive_info__sum_filesize__archive_name():

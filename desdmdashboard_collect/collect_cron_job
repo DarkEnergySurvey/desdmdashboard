@@ -1,47 +1,55 @@
-#! /bin/sh
+#!/bin/bash
+# DESDMDashboard cronjob execution script
+# based on a bash script template by Donald Petravik
 
-# defaults -- provide them up here, and they can be used in the help printoutrepository= ~donaldp/devel2
-update=True
+# defaults -- provide them up here
+
+CONFIG_FILE=0
+
 
 # Help can be extracted by running
 
 printHelp () {
 cat - <<EOF
+
+DESDMDashboard cronjob submission script.
+-------------------------------------------------------------------------------
+
+Executes a python script in the right eups setup.
+
 run a program in various modes
     ./debug.sh program
 Options
    -h,    print help and exit
    -x     debugme : turn on shell tracing (e.g. set -x)
-   -u     the u switch takes an argument for update
-   -v     
+
+   -c     config file 
 EOF
 }
 
+
 # option processing  $OPTARG fetches the argument
 
-while getopts hxvu: opt
+while getopts hxc: opt
 do
   case "$opt" in
-      h) printHelp ; exit 0 ;;
-      x) set -x ;;
-      u) UPDATE=$OPTARG ;;
-      v) VERBOSE=1 ;;
+      h) 
+          printHelp ; exit 0 ;;
+      x)
+          set -x ;;
+      c)
+          CONFIG_FILE=$OPTARG ;;
+      $\?)
+          printHelp; exit 1 ;;
   esac;
 done
 
-#get rid of processed  options $* is now arguements.
+# get rid of processed  options:
+# $* is now arguements.
 shift `expr $OPTIND - 1`
 
-
-
-
-
-
-#!/bin/bash
-
-CURRENT_DIR= switch option $HOME
-CONFIG_FILE=$1
-JOB_FILE=$2
+echo 'CONFIG_FILE: '$CONFIG_FILE
+echo 'OPTIND: '$*
 
 # read the config file
 source $CONFIG_FILE 
@@ -49,8 +57,6 @@ source $CONFIG_FILE
 # we need to source the eups setup script first
 source $EUPS_HOME/desdm_eups_setup.sh
 
-export PYTHONPATH=$MY_PATH:$PYTHONPATH
+setup -r $DESDMDASHBOARD_CODE_PATH
 
-setup -r $CURRENT_DIR
-
-python $CONFIG_JOB
+python $*

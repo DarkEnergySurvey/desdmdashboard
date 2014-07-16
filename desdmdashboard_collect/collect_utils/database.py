@@ -6,7 +6,7 @@ DESDMDashboard data collection utility database functions
 import os
 import coreutils
 
-from collect_utils import log
+from desdmdashboard_collect.collect_utils import log
 logger = log.get_logger('desdmdashboard_collect')
 
 def make_db_query(QUERY,
