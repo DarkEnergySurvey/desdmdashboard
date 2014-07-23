@@ -32,6 +32,8 @@ EOF
 }
 
 
+# OPTIONAL ARGUMENTS HANDLING
+
 # option processing  $OPTARG fetches the argument
 
 while getopts hxc: opt
@@ -52,6 +54,9 @@ done
 # $* is now arguements.
 shift `expr $OPTIND - 1`
 
+
+# REQUIRED ARGUMENTS HANDLING
+
 # make sure we have two arguments remaining
 if (( $# <= 2 ))
 then 
@@ -63,7 +68,6 @@ then
     exit 1;
 fi
 
-
 # the first required argument is the config file
 CONFIG_FILE=$1
 # teh second the python script to be executed
@@ -74,12 +78,18 @@ shift 2
 # what remains in $* are the arguments that are passed into the python script
 
 
+# DO SETUP
+
 # read the config file
 source $CONFIG_FILE 
 
 # we need to source the eups setup script first
 source $EUPS_HOME/desdm_eups_setup.sh
 
+# setup the development env in the configured path
 setup -r $DESDMDASHBOARD_CODE_PATH
+
+
+# EXECUTE PYTHON SCRIPT
 
 python $PYTHON_SCRIPT $*
