@@ -53,7 +53,7 @@ done
 shift `expr $OPTIND - 1`
 
 # make sure we have two arguments remaining
-if (( $# != 2 ))
+if (( $# <= 2 ))
 then 
     echo
     echo
@@ -63,8 +63,16 @@ then
     exit 1;
 fi
 
+
+# the first required argument is the config file
 CONFIG_FILE=$1
+# teh second the python script to be executed
 PYTHON_SCRIPT=$2
+
+# get rid of the required arguments
+shift 2
+# what remains in $* are the arguments that are passed into the python script
+
 
 # read the config file
 source $CONFIG_FILE 
@@ -74,4 +82,4 @@ source $EUPS_HOME/desdm_eups_setup.sh
 
 setup -r $DESDMDASHBOARD_CODE_PATH
 
-python $PYTHON_SCRIPT 
+python $PYTHON_SCRIPT $*
