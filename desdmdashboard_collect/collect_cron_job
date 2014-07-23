@@ -4,7 +4,7 @@
 
 # defaults -- provide them up here
 
-CONFIG_FILE=0
+# CONFIG_FILE=0
 
 
 # Help can be extracted by running
@@ -17,13 +17,17 @@ DESDMDashboard cronjob submission script.
 
 Executes a python script in the right eups setup.
 
-run a program in various modes
-    ./debug.sh program
-Options
+$ collect_cron_job path/to/config_file.cfg path/to/python_script.py
+
+
+Required Arguments:
+   - the path to the config file
+   - the path to the python script to be executed
+
+Optional Arguments:
    -h,    print help and exit
    -x     debugme : turn on shell tracing (e.g. set -x)
 
-   -c     config file 
 EOF
 }
 
@@ -37,8 +41,8 @@ do
           printHelp ; exit 0 ;;
       x)
           set -x ;;
-      c)
-          CONFIG_FILE=$OPTARG ;;
+#     c)
+#         CONFIG_FILE=$OPTARG ;;
       $\?)
           printHelp; exit 1 ;;
   esac;
@@ -48,8 +52,19 @@ done
 # $* is now arguements.
 shift `expr $OPTIND - 1`
 
-echo 'CONFIG_FILE: '$CONFIG_FILE
-echo 'OPTIND: '$*
+# make sure we have two arguments remaining
+if (( $# != 2 ))
+then 
+    echo
+    echo
+    echo "TWO ARGUMENTS (config file & python script) required!"
+    echo
+    printHelp;
+    exit 1;
+fi
+
+CONFIG_FILE=$1
+PYTHON_SCRIPT=$2
 
 # read the config file
 source $CONFIG_FILE 
@@ -59,4 +74,4 @@ source $EUPS_HOME/desdm_eups_setup.sh
 
 setup -r $DESDMDASHBOARD_CODE_PATH
 
-python $*
+python $PYTHON_SCRIPT 
