@@ -58,7 +58,7 @@ shift `expr $OPTIND - 1`
 # REQUIRED ARGUMENTS HANDLING
 
 # make sure we have two arguments remaining
-if (( $# <= 2 ))
+if (( $# < 2 ))
 then 
     echo
     echo
