@@ -31,7 +31,7 @@ from desdmdashboard_collect.collect_functions.desar2_monitorLocalStaging\
 
 
 def main():
-    monitor_local_staging_via_du('/home/michael/') 
+    monitor_local_staging_via_du('/local/Staging') 
     
 
 if __name__ == '__main__':
