@@ -80,9 +80,15 @@ Furthermore the ``Metric`` model allows you to set
     -   ``alert_value``
     -   ``alert_operator`` : the operator used to compare the ``alert_value``
     -   ``doc`` : some documentation text
+    -   ``expression_string``: a string that is evaluated by using the ``eval``
+        statement. You can access the entire timeseries dataset in a pandas
+        dataframe with name ``data`` within the evaluation string. The ``eval``
+        statement output can currently only be inspected in the admin
+        interface.
 
 A metric additionally has an ``owner``. It typically gets set automatically
-through authentication but can be changed in the `Admin Interface`_, like the attributes mentioned above.
+through authentication but can be changed in the `Admin Interface`_, like the
+attributes mentioned above.
 
 
 ``MetricDataXYZ``` models have the following  attributes:
@@ -149,9 +155,9 @@ First, you can use the straightforward function ``send_metric_value()``:
 
     from desdmdashboard_remote.senddata.functions import send_metric_value
 
-    send_metric_value('destest', 99)
+    send_metric_value('test', 99)
 
-Executing this code will send ``99`` to a metric called ``destest`` and write
+Executing this code will send ``99`` to a metric called ``test`` and write
 the value in the corresponding ``MetricData`` table. In case said metric does
 not exist yet **you have to declare the** ``value_type`` keyword argument:
 ``value_type`` can be ``int``, ``float``, ``char``, ``datetime`` or ``json``.
@@ -171,17 +177,18 @@ Second, you can use a python function decoration:
 
     from desdmdashboard_remote.senddata.decoraters import Monitor 
 
-    @Monitor('destest')
+    @Monitor('test', value_type='int')
     def this_function_measures_something():
         # your data gathering routine
         value = do_something()
         return value
 
 Now, whenever ``this_function_measures_something()`` is executed, ``value`` is
-automatically written into the DESDMDashboard database. You could use this
-for example to declare a function in a python file that is supposed to be
-executed as a script. You would then have to only add the function name into the
-``if __name__ == '__main__':`` part, like:
+automatically written into the DESDMDashboard database in the data table of a
+metric called ``test``. You could use this for example to declare a function
+in a python file that is supposed to be executed as a script. You would then
+have to only add the function name into the ``if __name__ == '__main__':``
+part, like:
 
 .. sourcecode:: python
 
@@ -189,6 +196,24 @@ executed as a script. You would then have to only add the function name into the
 
    if __name__ == '__main__':
        this_function_measures_something()
+
+In case your measurement function takes arguments and you would like that these
+arguments can also parametrize your metric name you can define a function
+``generate_metric_name_xyz`` that takes the same arguments as your measurement
+function and returns a string. You can then replace the name string in the
+decoration with the name generating function:
+
+.. sourcecode:: python
+
+    def generate_metric_name_something(arg1, arg2):
+        name = 'something_{a1}_{a2}'
+        return name.format(a1=arg1, a2=arg2)
+
+    @Monitor(generate_metric_name_something, value_type='int')
+    def this_function_measures_something(arg1, arg2):
+        # your data gathering routine
+        value = do_something()
+        return value
 
 A ``Profile()`` decorator is in development, but not fully ripe yet. It will
 allow to decorate an arbitrary function. Function execution will then be
@@ -209,7 +234,7 @@ DataFrames right away:
 
     from desdmdashboard_remote.receivedata.to_pandas import get_metric_dataframe, get_multimetric_dataframe 
 
-    df1 = get_metric_dataframe('destest')
+    df1 = get_metric_dataframe('test')
 
     df2 = get_multimetric_dataframe(
             (('metricA', 'owner_username'),
@@ -226,7 +251,7 @@ arbitrary owners.
 The desdmdashboard eups package
 -------------------------------------------------------------------------------
 Currently there is no tagged eups desdmdashboard package available yet, but
-there is trunk package ready for use. It can be installed through eups using 
+there is a trunk package ready for use. It can be installed through eups using 
 
 .. sourcecode:: bash
 
@@ -269,9 +294,8 @@ look at the `pandas <http://pandas.pydata.org>`_ docu pages might be helpful.
 -------------------------------------------------------------------------------
 DESDMDashboard Collect
 -------------------------------------------------------------------------------
-In principle data collection is possible from any machine that can place
-http-requests to the desdmdashboard web api. However, to bundle data collection
-tasks that do not have to run on a particular machine we provide the
+Data collection is possible from any machine that can place http-requests to
+the desdmdashboard web api. To bundle data collection tasks we provide the
 **DESDMDashboard collect** package. The package consists of three subpackages:
 
     -   ``collect_utils``
@@ -285,8 +309,43 @@ executed when a metric measurement is done are supposed to be found in
 started as ``cron jobs`` with a give frequency and therefore mainly contain
 function calls of ``collect_functions``-functions.
 
-The ``collect_jobs`` can be run in the correct eups environment by using the bash script 
-``collect_cron_job``: Edit the ``crontab`` file
+As a convention we name the files that are to be executed on a particular
+machine in the case of the ``collect_jobs`` scripts with
+``machinename_x_hourly_optionaldescription.py``. In the case of the
+``collect_functions`` the naming is analogous if the function is bound to a
+machine: ``machinename_description.py``. 
+
+The ``collect_jobs`` can be run in the correct eups environment by using the
+bash script ``collect_cron_job``:
+
+.. sourcecode:: bash
+    
+   -bash-$ path/to/collect_cron_job path/to/config/collect_cron_job__xyz.cfg path/to/collect_jobs/xyz_x_hourly.py
+
+The first argument to the ``collect_cron_job`` script is the configuration file
+the second argument is the job file. The template configuration file provided
+in the svn repository currently looks as follows:
+
+.. sourcecode:: config
+
+    #!/bin/bash
+
+    ###############################################################
+    # Configuration file for DESDMDashboard data collection jobs.
+    ###############################################################
+
+    # THE DIRECTORY WHERE THE EUPS INSTALLATION RESIDES
+    export EUPS_HOME="$HOME/eups"
+
+    # CODE PATH
+    export DESDMDASHBOARD_CODE_PATH="$HOME/desdmdashboard/trunk"
+
+    # LOG CONFIGURATION 
+    export COLLECT_LOG_DIR=$HOME
+    export COLLECT_LOG_FILE='desdmdashboard_collect.log'
+
+
+To excute the scripts in a cronjob edit the ``crontab`` file
 
 .. sourcecode:: bash
     
@@ -304,9 +363,11 @@ using the crontab job declaration scheme:
      |  |  |  |  |
      +  *  *  *  *  command to be executed
 
-The **DESDMDashboard collect** code can be found on desdash in
-``/desdmdashboard_collect``. ``cronjob`` execution is being logged and the log
-file can be found in said directory.
+For data collection jobs that do not rely on being executed on a specific
+machine we suggest a centralized copy of the svn repository on the **desdash**
+VM. The **DESDMDashboard collect** code can be found on desdash in
+``/desdmdashboard_collect``. 
+
 
 -------------------------------------------------------------------------------
 Cookbook
