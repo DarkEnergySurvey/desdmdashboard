@@ -369,6 +369,21 @@ VM. The **DESDMDashboard collect** code can be found on desdash in
 ``/desdmdashboard_collect``. 
 
 
+Logging
+-------------------------------------------------------------------------------
+You can append to a common log file from an arbitrary file or function that is run using
+the same configuration file through the ``collect_cron_job`` script as
+specified above by the use of a common logger:
+
+.. sourcecode:: python
+
+    from collect_utils import log
+    logger = log.get_logger('desdmdashboard_collect')
+
+    logger.info('My general info.')
+    logger.debug('My debug info.')
+    logger.error('My error statement.')
+
 -------------------------------------------------------------------------------
 Cookbook
 -------------------------------------------------------------------------------
