@@ -19,14 +19,6 @@ from desdmdashboard_collect.collect_utils import log, database
 logger = log.get_logger('desdmdashboard_collect')
 
 
-def main():
-   print read_GB('db-desoper')
-   print read_GB('db-dessci')
-   print write_GB('db-desoper')
-   print write_GB('db-dessci')
-   print mydb_GB('db-desoper')
-   print mydb_GB('db-dessci')
-
 
 #
 # Collect total reads from a database
@@ -95,7 +87,3 @@ def mydb_GB(section):
    # can be none if no space used.
    if not mytablespace :  mytablespace = 0  
    return mytablespace
-
-if __name__ == "__main__":
-
-   main()
