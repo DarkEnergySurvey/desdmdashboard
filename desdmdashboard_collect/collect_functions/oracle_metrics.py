@@ -61,7 +61,7 @@ def write_GB(section):
            FROM 
              GV$IOSTAT_FILE
            """
-   (dbname, small_writes, large_writes) = database.query_one_row(q,  section)
+   (dbname, small_writes, large_writes) = database.query_one_row(q,  section=section)
    writes = (small_writes + large_writes)/1024
    return writes
 
@@ -83,7 +83,7 @@ def mydb_GB(section):
             DBA_SEGMENTS 
          where 
             tablespace_name = 'USERS_BIG'"""
-   (dbname, mytablespace) = database.query_one_row(q,  section)
+   (dbname, mytablespace) = database.query_one_row(q,  section=section)
    # can be none if no space used.
    if not mytablespace :  mytablespace = 0  
    return mytablespace
