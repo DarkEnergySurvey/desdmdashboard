@@ -31,7 +31,6 @@ from collect_functions.desdash_destest import file_archive_info__sum_filesize__a
 
 
 def main():
-    pass
     file_archive_info__sum_filesize__archive_name()
     
 

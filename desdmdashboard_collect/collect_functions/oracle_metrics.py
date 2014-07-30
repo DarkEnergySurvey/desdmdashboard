@@ -18,6 +18,7 @@ from desdmdashboard_collect.collect_utils import log, database
 
 logger = log.get_logger('desdmdashboard_collect')
 
+
 def main():
    print read_GB('db-desoper')
    print read_GB('db-dessci')
