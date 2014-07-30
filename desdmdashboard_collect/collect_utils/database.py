@@ -58,5 +58,5 @@ def query_one_row(QUERY,
 
 
 def get_db_name(section, desfile=os.path.join(os.getenv("HOME"),".desservices.ini")):
-   db_name = serviceaccess.parse(desfile section)["name"]
+   db_name = serviceaccess.parse(desfile, section)["name"]
    return db_name
