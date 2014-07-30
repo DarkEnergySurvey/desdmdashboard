@@ -23,11 +23,11 @@ general crontab syntax:
 :: Author :: michael.graber@fhnw.ch
 '''
 
-from collect_utils import log 
+from desdmdashboard_collect.collect_utils import log 
 logger = log.get_logger('desdmdashboard_collect')
 
 # add your collect_functions imports here
-from collect_functions.oracle_metrics import read_GB, write_GB, mydb_GB 
+from desdmdashboard_collect.collect_functions.oracle_metrics import read_GB, write_GB, mydb_GB 
 
 
 def main():
