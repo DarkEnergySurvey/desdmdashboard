@@ -38,13 +38,15 @@ def dashboard(request, owner=None):
                 data_display = plot_svgbuf_for_metric(metric)
             except Exception, e:
                 data_display = e
-        if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_TABLE:
+        elif metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_TABLE:
             try:
                 df = metric.get_data_dataframe()
                 df = df[['value', 'has_error', 'error_message']]
                 data_display = df.to_html()
             except Exception, e:
                 data_display = e
+        else:
+            continue
         m = {
             'name': metric.name,
             'is_in_trouble_status': metric.is_in_trouble_status,

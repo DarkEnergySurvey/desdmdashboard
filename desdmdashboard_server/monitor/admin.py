@@ -63,8 +63,8 @@ class MetricAdmin(admin.ModelAdmin):
     
     search_fields = ('name', 'doc', 'latest_tags', )
 
-    list_display = ( 'name', 'owner', 'latest_value', 'latest_time',
-            'has_error', 'alert_triggered')
+    list_display = ( 'name', 'owner', 'dashboard_display_option', 'latest_value',
+            'latest_time', 'has_error', 'alert_triggered')
     
     readonly_fields = ('alert_triggered', 'timestamp_modified',
             'timestamp_created', 'latest_time', 'latest_value', 'latest_tags',
