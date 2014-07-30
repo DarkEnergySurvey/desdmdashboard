@@ -1,23 +1,20 @@
 """
 
 
-This file contains routines that collect metrics from the 
-ORACLE system 
+This file contains routines that collect metrics from the ORACLE system 
 
--- GB read, written -- for all node in the cluster
-   for a given schema. typcally this number grows.
-   the simplest plot is an integarl.
+-- GB read, written -- for all node in the cluster for a given schema. typcally
+   this number grows.  the simplest plot is an integarl.
 
--- the number of GB allocaed to MyDB tables for that
-   schema.
+-- the number of GB allocaed to MyDB tables for that schema.
 
+
+:: Author :: Donald Petravick
 """
 
 import os
-import coreutils
-import cx_Oracle #needed to catch execptions
 from desdmdashboard_remote.senddata.decorators import Monitor
-from desdmdashboard_collect.collect_utils import log
+from desdmdashboard_collect.collect_utils import log, database
 
 logger = log.get_logger('desdmdashboard_collect')
 
@@ -29,33 +26,12 @@ def main():
    print mydb_GB('db-desoper')
    print mydb_GB('db-dessci')
 
-class X(Exception):
-    pass
-
-
-def _query_one_row(query, section):
-   """ open session, eecute  query returning one line
-
-       Throw an exeception of if in None or multi-row.
-   """
-   dbh = coreutils.DesDbi(os.path.join(os.getenv("HOME"),".desservices.ini"),section)
-   cur = dbh.cursor()
-   cur.execute(query)
-   row = cur.fetchall()
-   print row
-   if len(row) != 1:
-      errtxt = "expected one row,  got %s rows : query : %s" % (len(row), query)
-      raise X(errtxt)
-   dbh.close()
-   return row[0]
-
 
 #
 # Collect total reads from a database
 #
 def create_read_GB_metric_name(section):
-   from coreutils import serviceaccess as sa
-   db_name = sa.parse(os.path.join(os.getenv("HOME"),".desservices.ini"),section)["name"]
+   db_name = database.get_db_name(section)
    metric_name = "{db_name}_read_GB".format(db_name=db_name)
    return metric_name
 
@@ -69,8 +45,8 @@ def read_GB(section):
            FROM 
              GV$IOSTAT_FILE
            """
-   (dbname, small_reads, 
-    large_reads) =_query_one_row(q,  section)
+   (dbname, small_reads, large_reads) = database.query_one_row(q,
+           section=section)
    reads  = (small_reads  + large_reads)/1024
    return reads 
 
@@ -78,9 +54,8 @@ def read_GB(section):
 # Collect total writes to a database
 #
 def create_write_GB_metric_name(section):
-   from coreutils import serviceaccess as sa
-   db_name = sa.parse(os.path.join(os.getenv("HOME"),".desservices.ini"),section)["name"]
-   metric_name = "{db_name}_read_GB".format(db_name=db_name)
+   db_name = database.get_db_name(section)
+   metric_name = "{db_name}_write_GB".format(db_name=db_name)
    return metric_name
 
 @Monitor(create_write_GB_metric_name,value_type="int", logger=logger)
@@ -93,8 +68,7 @@ def write_GB(section):
            FROM 
              GV$IOSTAT_FILE
            """
-   (dbname, small_writes, 
-    large_writes) =_query_one_row(q,  section)
+   (dbname, small_writes, large_writes) = database.query_one_row(q,  section)
    writes = (small_writes + large_writes)/1024
    return writes
 
@@ -102,9 +76,8 @@ def write_GB(section):
 # Collect total size of "mydb" for a database
 #
 def create_mydb_GB_metric_name(section):
-   from coreutils import serviceaccess as sa
-   db_name = sa.parse(os.path.join(os.getenv("HOME"),".desservices.ini"),section)["name"]
-   metric_name = "{db_name}_read_GB".format(db_name=db_name)
+   db_name = database.get_db_name(section)
+   metric_name = "{db_name}_mydb_GB".format(db_name=db_name)
    return metric_name
 
 @Monitor(create_mydb_GB_metric_name,value_type="int", logger=logger)
@@ -117,7 +90,7 @@ def mydb_GB(section):
             DBA_SEGMENTS 
          where 
             tablespace_name = 'USERS_BIG'"""
-   (dbname, mytablespace) = _query_one_row(q,  section)
+   (dbname, mytablespace) = database.query_one_row(q,  section)
    # can be none if no space used.
    if not mytablespace :  mytablespace = 0  
    return mytablespace

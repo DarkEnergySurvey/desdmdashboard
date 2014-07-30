@@ -7,17 +7,24 @@ import subprocess
 import sys 
 
 from desdmdashboard_remote.senddata.decorators import Monitor
+from desdmdashboard_collect.collect_utils import log
+
+logger = log.get_logger('desdmdashboard_collect')
 
 @Monitor('desar_httpd_cpu', value_type='int')
 def sick_httpd() :
     """ Return the amount intergreted CPU by th emost cpu intensive httpd """
 
-    debug = True  # change to the log infrastrucutre.
-    ps = subprocess.Popen(('ps', "--no-headers", "-o" ,"cputime comm", "-A"), stdout=subprocess.PIPE)
-    output = ps.communicate()[0]
+    out, err = commandline.shell_command(
+            ("ps", "--no-headers", "-o" ,"cputime comm", "-A"))
+    if err:
+        logger.warning('sick_http aborted because of subprocess error.')
+        raise commandline.DataCollectionCommandLineError(err)
+
+    lines = out.rsplit('\n')
 
     #sanity -- put a 0 in have something that way if no httpd report 0
-    cputimes=[0]
+    cputimes=[0, ]
     for line in output.split('\n'):
         if debug: print >> sys.stderr, "Line:" ,line
         if not line :  continue
@@ -41,5 +48,3 @@ def sick_httpd() :
     maxtime = cputimes[-1]
     if debug : print >> sys.stderr, "max_httpd time", maxtime
     return maxtime
-
-
