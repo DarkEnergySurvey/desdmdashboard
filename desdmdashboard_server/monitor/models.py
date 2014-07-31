@@ -53,11 +53,13 @@ class Metric(models.Model):
     UNIT_SECONDS = 1
     UNIT_BYTES = 2
     UNIT_MEGABYTES = 3
+    UNIT_GIGABYTES = 4
 
     UNIT_CHOICES = (
             (UNIT_SECONDS, 'seconds'),
             (UNIT_BYTES, 'bytes'),
-            (UNIT_MEGABYTES, 'Mbytes'),
+            (UNIT_MEGABYTES, 'MBytes'),
+            (UNIT_GIGABYTES, 'GBytes'),
             )
     unit = models.PositiveSmallIntegerField(choices=UNIT_CHOICES, null=True,
             blank=True)
