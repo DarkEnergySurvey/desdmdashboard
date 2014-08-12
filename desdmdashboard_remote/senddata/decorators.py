@@ -93,9 +93,9 @@ class Monitor(object):
 
             if self.metric_name_generator:
                 self.data['name'] = self.metric_name_generator(*args, **kwargs)
-                if not type(self.date['name']) == str:
+                if not type(self.data['name']) == str:
                     mess = ('The output of the metric_name_generator function '
-                            'has to be of type str, %s was returned.' % type(self.date['name']))
+                            'has to be of type str, %s was returned.' % type(self.data['name']))
                     raise ValueError(mess)
 
             if self.logger:
