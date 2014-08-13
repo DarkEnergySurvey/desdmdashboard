@@ -6,22 +6,31 @@ Acquire Relevant metrics at the sytems level
 import subprocess
 import sys 
 
+from desdmdashboard_remote.senddata import decorators
+
 from desdmdashboard_remote.senddata.decorators import Monitor
 from desdmdashboard_collect.collect_utils import log
 
 logger = log.get_logger('desdmdashboard_collect')
 
-@Monitor('desar_httpd_cpu', value_type='int')
+@decorators.Monitor('desar_httpd_cpu', value_type='int', logger=logger)
 def sick_httpd() :
     """ Return the amount intergreted CPU by th emost cpu intensive httpd """
 
-    out, err = commandline.shell_command(
-            ("ps", "--no-headers", "-o" ,"cputime comm", "-A"))
+    debug = True 
+
+    # out, err = subprocess.commandline.shell_command(
+    # ("ps", "--no-headers", "-o" ,"cputime comm", "-A"))
+    output, err =  subprocess.Popen(['ps', "--no-headers", '-o', 'cputime', '-o', 'comm', "-A"], stdout=subprocess.PIPE).communicate()
+    #  ['ps', '--no-headers -o "cputime comm" -A'], shell="True", stdout=subprocess.PIPE).communicate()
     if err:
         logger.warning('sick_http aborted because of subprocess error.')
-        raise commandline.DataCollectionCommandLineError(err)
+        raise subprocess.commandline.DataCollectionCommandLineError(err)
 
-    lines = out.rsplit('\n')
+    lines = output.split('\n')
+
+    # if debug : print lines
+    if debug : print >> sys.stderr, lines
 
     #sanity -- put a 0 in have something that way if no httpd report 0
     cputimes=[0, ]
