@@ -1,15 +1,15 @@
 
 
-from collect_utils import log 
+from desdmdashboard_collect.collect_utils import log
 logger = log.get_logger('desdmdashboard_collect')
 
 
-from collect_functions.system_metrics import sick_httpd
-from collect_functions.desar2_iosystem import stken_connections
-from collect_functions.desar2_iosystem import fermigrid_connections
-from collect_functions.desar2_iosystem import noao_connections
-from collect_functions.desar2_iosystem import gpfs_connections
-from collect_functions.desar2_iosystem import any_connections
+from desdmdashboard_collect.collect_functions.system_metrics import sick_httpd
+from desdmdashboard_collect.collect_functions.desar2_iosystem import stken_connections
+from desdmdashboard_collect.collect_functions.desar2_iosystem import fermigrid_connections
+from desdmdashboard_collect.collect_functions.desar2_iosystem import noao_connections
+from desdmdashboard_collect.collect_functions.desar2_iosystem import gpfs_connections
+from desdmdashboard_collect.collect_functions.desar2_iosystem import any_connections
 
 def main():
     sick_httpd()
