@@ -3,15 +3,15 @@
 
 {% block content %}
 
+<div class='dashboard_container'>
 {% for metric in metrices %}
 
-<div id='dashboard_metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
-    <h2>
-        <a href="{{ metric.get_absolute_url }}">
-            {{ metric.name }}
-        </a>
+<a href="{{ metric.get_absolute_url }}">
+<div class='dashboard_metric{% if metric.is_in_trouble_status %} alert-mode{% endif %}'>
+    <h3>
+        {{ metric.name }}
         <div class='shaded'>{{ metric.owner }}</div>
-    </h2>
+    </h3>
     <p>
     <b>Status:</b>
     {% if metric.is_in_trouble_status %}    
@@ -20,10 +20,11 @@
     <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
     {% endif %}
     </p>
-    <div id='figure'>
+    <div class='figure_monitor_dashboard'>
         {{ metric.data_display|safe }}
     </div>
-</div>    
+</div>
+</a>
 {% endfor %}
 
 {% endblock %}

@@ -9,7 +9,6 @@ from monitor.models import Metric
 
 from datetime import datetime
 
-'''
 font = {
     'family' : 'sans-serif',
 #   'weight' : 'bold',
@@ -17,7 +16,6 @@ font = {
     }
 
 plt.rc('font', **font)
-'''
 
 
 def dashboard(request, owner=None):
@@ -35,7 +33,7 @@ def dashboard(request, owner=None):
 
         if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_PLOT:
             try:
-                data_display = plot_svgbuf_for_metric(metric)
+                data_display = plot_svgbuf_for_metric(metric, size='small')
             except Exception, e:
                 data_display = e
         elif metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_TABLE:
@@ -110,7 +108,7 @@ def metric_detail(request, owner=None, nameslug=None):
                 { 'figure': imgdata.buf, })
 
 
-def plot_svgbuf_for_metric(metric):
+def plot_svgbuf_for_metric(metric, size='big'):
 
     init = datetime.now()
 
@@ -122,12 +120,23 @@ def plot_svgbuf_for_metric(metric):
 
     imgdata = StringIO.StringIO()
 
-    ax = df.plot(
-            fontsize=2,
-            figsize=(8,4),
-            lw=1.5,
-            color=(0, 0, 0.6),
-            )
+    if size == 'big':
+        ax = df.plot(
+                fontsize=2,
+                figsize=(8,4),
+                lw=1.5,
+                color=(0, 0, 0.6),
+                )
+        ax.legend((metric.name,), loc='best')
+
+    elif size == 'small':
+        ax = df.plot(
+                fontsize=1,
+                figsize=(4,2.5),
+                lw=1.5,
+                color=(0, 0, 0.6),
+                legend=False,
+                )
 
     if metric.value_type.model in ['metricdataint', 'metricdatafloat', ]:
         if metric.alert_value:
@@ -135,11 +144,11 @@ def plot_svgbuf_for_metric(metric):
             xav = [min(df.index), max(df.index),]
             ax.plot(xav,yav, 'r--')
 
-    ax.legend((metric.name,), loc='best')
 
     if metric.unit:
         ax.set_ylabel(metric.get_unit_display())
     fig = ax.get_figure()
+    fig.tight_layout()
 
     fig.savefig(imgdata, format='svg')
     plt.close(fig)

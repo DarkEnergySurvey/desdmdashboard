@@ -111,7 +111,7 @@
 
         #content a { 
         	text-decoration: none;
-            color: #4c83d1;
+            color: #000000;
         }
 
         #content p {
@@ -143,9 +143,22 @@
             font-weight: bold;
         }
 
-        #dashboard_metric {
-            padding: 1em;
-            margin: 0.5em 0;
+        .dashboard_container {
+            display: block;
+        }
+
+        .dashboard_metric {
+            display: block;
+            float: left;
+            width: 45%;
+            padding: 1em ;
+            margin: 0.5em; 
+            border: 1px dashed black;
+        }
+
+        .metric_detail {
+            padding: 1em ;
+            margin: 0.5em; 
         }
 
         .dashboard_metric table, tr, td, th {
@@ -153,6 +166,10 @@
             border: 0;
             padding: 0 3em 0 0;
             line-height: 1.3em;
+        }
+
+        .dashboard_metric h2 {
+            font-size: 50%;
         }
 
         .dashboard_metric table, th {
@@ -179,7 +196,7 @@
 
         .alert-mode {
             background: #FFF0F0;
-            border: 3px dotted red;
+            border: 1px dashed red;
         }
 
         .shaded {
@@ -193,6 +210,15 @@
             margin: 0 1em 0 1em;
         }
         
+        .figure_monitor_dashboard {
+            display: block;
+            width: 75%;
+            position: relative;
+            padding: 1em;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         #figure {
             width: 576pt;
             position: relative;
@@ -202,7 +228,8 @@
         }
 
         #footer {
-        	padding: 50px 180px 0;
+            margin: 2em;
+        	padding: 1em 3em;
         }
 
         .fine-print {

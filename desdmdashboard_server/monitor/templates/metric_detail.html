@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div id='dashboard_metric' {% if metric.is_in_trouble_status %}class='alert-mode' {% endif %}>
+<div class='metric_detail{% if metric.is_in_trouble_status %} alert-mode{% endif %}'>
     <h2>{{ metric.name }} </h2>
     <p>
     <table class='metric_detail'>
@@ -27,7 +27,11 @@
     <div id='figure'>
         {{ figure|safe }}
     </div>
-    {% if metric.doc %}<h4>Doc:</h4> {{ metric.doc_rst_as_html|safe }}</p>{% endif %}
+    {% if metric.doc %}
+    <div class='doc'>
+    <h4>Doc:</h4> {{ metric.doc_rst_as_html|safe }}
+    </div>
+    {% endif %}
 </div>    
 
 {% endblock %}
