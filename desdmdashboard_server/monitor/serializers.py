@@ -36,7 +36,7 @@ class MetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Metric
         fields = ('pk', 'name', 'has_error', 'error_message', 'value_type_',
-                'value', 'time_', 'tags', 'owner', )
+                'value', 'time_', 'tags', 'owner', 'doc', )
 
     def restore_object(self, attrs, instance=None):
 
