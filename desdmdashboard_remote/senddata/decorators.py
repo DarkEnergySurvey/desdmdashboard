@@ -1,7 +1,7 @@
 '''
 '''
 
-#import requests
+import sys
 import time
 
 import urllib2
@@ -84,6 +84,7 @@ class Monitor(object):
             raise ValueError(mess)
         self.data['tags'] = kwargs.get('tags', u'')
         self.data['value_type_'] = kwargs.get('value_type', u'')
+        self.send_docstring = kwargs.get('send_docstring', True)
 
     def __call__(self, func):
         decorator_self = self
@@ -114,8 +115,9 @@ class Monitor(object):
                 if self.logger:
                     self.logger.exception('Function execution failed:')
 
-            if func.__doc__:
-                self.data['doc']
+            if self.send_docstring:
+                if func.__doc__:
+                    self.data['doc'] = trim_docstring(func.__doc__)
                 
             # stuff after func execution
             # exectime = time.time() - started_at
@@ -136,3 +138,31 @@ class Monitor(object):
                     self.logger.error(err)
 
         return wrappee
+
+
+def trim_docstring(docstring):
+    '''code from http://legacy.python.org/dev/peps/pep-0257/
+    '''
+    if not docstring:
+        return ''
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxint
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxint:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+    # Return a single string:
+    return '\n'.join(trimmed)
