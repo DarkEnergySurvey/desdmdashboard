@@ -19,6 +19,7 @@ DATA_TEMPLATE = {
     'value': u'',
     'tags': u'',
     'time_': u'',
+    'doc': u'',
     }
 
 
@@ -112,6 +113,9 @@ class Monitor(object):
                 self.data['error_message'] = err
                 if self.logger:
                     self.logger.exception('Function execution failed:')
+
+            if func.__doc__:
+                self.data['doc']
                 
             # stuff after func execution
             # exectime = time.time() - started_at
