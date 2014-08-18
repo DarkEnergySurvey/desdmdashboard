@@ -58,6 +58,9 @@ class MetricSerializer(serializers.ModelSerializer):
         else:
             t = now()
 
+        if attrs['doc']:
+            instance.doc = attrs['doc']
+
         instance.set_latest_measurements(
                 value=attrs['latest_value'],
                 tags=attrs['latest_tags'],
