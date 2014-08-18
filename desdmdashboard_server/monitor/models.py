@@ -10,6 +10,8 @@ import json
 
 from datetime import datetime
 
+from docutils.core import publish_parts
+
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -125,6 +127,17 @@ class Metric(models.Model):
     def get_absolute_url(self):
         return reverse('monitor.views.main.metric_detail',
                 kwargs={'nameslug': self.slug, 'owner': self.owner.username})
+
+    @property
+    def doc_rst_as_html(self):
+        '''
+        returns the doc string as rendered html under assumption that it is
+        restructerd text.  '''
+        doc_html = publish_parts(self.doc, writer_name='html', 
+                settings_overrides={'doctitle_xform':False,
+                    'initial_header_level': 4, 'report_level': 'quiet'}
+                )['html_body']
+        return doc_html
 
     @property
     def has_no_value_warning(self):
