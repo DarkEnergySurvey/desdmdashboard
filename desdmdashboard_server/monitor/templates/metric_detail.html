@@ -24,10 +24,10 @@
         <tr><th>Trouble Messages:</th><td class='trouble_message'>{% for tr in metric.get_trouble_statements %}{{ tr }}<br>{% endfor %}</td></tr>
     </table>
     </p>
-    {% if metric.doc %}<h4>Doc:</h4> {{ metric.doc_rst_as_html|safe }}</p>{% endif %}
     <div id='figure'>
         {{ figure|safe }}
     </div>
+    {% if metric.doc %}<h4>Doc:</h4> {{ metric.doc_rst_as_html|safe }}</p>{% endif %}
 </div>    
 
 {% endblock %}
