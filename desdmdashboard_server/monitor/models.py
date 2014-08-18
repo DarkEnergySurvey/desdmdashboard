@@ -133,11 +133,14 @@ class Metric(models.Model):
         '''
         returns the doc string as rendered html under assumption that it is
         restructerd text.  '''
-        doc_html = publish_parts(self.doc, writer_name='html', 
-                settings_overrides={'doctitle_xform':False,
-                    'initial_header_level': 4, 'report_level': 'quiet'}
-                )['html_body']
-        return doc_html
+        try:
+            doc_html = publish_parts(self.doc, writer_name='html', 
+                    settings_overrides={'doctitle_xform':False,
+                        'initial_header_level': 4, 'report_level': 'quiet'}
+                    )['html_body']
+            return doc_html
+        except Exception, err:
+            return err
 
     @property
     def has_no_value_warning(self):
