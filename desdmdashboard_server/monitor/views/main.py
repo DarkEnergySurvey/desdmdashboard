@@ -135,7 +135,7 @@ def plot_svgbuf_for_metric(metric):
             xav = [min(df.index), max(df.index),]
             ax.plot(xav,yav, 'r--')
 
-    ax.legend((metric.name,))
+    ax.legend((metric.name,), loc='best')
 
     if metric.unit:
         ax.set_ylabel(metric.get_unit_display())
