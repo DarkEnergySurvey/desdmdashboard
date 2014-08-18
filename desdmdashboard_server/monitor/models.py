@@ -34,8 +34,11 @@ class Metric(models.Model):
 
     owner = models.ForeignKey('auth.User', related_name='metrics')
 
+    DEFAULT_STALENESS_WARNING_AFTER_SECONDS = 60*60*24*2
+
     warning_if_no_value_after_seconds = models.PositiveIntegerField(
-            default=60*60*24*7, null=True, blank=True)
+            default=DEFAULT_STALENESS_WARNING_AFTER_SECONDS, null=True,
+            blank=True)
 
     latest_value = models.CharField(max_length=1024, null=True, blank=True)
     latest_time = models.DateTimeField(null=True, blank=True)
