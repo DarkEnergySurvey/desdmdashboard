@@ -55,16 +55,27 @@ class Metric(models.Model):
     #instrument  = models.ForeignKey(Instrument, blank=True, null=True)
     #instrument = models.CharField(max_length=512)
 
-    UNIT_SECONDS = 1
-    UNIT_BYTES = 2
-    UNIT_MEGABYTES = 3
-    UNIT_GIGABYTES = 4
+    UNIT_BYTES = 0 # 1000^0
+    UNIT_KILOBYTES= 1
+    UNIT_MEGABYTES = 2
+    UNIT_GIGABYTES = 3
+    UNIT_TERABYTES = 4
+    UNIT_PETABYTES = 5
+    UNIT_EXABYTES = 6
+
+    UNIT_SECONDS = 10
+
+    UNIT_NUMCONNECTION = 20
 
     UNIT_CHOICES = (
+            (UNIT_BYTES, 'Bytes'),
+            (UNIT_KILOBYTES, 'KB'),
+            (UNIT_MEGABYTES, 'MB'),
+            (UNIT_GIGABYTES, 'GB'),
+            (UNIT_TERABYTES, 'TB'),
+            (UNIT_PETABYTES, 'PB'),
             (UNIT_SECONDS, 'seconds'),
-            (UNIT_BYTES, 'bytes'),
-            (UNIT_MEGABYTES, 'MBytes'),
-            (UNIT_GIGABYTES, 'GBytes'),
+            (UNIT_NUMCONNECTION, '# Connections'),
             )
     unit = models.PositiveSmallIntegerField(choices=UNIT_CHOICES, null=True,
             blank=True)
