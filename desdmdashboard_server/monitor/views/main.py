@@ -132,7 +132,7 @@ def plot_svgbuf_for_metric(metric, size='big'):
     elif size == 'small':
         ax = df.plot(
                 fontsize=1,
-                figsize=(4,2.5),
+                figsize=(4.7,2.7),
                 lw=1.5,
                 color=(0, 0, 0.6),
                 legend=False,
