@@ -2,7 +2,7 @@
 
 {% block menubar %}
     {% for sec, secname in sections.iteritems %}
-    <a href='{% url "dashboard_section" sec %}'{% if sec == section %} class='activesection'{% endif %}><li>{{ secname }}</li></a>
+    <a href='{% url "dashboard_section" sec %}'{% if secname == section_name %} class='activesection'{% endif %}><li>{{ secname }}</li></a>
     {% endfor %}
 {% endblock %}
 
