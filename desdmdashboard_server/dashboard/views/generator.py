@@ -3,6 +3,8 @@ import os
 import re
 import inspect
 
+from docutils.core import publish_parts
+
 from importlib import import_module
 
 from django.shortcuts import render, render_to_response, get_object_or_404
@@ -39,27 +41,26 @@ def get_section_modules():
 def dashboard_home(request):
     section_modules = get_section_modules()
     home_module = import_module('dashboard.views.sections.home')
-    outputs = get_module_function_outputs(home_module)
+    section_dicts = get_module_function_outputs(home_module)
     section_names = {s: s.replace('_', ' ').title() for s in
             section_modules.keys() }
     context = {
             'sections': section_names,
-            'outputs' : outputs,
+            'section_dicts': section_dicts,
             }
     return render_to_response('dashboard.html', context)
 
 
 def dashboard_section(request, section=None):
     section_modules = get_section_modules()
-    outputs = get_module_function_outputs(section_modules[section])
+    section_dicts = get_module_function_outputs(section_modules[section])
     #section = get_object_or_404(models.DashboardSection, slug=section)
     section_names = {s: s.replace('_', ' ').title() for s in
             section_modules.keys() }
     context = {
             'sections': section_names,
             'section_name': section.replace('_', ' ').title(),
-            'section': section,
-            'outputs': outputs,
+            'section_dicts': section_dicts,
             }
     return render_to_response('dashboard.html', context)
 
@@ -71,8 +72,17 @@ def get_module_function_outputs(module):
         name, f = fs
         if f.__module__ == module.__name__:
             try:
-                outputstring = str(f())
-                outputs[' '.join(name.rsplit('_')).title()] = outputstring 
+                sectiondict = f()
+                if f.__doc__:
+                    doc_html = publish_parts(f.__doc__, writer_name='html',
+                            settings_overrides={
+                                'doctitle_xform':False,
+                                'initial_header_level': 4,
+                                'report_level': 'quiet'}
+                            )['html_body']
+                    sectiondict['doc'] = doc_html
+                outputs[' '.join(name.rsplit('_')).title()] = sectiondict
             except Exception, e:
                 outputs[' '.join(name.rsplit('_')).title()] = e
+            
     return outputs

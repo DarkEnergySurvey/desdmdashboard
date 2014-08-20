@@ -10,13 +10,18 @@
 
 <h2>{{ section_name }}</h2>
 
-{% for name, outstring in outputs.items %}
+{% for name, sectiondict in section_dicts.items %}
 
 <div id='dashboard-metric'>
-    <h3>{{ name }} </h3>
+    <h3>{{ sectiondict.title }} </h3>
     <div id='figure'>
-        {{ outstring|safe }}
+        {{ sectiondict.content_html|safe }}
     </div>
+    {% if sectiondict.doc %}
+        <h4>Documentation</h4>
+        {{ sectiondict.doc|safe }}
+    </h3>
+    {% endif %}
 </div>    
 
 {% endfor %}
