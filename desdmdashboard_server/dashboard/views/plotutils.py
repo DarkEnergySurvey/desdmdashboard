@@ -28,6 +28,7 @@ def plot_df_to_svg_string(df, **kwargs):
 
     imgdata = StringIO.StringIO()
     fig.savefig(imgdata, format='svg')
+    plt.close(fig)
     imgdata.seek(0)
 
     return imgdata.buf
