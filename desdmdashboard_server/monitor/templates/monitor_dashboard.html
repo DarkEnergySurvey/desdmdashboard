@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<h1>Metrics Overview{% if owner %} for {{ owner }}{% endif %}</h1></br>
+
 <div class='dashboard_container'>
 {% for metric in metrices %}
 
@@ -12,14 +14,19 @@
         {{ metric.name }}
         <div class='shaded'>{{ metric.owner }}</div>
     </h3>
-    <p>
-    <b>Status:</b>
-    {% if metric.is_in_trouble_status %}    
-    <img class='icon' src="{% static "img/error_icon.png" %}" height='16px' alt="logo"/>
+    <div class='dashboard_metric_subtitle'>
+        <span>
+    <strong>Status:</strong>
+    {% if metric.is_in_trouble_status %}
+    <img class='icon' src="{% static "img/error_icon.png" %}" height='12px' alt="logo"/>
     {% else %}
-    <img class='icon' src="{% static "img/ok_icon.png" %}" height='16px' alt="logo"/>
+    <img class='icon' src="{% static "img/ok_icon.png" %}" height='12px' alt="logo"/>
     {% endif %}
-    </p>
+    </span>
+    <span>
+    <div class='shaded'>last measured: {{ metric.last_updated }}</div>
+    </span>
+    </div>
     <div class='figure_monitor_dashboard'>
         {{ metric.data_display|safe }}
     </div>

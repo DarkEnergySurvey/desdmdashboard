@@ -50,7 +50,8 @@ def dashboard(request, owner=None):
             'is_in_trouble_status': metric.is_in_trouble_status,
             'data_display': data_display,
             'owner': metric.owner.username,
-            'get_absolute_url': metric.get_absolute_url()
+            'get_absolute_url': metric.get_absolute_url(),
+            'last_updated': metric.get_last_datapoint_from_table().time,
             }
         metrices.append(m)
 
@@ -60,7 +61,7 @@ def dashboard(request, owner=None):
     #print 'time spent : ', offtime - initime
 
     return render_to_response('monitor_dashboard.html',\
-            { 'metrices': metrices, })
+            { 'metrices': metrices, 'owner': owner, })
 
 
 def metric_detail(request, owner=None, nameslug=None):
@@ -102,6 +103,7 @@ def metric_detail(request, owner=None, nameslug=None):
 
         imgdata = StringIO.StringIO()
         fig.savefig(imgdata, format='svg')
+        plt.close(fig)
         imgdata.seek(0)
     
         return render_to_response('multimetric.html',\

@@ -96,6 +96,12 @@
             margin: 0 2em 0 0;
         }
 
+        #menu_now {
+            margin: 0 1em;
+            float: right;
+            font-weight: normal;
+        }
+
         #menubar a:hover {
             color: #f00f0f;
         }
@@ -178,6 +184,12 @@
             float: left;
         }
 
+        .dashboard_metric_subtitle {
+            font-size: 90%;
+            vertical-align: bottom;
+            padding: 0.7em 0;
+        }
+
         .trouble_message {
             color: #E00000;
         }
@@ -189,6 +201,10 @@
 
         .dataframe th {
             color: #C00000;
+        }
+        
+        strong {
+            font-weight: 100;
         }
 
         table.dataframe tr:nth-child(even) {
@@ -204,7 +220,6 @@
             color: #a0a0a0;
             float: right;
             margin: 0 0 0 2em;
-            font-size: 80%;
         }
 
         .icon {
@@ -344,11 +359,17 @@
             {% endblock %}
         </div>
         <div id="menubar">
-            <ul>
-            {% block menubar %}
-            {% endblock %}
-            </ul>
+            <div id="menu">
+                <ul>
+                {% block menubar %}
+                {% endblock %}
+                </ul>
+            </div>
+            <div id="menu_now">
+                {% now "M. j, Y, P" %}
+            </div>
         </div>
+    </div>
     </nav>
 
     {% block precontent %}{% endblock %}
