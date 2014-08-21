@@ -4,7 +4,7 @@ from .models import Metric
 from .serializers import MetricDataJSONSerializer
 
 
-def get_metric_dataframe(name, owner, fields=('time','value', ),
+def get_metric_dataframe(owner, name, fields=('time','value', ),
         index='time'):
     '''
     possible fields:
@@ -13,7 +13,7 @@ def get_metric_dataframe(name, owner, fields=('time','value', ),
     MetricDataJSON value fields are automatically expanded if 'value' is in
     fields.
     '''
-    metric = Metric.objects.get_by_natural_key(name, owner)
+    metric = Metric.objects.get_by_natural_key(owner, name)
     
     if metric.value_type.model == 'metricdatajson':
         ser = MetricDataJSONSerializer(
@@ -53,16 +53,16 @@ def get_metric_dataframe(name, owner, fields=('time','value', ),
     return df
 
 
-def get_multimetric_dataframe(name_owner_pairs, resample='D'):
+def get_multimetric_dataframe(owner_name_pairs, resample='D'):
     '''
     Returns a timeseries dataframe for multiple Metrics specified by 
-    an iterable consisting of (name, owner__username) tuples.
+    an iterable consisting of (owner__username, name) tuples.
     '''
 
     dfs = {}
 
-    for i, metricspec in enumerate(name_owner_pairs):
-        dfs[metricspec[0]] = get_metric_dataframe(metricspec[0], metricspec[1])
+    for i, metricspec in enumerate(owner_name_pairs):
+        dfs[metricspec[1]] = get_metric_dataframe(metricspec[0], metricspec[1])
 
     df = pandas.concat(dfs.values(), join='outer', axis=0,)
 

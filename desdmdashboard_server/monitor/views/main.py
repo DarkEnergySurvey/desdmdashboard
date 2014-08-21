@@ -113,7 +113,7 @@ def plot_svgbuf_for_metric(metric, size='big'):
     init = datetime.now()
 
     # get the data for the metric
-    mdata = Metric.data.get_dataframe_queryset(metric.name, metric.owner)
+    mdata = Metric.data.get_dataframe_queryset(metric.owner, metric.name)
     # get the pandas timeseries
     df = mdata.to_timeseries(index='time', fieldnames=('value', ))
     #df = df.resample('h')

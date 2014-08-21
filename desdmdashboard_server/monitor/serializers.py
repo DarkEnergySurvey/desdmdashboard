@@ -43,7 +43,7 @@ class MetricSerializer(serializers.ModelSerializer):
         try:
             request = self.context['request']
             instance = self.opts.model.objects.get_by_natural_key(
-                    name=attrs['name'], owner=request.user.pk)
+                    owner=request.user.pk, name=attrs['name'])
 
         except:
             if not attrs['value_type']:
