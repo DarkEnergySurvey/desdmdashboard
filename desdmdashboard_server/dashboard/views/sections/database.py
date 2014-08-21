@@ -1,17 +1,20 @@
+
 from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 def desoper():
     df = pandas_utils.get_multimetric_dataframe(
-            (('desoper_write_GB', 'gdaues',),
-                ('desoper_read_GB', 'gdaues',),
-                ('desoper_mydb_GB', 'gdaues',),),
+            (('gdaues', 'desoper_write_GB', ),
+                ('gdaues', 'desoper_read_GB', ),
+                ('gdaues', 'desoper_mydb_GB', ), ),
             resample='D',
             )
     # do anything with panda you want
 
     #get serillizes plot
-    figstring = plot_df_to_svg_string(df, style='.-', logy=True, y_label='GB')
+    figstring = plot_df_to_svg_string(df.last('30D'),
+            style='.-', colormap='jet',
+            logy=True, y_label='GB')
 
     sectiondict = {
             'title': 'desoper operations',
@@ -37,15 +40,16 @@ def dessci():
     :Author: Michael Graber
     '''
     df = pandas_utils.get_multimetric_dataframe(
-            (('dessci_write_GB', 'gdaues',),
-                ('dessci_read_GB', 'gdaues',),
-                ('dessci_mydb_GB', 'gdaues',),),
+            (('gdaues', 'dessci_write_GB', ),
+                ('gdaues', 'dessci_read_GB', ),
+                ('gdaues', 'dessci_mydb_GB', ),),
             resample='D',
             )
     # do anything with panda you want
 
     #get serillizes plot
-    figstring = plot_df_to_svg_string(df, style='.-', y_label='GB')
+    figstring = plot_df_to_svg_string(df.last('30D'),
+            style='.-', y_label='GB')
 
     sectiondict = {
             'title': 'dessci operations',
