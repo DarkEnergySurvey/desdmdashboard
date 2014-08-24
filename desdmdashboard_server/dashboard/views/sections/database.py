@@ -3,7 +3,7 @@ from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 def desoper():
-    df = pandas_utils.get_multimetric_dataframe(
+    df, metrics = pandas_utils.get_multimetric_dataframe(
             (('gdaues', 'desoper_write_GB', ),
                 ('gdaues', 'desoper_read_GB', ),
                 ('gdaues', 'desoper_mydb_GB', ), ),
@@ -13,6 +13,7 @@ def desoper():
 
     #get serillizes plot
     figstring = plot_df_to_svg_string(df.last('30D'),
+            metrics=metrics,
             style='.-', colormap='jet',
             logy=True, y_label='GB')
 
@@ -39,7 +40,7 @@ def dessci():
 
     :Author: Michael Graber
     '''
-    df = pandas_utils.get_multimetric_dataframe(
+    df, metrics = pandas_utils.get_multimetric_dataframe(
             (('gdaues', 'dessci_write_GB', ),
                 ('gdaues', 'dessci_read_GB', ),
                 ('gdaues', 'dessci_mydb_GB', ),),
@@ -49,6 +50,7 @@ def dessci():
 
     #get serillizes plot
     figstring = plot_df_to_svg_string(df.last('30D'),
+            metrics=metrics,
             style='.-', y_label='GB')
 
     sectiondict = {

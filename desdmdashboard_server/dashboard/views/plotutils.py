@@ -16,8 +16,18 @@ def plot_df_to_svg_string(df, **kwargs):
 
     fonts = kwargs.pop('fontsize', 2)
     figs = kwargs.pop('figsize', (8,4))
+    metrics = kwargs.pop('metrics', None)
     line_width = kwargs.pop('lw', 1.5)
     y_label = kwargs.pop('y_label', None)
+
+    # FIXME !!
+#   if metrics:
+#       labels = [] 
+#       for k, metric in metrics.iteritems():
+#           l_str = "<a href='{url}'>{label}</a>"
+#           label = l_str.format(url=metric.get_absolute_url(), label=k)
+#           labels.append(label)
+#       kwargs['labels'] = labels
 
     ax = df.plot(fontsize=fonts, figsize=figs, lw=line_width, **kwargs)
 
