@@ -12,12 +12,24 @@ class MetricDataIntInline(admin.TabularInline):
     ordering = ('-time', )
     extra = 0
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
 class MetricDataFloatInline(admin.TabularInline):
     model = MetricDataFloat 
     fields = ('value', 'time', 'has_error', 'error_message', )
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
     ordering = ('-time', )
     extra = 0
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 class MetricDataCharInline(admin.TabularInline):
     model = MetricDataChar 
@@ -26,6 +38,12 @@ class MetricDataCharInline(admin.TabularInline):
     ordering = ('-time', )
     extra = 0
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
 class MetricDataDatetimeInline(admin.TabularInline):
     model = MetricDataDatetime 
     fields = ('value', 'time', 'has_error', 'error_message', )
@@ -33,12 +51,24 @@ class MetricDataDatetimeInline(admin.TabularInline):
     ordering = ('-time', )
     extra = 0
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
 class MetricDataJSONInline(admin.TabularInline):
     model = MetricDataJSON
     fields = ('value', 'time', 'has_error', 'error_message', )
     readonly_fields = ('value', 'time', 'has_error', 'error_message', )
     ordering = ('-time', )
     extra = 0
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 class MetricAdmin(admin.ModelAdmin):
 
@@ -56,6 +86,7 @@ class MetricAdmin(admin.ModelAdmin):
             ('value_type', ),
             ('alert_operator', 'alert_value', 'alert_triggered', ),
             ('expression_string', 'expression_evaluation'),
+            ('dashboard_display_window_length_days', ),
             ('timestamp_modified', 'timestamp_created', ),
             )
 
@@ -70,10 +101,9 @@ class MetricAdmin(admin.ModelAdmin):
             'timestamp_created', 'latest_time', 'latest_value', 'latest_tags',
             'has_error', 'error_message', 'expression_evaluation')
     
-
-    inlines = (MetricDataIntInline, MetricDataFloatInline,
-            MetricDataCharInline, MetricDataDatetimeInline,
-            MetricDataJSONInline, )
+#   inlines = (MetricDataIntInline, MetricDataFloatInline,
+#           MetricDataCharInline, MetricDataDatetimeInline,
+#           MetricDataJSONInline, )
 
         
 admin.site.register(Metric, MetricAdmin)
