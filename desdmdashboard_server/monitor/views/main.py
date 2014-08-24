@@ -7,7 +7,8 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 
 from monitor.models import Metric
 
-from datetime import datetime
+from django.utils.timezone import now
+from datetime import datetime, timedelta
 
 font = {
     'family' : 'sans-serif',
@@ -19,9 +20,6 @@ plt.rc('font', **font)
 
 
 def dashboard(request, owner=None):
-
-    #print '\n\nDASHBOARD CALLED!!'
-    initime = datetime.now()
 
     if owner:
         ms = Metric.objects.filter(owner__username=owner)
@@ -54,11 +52,6 @@ def dashboard(request, owner=None):
             'last_updated': metric.get_last_datapoint_from_table().time,
             }
         metrices.append(m)
-
-
-    #print 'DASHBOARD BEFORE RETURN:'
-    #offtime = datetime.now()
-    #print 'time spent : ', offtime - initime
 
     return render_to_response('monitor_dashboard.html',\
             { 'metrices': metrices, 'owner': owner, })
@@ -112,10 +105,14 @@ def metric_detail(request, owner=None, nameslug=None):
 
 def plot_svgbuf_for_metric(metric, size='big'):
 
-    init = datetime.now()
+    plot_after = now() - timedelta(
+            metric.dashboard_display_window_length_days)
 
     # get the data for the metric
     mdata = Metric.data.get_dataframe_queryset(metric.owner, metric.name)
+    mdata = mdata.filter(time__gte=plot_after)
+    #mdata = metric.get_data_queryset().values('time', 'value', )
+    #df = pandas.DataFrame(list(mdata))
     # get the pandas timeseries
     df = mdata.to_timeseries(index='time', fieldnames=('value', ))
     #df = df.resample('h')
@@ -128,6 +125,7 @@ def plot_svgbuf_for_metric(metric, size='big'):
                 figsize=(8,4),
                 lw=1.5,
                 color=(0, 0, 0.6),
+                xlim=(plot_after, now()),
                 )
         ax.legend((metric.name,), loc='best')
 
@@ -138,6 +136,7 @@ def plot_svgbuf_for_metric(metric, size='big'):
                 lw=1.5,
                 color=(0, 0, 0.6),
                 legend=False,
+                xlim=(plot_after, now()),
                 )
 
     if metric.value_type.model in ['metricdataint', 'metricdatafloat', ]:
@@ -156,7 +155,4 @@ def plot_svgbuf_for_metric(metric, size='big'):
     plt.close(fig)
     imgdata.seek(0)
     
-    endt = datetime.now()
-    #print 'create metric plot in (s): ', endt - init
-
     return imgdata.buf

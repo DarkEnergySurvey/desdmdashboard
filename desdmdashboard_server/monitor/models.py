@@ -104,7 +104,7 @@ class Metric(models.Model):
             default=DASHBOARD_DISPLAY_OPTION_PLOT)
 
     dashboard_display_window_length_days = models.PositiveSmallIntegerField(
-            default=180)
+            default=7)
 
     OPERATOR_CHOICES = (
         ('lt', 'latest value < alert value'),

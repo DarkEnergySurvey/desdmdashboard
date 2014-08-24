@@ -50,7 +50,7 @@ def get_metric_dataframe(owner, name, fields=('time','value', ),
         columns[columns.index('value')] = name
         df.columns = columns
 
-    return df
+    return df, metric
 
 
 def get_multimetric_dataframe(owner_name_pairs, resample='D'):
@@ -60,13 +60,15 @@ def get_multimetric_dataframe(owner_name_pairs, resample='D'):
     '''
 
     dfs = {}
+    metrics = {}
 
     for i, metricspec in enumerate(owner_name_pairs):
-        dfs[metricspec[1]] = get_metric_dataframe(metricspec[0], metricspec[1])
+        dfs[metricspec[1]], metrics[metricspec[1]] = get_metric_dataframe(
+                metricspec[0], metricspec[1])
 
     df = pandas.concat(dfs.values(), join='outer', axis=0,)
 
     if resample:
         df = df.resample(resample)
 
-    return df
+    return df, metrics
