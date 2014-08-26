@@ -87,7 +87,7 @@ def get_metric_dataframe(name, owner=None, fields=('time', 'value'),
     return df 
 
 
-def get_multimetric_dataframe(name_owner_pairs, resample='D'):
+def get_multimetric_dataframe(owner_name_pairs, resample='D'):
     '''
     Returns a timeseries dataframe for multiple Metrics specified by 
     an iterable consisting of (name, owner__username) tuples.
@@ -95,8 +95,8 @@ def get_multimetric_dataframe(name_owner_pairs, resample='D'):
 
     dfs = {}
 
-    for i, metricspec in enumerate(name_owner_pairs):
-        dfs[metricspec[0]] = get_metric_dataframe(metricspec[0], owner=metricspec[1])
+    for i, metricspec in enumerate(owner_name_pairs):
+        dfs[metricspec[1]] = get_metric_dataframe(metricspec[1], owner=metricspec[0])
 
     df = pandas.concat(dfs.values(), join='outer', axis=0,)
 

@@ -1,6 +1,7 @@
 '''
 '''
 
+from utils import DATA_TEMPLATE
 from ..http_requests import Request
 
 
@@ -10,14 +11,27 @@ def send_metric_value(metric_name, value, **kwargs):
 
     Returns a request object.
     '''
-    data = {}
+    data = DATA_TEMPLATE.copy()
 
     data['name'] = metric_name
     data['value'] = value 
-    data['tags'] = kwargs.get('tags', u'')
-    data['value_type_'] = kwargs.get('value_type', u'')
-    data['has_error'] = kwargs.get('has_error', u'')
-    data['error_message'] = kwargs.get('error_message', u'')
+    data.update(kwargs)
+
+    request = Request()
+    request.POST(data=data)
+
+    return request
+
+
+def send_metric_data(**kwargs):
+    '''
+    Send any of the possible arguments to the DESDMDASHBOARD db as kwargs of
+    this function.
+
+    Returns a request object.
+    '''
+    data = DATA_TEMPLATE.copy()
+    data.update(kwargs)
 
     request = Request()
     request.POST(data=data)

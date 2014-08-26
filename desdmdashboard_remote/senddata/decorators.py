@@ -8,19 +8,9 @@ import urllib2
 import urllib
 from base64 import b64encode
 
+from utils import DATA_TEMPLATE
+
 from ..http_requests import Request
-
-
-DATA_TEMPLATE = {
-    'name': u'',
-    'has_error': False, 
-    'error_message': u'',
-    'value_type_': u'',
-    'value': u'',
-    'tags': u'',
-    'time_': u'',
-    'doc': u'',
-    }
 
 
 class Monitor(object):
