@@ -6,6 +6,8 @@ Acquire Relevant metrics at the sytems level
 import subprocess
 import sys 
 
+from desdmdashboard_remote.senddata import decorators
+
 from desdmdashboard_remote.senddata.decorators import Monitor
 from desdmdashboard_collect.collect_utils import log
 
@@ -20,7 +22,7 @@ def wc_l(cmd) :
         raise commandline.DataCollectionCommandLineError(stderr)
     return int(stdout)
 
-@Monitor('connections_to_stken', value_type='int')
+@decorators.Monitor('connections_to_stken', value_type='int', logger=logger)
 def stken_connections() :
     cmd = "netstat -t | grep stken.*fnal | grep ESTABLISHED |  wc -l"
     return wc_l(cmd)
@@ -32,7 +34,7 @@ def stken_connections() :
     return wc_l(cmd)
 
 
-@Monitor('connections_to_fermigrid', value_type='int')
+@decorators.Monitor('connections_to_fermigrid', value_type='int', logger=logger)
 def fermigrid_connections() :
     cmd = "netstat -t | grep fnal[0-9].*fnal | grep ESTABLISHED |  wc -l"
     return wc_l(cmd)
@@ -44,7 +46,7 @@ def fermigrid_connections() :
     return wc_l(cmd)
 
 
-@Monitor('desar_conn_to_noao', value_type='int')
+@decorators.Monitor('desar_conn_to_noao', value_type='int', logger=logger)
 def noao_connections() :
     cmd = "netstat -t | grep noao | grep ESTABLISHED |  wc -l"
     return wc_l(cmd)
@@ -54,7 +56,7 @@ def noao_connections() :
     return wc_l(cmd)
 
 
-@Monitor('desar_conn_to_gpfs', value_type='int')
+@decorators.Monitor('desar_conn_to_gpfs', value_type='int', logger=logger)
 def gpfs_connections() :
     cmd = "netstat -t | grep gpfs | grep ESTABLISHED |  wc -l"
     return wc_l(cmd)
@@ -66,7 +68,7 @@ def gpfs_connections() :
     return wc_l(cmd)
 
 
-@Monitor('desar_conn_to_any', value_type='int')
+@decorators.Monitor('desar_conn_to_any', value_type='int', logger=logger)
 def any_connections() :
     cmd = "netstat -t  | grep ESTABLISHED |  wc -l"
     return wc_l(cmd)
