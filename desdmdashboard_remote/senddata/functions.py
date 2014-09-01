@@ -47,13 +47,13 @@ def send_metric_data(**kwargs):
     return request
 
 
-def send_metric_value(metric_name, value, **kwargs):
+def send_metric_value(metric_name, val, **kwargs):
     '''
     Function sends value to metric on the DESDMDASHBOARD.
 
     Returns a request object.
     '''
-    request = send_metric_data(name=metric, value=value, **kwargs)
+    request = send_metric_data(name=metric_name, value=val, **kwargs)
     return request
 
 
