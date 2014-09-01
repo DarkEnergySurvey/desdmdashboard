@@ -1,7 +1,7 @@
 '''
 '''
 
-from utils import DATA_TEMPLATE
+from .utils import DATA_TEMPLATE
 from ..http_requests import Request
 
 
@@ -14,23 +14,35 @@ def send_metric_data(**kwargs):
     '''
 
     logger = kwargs.pop('logger', None)
+    verbose = kwargs.pop('verbose', False)
 
-    data = DATA_TEMPLATE.copy()
-    data.update(kwargs)
+    _data = DATA_TEMPLATE.copy()
+    _data.update(kwargs)
 
-    if self.logger:
-        mess = 'Sending value {val} to metric {met}'
-        self.logger.info(mess.format(
-            val=data['value'], met=data['name'])
+    mess = 'Sending value {val} to metric {met}'
+    if logger:
+        logger.info(mess.format(
+            val=_data['value'], met=_data['name'])
             )
+    if verbose:
+        print mess.format(
+            val=_data['value'], met=_data['name'])
 
     request = Request()
-    request.POST(data=data)
+    request.POST(data=_data)
 
     if request.error_status[0]:
-        logger.error('sending data failed: ' + request.error_status[1])
+        mess = 'sending data failed: ' + request.error_status[1]
+        if logger:
+            logger.error(mess)
+        if verbose:
+            print mess
     else:
-        logger.info('data successfully sent.')
+        mess = 'data successfully sent.'
+        if logger:
+            logger.info('data successfully sent.')
+        if verbose:
+            print mess
 
     return request
 
