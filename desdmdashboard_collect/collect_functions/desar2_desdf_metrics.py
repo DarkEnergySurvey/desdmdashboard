@@ -21,7 +21,7 @@ def measure_desdf():
         logger.error(err)
 
     for desdfline in desdfoutput.rsplit('\n')[1:]:
-        if not desfline:
+        if not desdfline:
             continue
         linels = [el for el in desdfline.rsplit(' ') if el]
 
