@@ -23,7 +23,7 @@ def measure_desdf():
     for desdfline in desdfoutput.rsplit('\n')[1:]:
         if not desfline:
             continue
-        linels = [el for el in shellout.rsplit('\n')[1].rsplit(' ') if el]
+        linels = [el for el in desdfline.rsplit(' ') if el]
 
         name = linels[0].rsplit('/')[-1]
         size = lineels[1] # TODO : conversion
