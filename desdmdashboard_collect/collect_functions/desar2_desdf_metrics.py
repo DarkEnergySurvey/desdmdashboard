@@ -26,9 +26,9 @@ def measure_desdf():
         linels = [el for el in desdfline.rsplit(' ') if el]
 
         name = linels[0].rsplit('/')[-1]
-        size = lineels[1] # TODO : conversion
+        size = linels[1] # TODO : conversion
         used = linels[2] # TODO : conversion
-        avail = lineels[3] # TODO : conversion
+        avail = linels[3] # TODO : conversion
         use_percents = int(linels[4][:-1])
         mounts = linels[5:]
 
