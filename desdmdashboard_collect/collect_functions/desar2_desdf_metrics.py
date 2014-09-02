@@ -26,15 +26,21 @@ def measure_desdf():
         linels = [el for el in desdfline.rsplit(' ') if el]
 
         name = linels[0].rsplit('/')[-1]
-        size = linels[1] # TODO : conversion
-        used = linels[2] # TODO : conversion
-        avail = linels[3] # TODO : conversion
-        use_percents = int(linels[4][:-1])
-        mounts = linels[5:]
+        size = float(linels[1])/10.**12 
+        used = float(linels[2])/10.**12 
+        avail = float(linels[3])/10.**12 
 
-        _ = send_metric_data(name='desdf_'+name+'_size', value=size,
-                logger=logger)
-        _ = send_metric_data(name='desdf_'+name+'_avail', value=avail,
-                logger=logger)
-        _ = send_metric_data(name='desdf_'+name+'_used', value=used,
-                logger=logger)
+
+        print 
+        print 'NAME: ', name
+        print 'size: ', size
+        print 'used: ', used
+        print 'avail: ', avail
+
+
+#       _ = send_metric_data(name='desdf_'+name+'_size', value=size,
+#               logger=logger)
+#       _ = send_metric_data(name='desdf_'+name+'_avail', value=avail,
+#               logger=logger)
+#       _ = send_metric_data(name='desdf_'+name+'_used', value=used,
+#               logger=logger)
