@@ -44,3 +44,10 @@ def measure_desdf():
 #               logger=logger)
 #       _ = send_metric_data(name='desdf_'+name+'_used', value=used,
 #               logger=logger)
+
+
+if __name__ == '__main__':
+
+    measure_desdf()
+
+
