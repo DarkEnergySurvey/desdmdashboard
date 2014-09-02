@@ -16,8 +16,18 @@ def send_metric_data(**kwargs):
     logger = kwargs.pop('logger', None)
     verbose = kwargs.pop('verbose', False)
 
+    # we need to read them out here due to added underscore
+    # this is not very nice but it works
+    # it originates from the serializer variable type expectation
+    time_ = kwargs.pop('time', None)
+    value_type_ = kwargs.pop('value_type', None)
+
     _data = DATA_TEMPLATE.copy()
     _data.update(kwargs)
+    if time_:
+        _data['time_'] = time_
+    if value_type_:
+        _data['value_type_'] = value_type_
 
     mess = 'Sending value {val} to metric {met}'
     if logger:
