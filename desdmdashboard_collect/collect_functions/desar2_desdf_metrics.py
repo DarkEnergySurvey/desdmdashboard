@@ -37,11 +37,11 @@ def measure_desdf():
 #       print 'avail: ', avail
 
         _ = send_metric_data(name='desdf_'+name+'_size', value=size,
-                logger=logger)
+                value_type='float', logger=logger)
         _ = send_metric_data(name='desdf_'+name+'_avail', value=avail,
-                logger=logger)
+                value_type='float', logger=logger)
         _ = send_metric_data(name='desdf_'+name+'_used', value=used,
-                logger=logger)
+                value_type='float', logger=logger)
 
 
 if __name__ == '__main__':
