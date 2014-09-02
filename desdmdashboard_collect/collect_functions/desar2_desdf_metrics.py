@@ -30,20 +30,18 @@ def measure_desdf():
         used = 1024*float(linels[2])/10.**12 
         avail = 1024*float(linels[3])/10.**12 
 
+#       print 
+#       print 'NAME: ', name
+#       print 'size: ', size
+#       print 'used: ', used
+#       print 'avail: ', avail
 
-        print 
-        print 'NAME: ', name
-        print 'size: ', size
-        print 'used: ', used
-        print 'avail: ', avail
-
-
-#       _ = send_metric_data(name='desdf_'+name+'_size', value=size,
-#               logger=logger)
-#       _ = send_metric_data(name='desdf_'+name+'_avail', value=avail,
-#               logger=logger)
-#       _ = send_metric_data(name='desdf_'+name+'_used', value=used,
-#               logger=logger)
+        _ = send_metric_data(name='desdf_'+name+'_size', value=size,
+                logger=logger)
+        _ = send_metric_data(name='desdf_'+name+'_avail', value=avail,
+                logger=logger)
+        _ = send_metric_data(name='desdf_'+name+'_used', value=used,
+                logger=logger)
 
 
 if __name__ == '__main__':
