@@ -325,7 +325,10 @@ class MetricDataInt(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            self.value = int(value.rstrip())
+            if value:
+                self.value = int(value.rstrip())
+            else:
+                self.value = None
         except:
             raise
 
@@ -335,7 +338,10 @@ class MetricDataFloat(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            self.value = float(value.rstrip())
+            if value:
+                self.value = float(value.rstrip())
+            else:
+                self.value = None
         except:
             raise
 
@@ -345,7 +351,10 @@ class MetricDataChar(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            self.value = value.rstrip()
+            if value:
+                self.value = value.rstrip()
+            else:
+                self.value = None
         except:
             raise
 
@@ -355,7 +364,10 @@ class MetricDataDatetime(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            self.value = datetime.strptime(value.rstrip(), '%Y-%m-%d %H:%M:%S')
+            if value:
+                self.value = datetime.strptime(value.rstrip(), '%Y-%m-%d %H:%M:%S')
+            else:
+                self.value = None
         except:
             raise
 
@@ -365,8 +377,11 @@ class MetricDataJSON(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            json_obj = json.loads(value)
-            self.value = json_obj
+            if value:
+                json_obj = json.loads(value)
+                self.value = json_obj
+            else:
+                self.value = None
         except:
             raise
 
@@ -376,10 +391,14 @@ class MetricDataBoolean(MetricDataBase):
 
     def value_from_string(self, value):
         try:
-            if value in ['1', 'True', ]:
+            if value.lower() in ['1', 'true', ]:
                 self.value = True
-            else:
+            elif value == '':
+                self.value = None
+            elif value.lower() in ['0', 'false', ]:
                 self.value = False
+            else:
+                raise ValueError("Value has to be from ['1', 'True', None, '', 'False', '0', ]")
         except:
             raise
 
