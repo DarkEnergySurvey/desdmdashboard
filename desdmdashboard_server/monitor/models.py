@@ -324,6 +324,8 @@ class MetricDataInt(MetricDataBase):
     value = models.BigIntegerField(null=True, blank=True)
 
     def value_from_string(self, value):
+        if not type(value) == str:
+            raise ValueError('value has to be string, but %s was provided' % type(value))
         try:
             if value:
                 self.value = int(value.rstrip())
@@ -337,6 +339,8 @@ class MetricDataFloat(MetricDataBase):
     value = models.FloatField(null=True, blank=True)
 
     def value_from_string(self, value):
+        if not type(value) == str:
+            raise ValueError('value has to be string, but %s was provided' % type(value))
         try:
             if value:
                 self.value = float(value.rstrip())
@@ -350,11 +354,10 @@ class MetricDataChar(MetricDataBase):
     value = models.CharField(null=True, blank=True, max_length=1024)
 
     def value_from_string(self, value):
+        if not type(value) == str:
+            raise ValueError('value has to be string, but %s was provided' % type(value))
         try:
-            if value:
-                self.value = value.rstrip()
-            else:
-                self.value = None
+            self.value = value.rstrip()
         except:
             raise
 
@@ -363,6 +366,8 @@ class MetricDataDatetime(MetricDataBase):
     value = models.DateTimeField(null=True, blank=True)
 
     def value_from_string(self, value):
+        if not type(value) == str:
+            raise ValueError('value has to be string, but %s was provided' % type(value))
         try:
             if value:
                 self.value = datetime.strptime(value.rstrip(), '%Y-%m-%d %H:%M:%S')
@@ -376,6 +381,8 @@ class MetricDataJSON(MetricDataBase):
     value = JSONField()
 
     def value_from_string(self, value):
+        if not type(value) == str:
+            raise ValueError('value has to be string, but %s was provided' % type(value))
         try:
             if value:
                 json_obj = json.loads(value)
@@ -390,6 +397,8 @@ class MetricDataBoolean(MetricDataBase):
     value = models.BooleanField(default=False)
 
     def value_from_string(self, value):
+        if not type(value) == str:
+            raise ValueError('value has to be string, but %s was provided' % type(value))
         try:
             if value.lower() in ['1', 'true', ]:
                 self.value = True
