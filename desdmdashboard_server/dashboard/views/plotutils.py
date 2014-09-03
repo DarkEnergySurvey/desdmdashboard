@@ -29,7 +29,10 @@ def plot_df_to_svg_string(df, **kwargs):
 #           labels.append(label)
 #       kwargs['labels'] = labels
 
-    ax = df.plot(fontsize=fonts, figsize=figs, lw=line_width, **kwargs)
+    ax = df.plot(fontsize=fonts, figsize=figs, lw=line_width, legend=False, **kwargs)
+    columns = df.columns
+    ax.legend(columns, loc='best')
+
 
     if y_label:
         ax.set_ylabel(y_label)
