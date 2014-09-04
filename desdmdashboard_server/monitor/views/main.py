@@ -121,6 +121,7 @@ def plot_svgbuf_for_metric(metric, size='big'):
 
     if size == 'big':
         ax = df.plot(
+                style='.-',
                 fontsize=2,
                 figsize=(8,4),
                 lw=1.5,
