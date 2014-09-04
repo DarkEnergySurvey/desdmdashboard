@@ -15,7 +15,7 @@ logger = log.get_logger('desdmdashboard_collect')
 def measure_desdf():
 
     logger.info('Measuring desdf')
-    desdfoutput, err = commandline.shell_command(['desdf', ])
+    desdfoutput, err = commandline.shell_command(['/usr/local/bin/desdf', ])
     
     if err:
         logger.error(err)
