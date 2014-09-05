@@ -27,6 +27,46 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
+
+# ERROR NOTIFICATION HANDLING
+# =============================================================================
+
+'''
+A tuple that lists people who get code error notifications. When DEBUG=False and
+a view raises an exception, Django will e-mail these people with the full
+exception information. Each member of the tuple should be a tuple of
+(Full name, e-mail address).
+'''
+ADMINS = (
+    ('Michael Graber', 'michael.graber@fhnw.ch'),
+    ('Gregory Daues', 'daues@ncsa.uiuc.edu'),
+)
+
+'''
+A tuple in the same format as ADMINS that specifies who should get broken-link
+notifications when SEND_BROKEN_LINK_EMAILS=True.
+'''
+MANAGERS = ADMINS
+
+'''
+Whether to send an e-mail to the MANAGERS each time somebody visits a
+Django-powered page that is 404ed with a non-empty referer (i.e., a broken link).
+This is only used if CommonMiddleware is installed (see Middleware. See also
+IGNORABLE_404_STARTS, IGNORABLE_404_ENDS and Error reporting via e-mail.
+'''
+SEND_BROKEN_LINK_EMAILS = True
+
+
+# EMAIL 
+# =============================================================================
+
+EMAIL_HOST = 'smtp.ncsa.illinois.edu'
+EMAIL_PORT = 25
+EMAIL_SUBJECT_PREFIX = '[desdmdashboard_server] '
+DEFAULT_FROM_EMAIL = 'admin@desdash.cosmology.illinois.edu'
+
+
 # Templates
 # =============================================================================
 

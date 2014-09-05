@@ -6,8 +6,7 @@ from common_settings import *
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = False
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = False
 
@@ -19,4 +18,7 @@ ALLOWED_HOSTS = ['desdash.cosmology.illinois.edu',]
 
 
 #SESSION_COOKIE_PATH = '/dev/desdmdashboard'
+
+
+EMAIL_SUBJECT_PREFIX = '[desdmdashboard_server - dev] '
 
