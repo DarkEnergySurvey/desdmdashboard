@@ -6,18 +6,19 @@ the average transfer rates to/ftom
 that site in the last 24 hours.
 """
 
-from desdmdashboard_collect.collect_utils import database
+from desdmdashboard_collect.collect_utils.database import make_db_query
 
 
 
 def getTransferSummary(exec_host_pattern):
     '''
     '''
+    
     QUERY = """
                 SELECT
                 /* this  computes durations there's no interval arithmetic */
                 /* in ORACLE */
-                    NUMSTODSINTERVAL(
+                    NUMTODSINTERVAL(
                         SUM (
                                EXTRACT(day FROM (t.end_time - t.start_time))*86400
                              + EXTRACT(hour FROM(t.end_time - t.start_time))*3600
@@ -37,17 +38,16 @@ def getTransferSummary(exec_host_pattern):
                     t.status = 0
                 AND
                     t.start_time > sysdate-1
-                AND 
-                    t.exec_host like '{exec_host_pattern}'
+                AND
+                    t.exec_host LIKE '{exec_host_pattern}'
                 GROUP BY
                     b.transfer_class
-         """
+            """
 
-        recs = make_db_query(QUERY.format(exec_host_pattern=exec_host_pattern))
+    recs = make_db_query(QUERY.format(exec_host_pattern=exec_host_pattern),
+            section='db-destest')
 
-        for duration, bytes, files, method in recs:
-           print (bytes/1000./1000)/duration.total_seconds(), method
+    for duration, bytes, files, method in recs:
+        print (bytes/1000./1000)/duration.total_seconds(), method
 
-        return rows
-
-
+    return recs
