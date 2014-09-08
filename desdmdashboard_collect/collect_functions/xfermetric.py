@@ -24,7 +24,7 @@ def getTransferSummary(exec_host_pattern):
                              + EXTRACT(minute FROM(t.end_time - t.start_time))*60
                              + extract (second from (t.end_time - t.start_time))
                         ), 'SECOND') total_second,
-                        SUMD(b.total_num_bytes) total_bytes,
+                        SUM(b.total_num_bytes) total_bytes,
                         SUM(b.total_num_files) total_files,
                         b.transfer_class
                 FROM
@@ -42,9 +42,12 @@ def getTransferSummary(exec_host_pattern):
                 GROUP BY
                     b.transfer_class
          """
-         recs = make_db_query(QUERY.format(exec_host_pattern=exec_host_pattern))
+
+        recs = make_db_query(QUERY.format(exec_host_pattern=exec_host_pattern))
 
         for duration, bytes, files, method in recs:
            print (bytes/1000./1000)/duration.total_seconds(), method
 
         return rows
+
+
