@@ -9,7 +9,7 @@ def connections2D_summary():
                 ('gdaues', 'desar_conn_to_noao', ),
                 ('gdaues', 'desar_conn_to_gpfs', ),
                 ('gdaues', 'connections_to_stken', ),),
-            resample='10Min',
+            resample='20Min',
             )
     # do anything with panda you want
 
@@ -17,7 +17,7 @@ def connections2D_summary():
     figstring = plot_df_to_svg_string(df.last('2D'), 
             metrics=metrics,
             style='.-', y_label='# Connections',
-            ylim=(0, 100), colormap='spectral')
+            ylim=(0, 'auto'), colormap='spectral')
 
     sectiondict = {
             'title': 'Network connections 2 Days',
@@ -41,7 +41,7 @@ def connections_summary():
     figstring = plot_df_to_svg_string(df.last('7D'), 
             metrics=metrics,
             style='-', y_label='# Connections',
-            ylim=(0, 100), colormap='spectral')
+            ylim=(0, 'auto'), colormap='spectral')
 
     sectiondict = {
             'title': 'Network connections 7 Days',

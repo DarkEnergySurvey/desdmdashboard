@@ -19,6 +19,14 @@ def plot_df_to_svg_string(df, **kwargs):
     metrics = kwargs.pop('metrics', None)
     line_width = kwargs.pop('lw', 1.5)
     y_label = kwargs.pop('y_label', None)
+    ylim = kwargs.pop('ylim', None)
+
+    if ylim and (ylim[0]=='auto' or ylim[1]=='auto'):
+        autoylim=True
+    else:
+        autoylim=False
+        if ylim:
+            kwargs['ylim'] == ylim
 
     # FIXME !!
 #   if metrics:
@@ -33,6 +41,11 @@ def plot_df_to_svg_string(df, **kwargs):
     columns = df.columns
     ax.legend(columns, loc='best')
 
+    if autoylim:
+        if ylim[0] == 'auto' and not ylim[1] == 'auto':
+            ax.set_ylim(ax.get_ylim()[0], ylim[1])
+        if ylim[1] == 'auto' and not ylim[0] == 'auto':
+            ax.set_ylim(ylim[0], ax.get_ylim()[1])
 
     if y_label:
         ax.set_ylabel(y_label)
