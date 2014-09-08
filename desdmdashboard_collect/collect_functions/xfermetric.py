@@ -51,3 +51,8 @@ def getTransferSummary(exec_host_pattern):
         print (bytes/1000./1000)/duration.total_seconds(), method
 
     return recs
+
+
+if __name__ == '__main__':
+
+    getTransferSummary('fnal.gov')
