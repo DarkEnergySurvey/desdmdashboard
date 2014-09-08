@@ -65,6 +65,7 @@ EMAIL_HOST = 'smtp.ncsa.illinois.edu'
 EMAIL_PORT = 25
 EMAIL_SUBJECT_PREFIX = '[desdmdashboard_server] '
 DEFAULT_FROM_EMAIL = 'admin@desdash.cosmology.illinois.edu'
+SERVER_EMAIL = 'admin@desdash.cosmology.illinois.edu'
 
 
 # Templates
