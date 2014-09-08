@@ -1,5 +1,5 @@
 setupRequired(ipython 2.1.0+2)
 setupRequired(pandas 0.14.0+1)
-setupRequired(CoreUtils 0.8.4+3)
+setupRequired(CoreUtils 10.0.0+2)
 
 envPrepend(PYTHONPATH, ${PRODUCT_DIR})
