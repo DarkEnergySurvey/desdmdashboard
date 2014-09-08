@@ -39,16 +39,18 @@ def getTransferSummary(exec_host_pattern):
                 AND
                     t.start_time > sysdate-1
                 AND
-                    t.exec_host LIKE '{exec_host_pattern}'
+                    t.exec_host LIKE '%{exec_host_pattern}%'
                 GROUP BY
                     b.transfer_class
             """
 
     recs = make_db_query(QUERY.format(exec_host_pattern=exec_host_pattern),
-            section='db-destest')
+            section='db-desoper')
 
     for duration, bytes, files, method in recs:
+        print 'duration: ', duration, 'bytes: ', bytes, 'files: ', files
         print (bytes/1000./1000)/duration.total_seconds(), method
+	# rate 43.678792696   bytes:  175367191553 files:  3402
 
     return recs
 
