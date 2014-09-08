@@ -41,7 +41,7 @@ def read_GB(section):
    (dbname, small_reads, large_reads) = database.query_one_row(q,
            section=section)
    reads  = (small_reads  + large_reads)/1024
-   return reads 
+   return int(reads)
 
 #
 # Collect total writes to a database
@@ -63,7 +63,7 @@ def write_GB(section):
            """
    (dbname, small_writes, large_writes) = database.query_one_row(q,  section=section)
    writes = (small_writes + large_writes)/1024
-   return writes
+   return int(writes)
 
 #
 # Collect total size of "mydb" for a database
@@ -86,4 +86,4 @@ def mydb_GB(section):
    (dbname, mytablespace) = database.query_one_row(q,  section=section)
    # can be none if no space used.
    if not mytablespace :  mytablespace = 0  
-   return mytablespace
+   return int(mytablespace)
