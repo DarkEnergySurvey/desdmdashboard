@@ -53,7 +53,7 @@ class Request(object):
         else:
             self.data = data
         if not url:
-            raise ValueError('You need to provide an ulr kwarg.')
+            raise ValueError('You need to provide an url kwarg.')
         else:
             self.url = url
 
