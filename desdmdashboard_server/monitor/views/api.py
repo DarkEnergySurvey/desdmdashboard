@@ -30,7 +30,7 @@ class ListCreateMetricView(ListCreateAPIView):
         if owner is None:
             owner = self.request.user.username
         return models.Metric.objects.filter(owner__username=owner,
-                name=name)
+                name__contains=name)
 
 
 class ListMetricDataView(ListAPIView):
