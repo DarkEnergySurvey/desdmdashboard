@@ -1,4 +1,5 @@
 {% extends 'dashboard_base.html' %}
+{% load staticfiles %}
 
 {% block menubar %}
     {% for sec, secname in sections.iteritems %}
@@ -13,10 +14,34 @@
 {% for name, sectiondict in section_dicts.items %}
 
 <div id='dashboard-metric'>
+
     <h3>{{ sectiondict.title }} </h3>
-    <div id='figure'>
-        {{ sectiondict.content_html|safe }}
+    {% if sectiondict.content_html %}
+        <div id='figure'>
+            {{ sectiondict.content_html|safe }}
+        </div>
+    {% endif %}
+   
+    {% if sectiondict.metric_listing %}
+    <div class='metric_listing_container'>
+    {% for metric in sectiondict.metric_listing %}
+    <a href='{{ metric.get_absolute_url }}'>
+    <div class='metric_listing_element{% if metric.is_in_trouble_status %} alert-mode{% endif %}'>
+            <div class='metric_listing_cell metric_listing_wide_cell'><strong>{{ metric.name }}</strong></div>
+            <div class='metric_listing_cell metric_listing_small_cell'>{% if metric.is_in_trouble_status %}    
+            <img class='icon' src="{% static "img/error_icon.png" %}" height='12px' alt="logo"/>
+            {% else %}
+            <img class='icon' src="{% static "img/ok_icon.png" %}" height='12px' alt="logo"/>
+            {% endif %}</div>
+            <div class='metric_listing_cell'>last updated:</div>
+            <div class='metric_listing_cell metric_listing_wide_cell'>{{ metric.latest_time }}</div>
+            <div class='metric_listing_cell'>{{ metric.latest_value|floatformat }} {% if metric.unit %}{{ metric.get_unit_display }}{% endif %}</div>
     </div>
+    </a>
+    {% endfor %}
+    </div>
+    {% endif %}
+
     {% if sectiondict.doc %}
         <h4>Documentation</h4>
         {{ sectiondict.doc|safe }}
@@ -25,5 +50,7 @@
 </div>    
 
 {% endfor %}
+
+
 
 {% endblock %}
