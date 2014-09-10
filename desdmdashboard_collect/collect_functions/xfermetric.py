@@ -131,4 +131,4 @@ def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
 
 if __name__ == '__main__':
 
-    getTransferSummary('fnal.gov')
+    transfer_summary('fnal.gov')
