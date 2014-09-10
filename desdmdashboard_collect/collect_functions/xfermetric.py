@@ -49,6 +49,8 @@ def transfer_summary(exec_host_pattern):
                     t.start_time > sysdate-1
                 AND
                     t.exec_host LIKE '%{exec_host_pattern}%'
+                GROUP BY
+                    b.transfer_class
             """
 
     data_to_send = {}
