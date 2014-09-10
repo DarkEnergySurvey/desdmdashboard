@@ -16,7 +16,7 @@ from desdmdashboard_collect.collect_utils import log, database
 logger = log.get_logger('desdmdashboard_collect')
 
 BASE_NAME = 'TransferSummary'
-NAME_PATTERN = BASE_NAME+'_{host}_{met}_{metric}'
+NAME_PATTERN = BASE_NAME+'_{site}_{met}_{metric}'
 
 
 def transfer_summary(exec_host_pattern):
@@ -60,7 +60,7 @@ def transfer_summary(exec_host_pattern):
     logger.info('{n} metrics do already exist.'.format(n=len(tsmetricnames)))
 
     # we have to send at least an empty value for the ones that do exist
-    # already for this host
+    # already for this site 
     for metr in tsmetricnames:
         data_to_send[metr] = {
                 'name' : metr, 
@@ -83,7 +83,7 @@ def transfer_summary(exec_host_pattern):
 
         for metric_type in ['rate', 'Mbytes', 'files', ]:
             metric_name = NAME_PATTERN.format(
-                host=exec_host_pattern.replace('.', '-'),
+                site=exec_host_pattern,
                 met=method.rsplit('_')[-1],
                 metric=metric_type)
 
@@ -105,7 +105,8 @@ def transfer_summary(exec_host_pattern):
 
     # now that we aggregated all data we want to send, we do it!
     for data in data_to_send.values():
-        _ = send_metric_data(**data)
+        print data
+        #_ = send_metric_data(**data)
 
 
 def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
