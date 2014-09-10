@@ -34,7 +34,7 @@
             {% else %}
             <img class='icon' src="{% static "img/ok_icon.png" %}" height='12px' alt="logo"/>
             {% endif %}</div>
-            <div class='metric_listing_cell'>last updated:</div>
+            <div class='metric_listing_cell'>last measured:</div>
             <div class='metric_listing_cell metric_listing_wide_cell'>{{ metric.latest_time }}</div>
             <div class='metric_listing_cell'>{{ metric.latest_value|floatformat }} {% if metric.unit %}{{ metric.get_unit_display }}{% endif %}</div>
     </div>
