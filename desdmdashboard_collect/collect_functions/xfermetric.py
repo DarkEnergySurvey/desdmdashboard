@@ -7,6 +7,7 @@ that site in the last 24 hours.
 """
 
 import json
+import re
 
 from desdmdashboard_remote import http_requests
 from desdmdashboard_remote.senddata.functions import send_metric_data
@@ -18,8 +19,26 @@ logger = log.get_logger('desdmdashboard_collect')
 BASE_NAME = 'TransferSummary'
 NAME_PATTERN = BASE_NAME+'_{site}_{met}_{metric}'
 
+DEFAULT_METHOD_REGEXP = r".*JobArchive(?P<method>\w+)"
 
-def transfer_summary(exec_host_pattern):
+
+
+def get_method_string(method, regexp):
+    '''
+    rexexp needs to have a group called method
+    see DEFAULT_METHOD_REGEXP
+    '''
+    m = re.match(regexp, method)
+    try:
+	method_string = m.groupdict()['method']
+    except:
+        raise ValueError('regexp pattern did not find <method> group')
+
+    return method_string
+
+
+
+def transfer_summary(exec_host_pattern, site_name, method_regexp=DEFAULT_METHOD_REGEXP):
     '''
     '''
 
@@ -58,7 +77,7 @@ def transfer_summary(exec_host_pattern):
     logger.info('getting existing metrics from database.')
 
     tsmetricnames = get_transfer_summary_metricnames_from_desdmdashboard(
-            exec_host_pattern)
+            site_name)
     logger.info('{n} metrics do already exist.'.format(n=len(tsmetricnames)))
 
     # we have to send at least an empty value for the ones that do exist
@@ -84,9 +103,10 @@ def transfer_summary(exec_host_pattern):
     for duration, bytes, files, method in recs:
 
         for metric_type in ['rate', 'Mbytes', 'files', ]:
+            method_string = get_method_string(method, method_regexp)
             metric_name = NAME_PATTERN.format(
-                site=exec_host_pattern,
-                met=method.rsplit('_')[-1],
+                site=site_name,
+                met=method_string,
                 metric=metric_type)
 
             if metric_type == 'rate':
@@ -134,4 +154,4 @@ def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
 
 if __name__ == '__main__':
 
-    transfer_summary('fnal.gov')
+    transfer_summary('fnpc')
