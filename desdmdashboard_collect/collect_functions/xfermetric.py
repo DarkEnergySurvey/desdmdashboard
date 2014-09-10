@@ -154,4 +154,4 @@ def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
 
 if __name__ == '__main__':
 
-    transfer_summary('fnpc')
+    transfer_summary('fnpc', 'fermigrid')
