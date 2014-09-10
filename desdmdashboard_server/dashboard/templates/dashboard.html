@@ -25,10 +25,11 @@
     {% if sectiondict.metric_listing %}
     <div class='metric_listing_container'>
     {% for metric in sectiondict.metric_listing %}
+    {% with in_trouble=metric.is_in_trouble_status %}
     <a href='{{ metric.get_absolute_url }}'>
-    <div class='metric_listing_element{% if metric.is_in_trouble_status %} alert-mode{% endif %}'>
+    <div class='metric_listing_element{% if in_trouble %} alert-mode{% endif %}'>
             <div class='metric_listing_cell metric_listing_wide_cell'><strong>{{ metric.name }}</strong></div>
-            <div class='metric_listing_cell metric_listing_small_cell'>{% if metric.is_in_trouble_status %}    
+            <div class='metric_listing_cell metric_listing_small_cell'>{% if in_trouble %}    
             <img class='icon' src="{% static "img/error_icon.png" %}" height='12px' alt="logo"/>
             {% else %}
             <img class='icon' src="{% static "img/ok_icon.png" %}" height='12px' alt="logo"/>
@@ -38,6 +39,7 @@
             <div class='metric_listing_cell'>{{ metric.latest_value|floatformat }} {% if metric.unit %}{{ metric.get_unit_display }}{% endif %}</div>
     </div>
     </a>
+    {% endwith %}
     {% endfor %}
     </div>
     {% endif %}
