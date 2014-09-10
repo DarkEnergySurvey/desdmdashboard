@@ -127,8 +127,7 @@ def transfer_summary(exec_host_pattern, site_name, method_regexp=DEFAULT_METHOD_
 
     # now that we aggregated all data we want to send, we do it!
     for data in data_to_send.values():
-        print data
-        #_ = send_metric_data(**data)
+        _ = send_metric_data(**data)
 
 
 def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
@@ -149,9 +148,3 @@ def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
     tsmetricnames = [d['name'] for d in tsmetrics]
 
     return tsmetricnames
-
-
-
-if __name__ == '__main__':
-
-    transfer_summary('fnpc', 'fermigrid')
