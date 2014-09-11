@@ -16,6 +16,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.timezone import now
+from django.utils.functional import cached_property
 from django.core.urlresolvers import reverse
 
 from jsonfield.fields import JSONField
@@ -264,17 +265,22 @@ class Metric(models.Model):
         vtclass = self.value_type.model_class()
         return vtclass.objects.filter(metric=self)
 
+    @cached_property
+    def data_queryset(self):
+        vtclass = self.value_type.model_class()
+        return vtclass.objects.filter(metric=self)
+
     def get_data_dataframe(self):
         try:
             import pandas
             return pandas.DataFrame.from_records(
-                    self.get_data_queryset().values(),
+                    self.data_queryset.values(),
                     index='time')
         except:
             raise
 
     def get_last_datapoint_from_table(self):
-        data = self.get_data_queryset().order_by('-time')
+        data = self.data_queryset.order_by('-time')
         if any(data):
             return data[0] 
         else:
