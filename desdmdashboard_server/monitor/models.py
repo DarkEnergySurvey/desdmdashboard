@@ -158,8 +158,9 @@ class Metric(models.Model):
     def has_no_value_warning(self):
         '''
         '''
-        dp = self.get_last_datapoint_from_table()
-        delta_t = now() - dp.time
+        #dp = self.get_last_datapoint_from_table()
+        #delta_t = now() - dp.time
+        delta_t = now() - self.latest_time
         if self.warning_if_no_value_after_seconds:
             return delta_t.total_seconds() >= self.warning_if_no_value_after_seconds
         else:
@@ -270,24 +271,40 @@ class Metric(models.Model):
         vtclass = self.value_type.model_class()
         return vtclass.objects.filter(metric=self)
 
-    def get_data_dataframe(self):
+    @cached_property
+    def data_records(self):
+        return list(self.data_queryset)
+
+    @cached_property
+    def data_dataframe(self):
+        return self.get_data_dataframe()
+
+    def get_data_dataframe(self, fields=('time', 'value'), index='time',
+            filter=None):
         try:
             import pandas
-            return pandas.DataFrame.from_records(
-                    self.data_queryset.values(),
-                    index='time')
+            if filter:
+                qs = self.data_queryset.filter(**filter)
+            else:
+                qs = self.data_queryset
+            return pandas.DataFrame.from_records(qs.values(*fields),
+                    index=index)
         except:
             raise
 
     def get_last_datapoint_from_table(self):
         data = self.data_queryset.order_by('-time')
         if any(data):
-            return data[0] 
+            return data.first()
         else:
             return None
 
     def save(self, *args, **kwargs):
         self.alert_triggered = bool(self.check_alert())
+        try:
+            self.metriccache_set.first().update_cache()
+        except Exception, e:
+            pass
         obj = super(Metric, self).save(*args, **kwargs)
         return obj
 

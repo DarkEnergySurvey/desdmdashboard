@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from monitor import models
+from monitor_cache.models import MetricCache
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -54,7 +55,8 @@ class MetricSerializer(serializers.ModelSerializer):
             instance.slug = slugify(instance.name)
 
         if attrs['latest_time']:
-            t = datetime.strptime(attrs['latest_time'].rstrip(), '%Y-%m-%d %H:%M:%S')
+            t = datetime.strptime(attrs['latest_time'].rstrip(),
+                    '%Y-%m-%d %H:%M:%S')
         else:
             t = now()
 
@@ -75,6 +77,9 @@ class MetricSerializer(serializers.ModelSerializer):
             del(kwargs['force_insert'])
         super(MetricSerializer, self).save_object(obj, **kwargs)
         obj._save_latest_values_to_data_table()
+        # we simply save here again to update the alert_triggered variable
+        super(MetricSerializer, self).save_object(obj, **kwargs)
+        _ = MetricCache.create_or_update(obj)
 
 
 class MetricDataJSONSerializer(serializers.ModelSerializer):
