@@ -79,7 +79,10 @@ class MetricSerializer(serializers.ModelSerializer):
         obj._save_latest_values_to_data_table()
         # we simply save here again to update the alert_triggered variable
         super(MetricSerializer, self).save_object(obj, **kwargs)
-        _ = MetricCache.create_or_update(obj)
+        try:
+            _ = MetricCache.create_or_update(obj)
+        except:
+            pass
 
 
 class MetricDataJSONSerializer(serializers.ModelSerializer):
