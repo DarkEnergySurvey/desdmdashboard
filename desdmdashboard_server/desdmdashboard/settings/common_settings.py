@@ -92,6 +92,7 @@ INSTALLED_APPS = (
     'rest_framework',
 
     'monitor',
+    'monitor_cache',
 
     ### FIXME
     # testing the following two packages
