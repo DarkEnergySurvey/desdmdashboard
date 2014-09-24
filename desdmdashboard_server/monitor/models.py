@@ -85,7 +85,7 @@ class Metric(models.Model):
             (UNIT_HOURS, 'hours'),
             (UNIT_MB_PER_SECOND, 'MB/s'),
             (UNIT_NUMCONNECTION, '# Connections'),
-            (UNIT_FILES, '# Files'),
+            (UNIT_NUMFILES, '# Files'),
             )
     unit = models.PositiveSmallIntegerField(choices=UNIT_CHOICES, null=True,
             blank=True)
