@@ -65,6 +65,10 @@ class Metric(models.Model):
     UNIT_EXABYTES = 6
 
     UNIT_SECONDS = 10
+    UNIT_MINUTES = 11
+    UNIT_HOURS = 12
+
+    UNIT_MB_PER_SECOND = 15
 
     UNIT_NUMCONNECTION = 20
 
@@ -76,6 +80,9 @@ class Metric(models.Model):
             (UNIT_TERABYTES, 'TB'),
             (UNIT_PETABYTES, 'PB'),
             (UNIT_SECONDS, 'seconds'),
+            (UNIT_MINUTES, 'minutes'),
+            (UNIT_HOURS, 'hours'),
+            (UNIT_MB_PER_SECOND, 'MB/s'),
             (UNIT_NUMCONNECTION, '# Connections'),
             )
     unit = models.PositiveSmallIntegerField(choices=UNIT_CHOICES, null=True,
