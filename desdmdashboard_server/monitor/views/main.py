@@ -114,7 +114,10 @@ def plot_svgbuf_for_metric(metric, size='big'):
             xav = [xlim[0], xlim[1],]
             ax.plot(xav,yav, 'r--')
 
-
+    # give some space to the graph on the y axis
+    ylim = ax.get_ylim()
+    ylen = ylim[1]-ylim[0]
+    ax.set_ylim(ylim[0]-0.05*ylen, ylim[1]+0.05*ylen)
 
     if metric.unit:
         ax.set_ylabel(metric.get_unit_display())

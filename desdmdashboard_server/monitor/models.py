@@ -195,7 +195,6 @@ class Metric(models.Model):
             return err
 
     def get_trouble_statements(self):
-        ## FIXME !!
         troubles = []
         if self.has_error:
             troubles.append('ERROR MESSAGE: ' + self.error_message)
@@ -329,7 +328,6 @@ class MetricDataBase(models.Model):
     tags = models.CharField(max_length=256, default='', blank=True,
             help_text='Comma separated tags.')
 
-    # FIXME
     timestamp_created = models.DateTimeField(auto_now_add=True)
     timestamp_modified = models.DateTimeField(auto_now=True)
 
