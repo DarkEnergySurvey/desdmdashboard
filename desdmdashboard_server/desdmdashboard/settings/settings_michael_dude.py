@@ -17,7 +17,7 @@ INSTALLED_APPS += (
     # testing the following two packages
     # 'debug_toolbar',
     'django_extensions',
-    'south',
+    # 'south',
     )
 
 MIDDLEWARE_CLASSES += (
