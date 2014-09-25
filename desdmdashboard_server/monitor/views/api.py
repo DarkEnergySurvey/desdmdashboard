@@ -34,7 +34,7 @@ class ListCreateMetricView(ListCreateAPIView):
                     name=name)
         else:
             return models.Metric.objects.filter(owner__username=owner,
-                    name__contains=name)
+                    name__regex=name)
 
 
 class ListMetricDataView(ListAPIView):
