@@ -38,7 +38,7 @@ def get_method_string(method, regexp):
 
 
 
-def transfer_summary(exec_host_pattern, site_name, method_regexp=DEFAULT_METHOD_REGEXP):
+def transfer_summary(exec_host_pattern_regexp, site_name, method_regexp=DEFAULT_METHOD_REGEXP):
     '''
     '''
 
@@ -67,7 +67,7 @@ def transfer_summary(exec_host_pattern, site_name, method_regexp=DEFAULT_METHOD_
                 AND
                     t.start_time > sysdate-1
                 AND
-                    t.exec_host LIKE '%{exec_host_pattern}%'
+                    REGEXP_LIKE (t.exec_host '{exec_host_pattern_regexp}')
                 GROUP BY
                     b.transfer_class
             """
@@ -93,7 +93,7 @@ def transfer_summary(exec_host_pattern, site_name, method_regexp=DEFAULT_METHOD_
     logger.info('executing db query.')
 
     recs = database.make_db_query(
-            QUERY.format(exec_host_pattern=exec_host_pattern),
+            QUERY.format(exec_host_pattern_regexp=exec_host_pattern_regexp),
             section='db-desoper')
 
     logger.info('{n} row returned. now sending rows to db.'.format(
@@ -130,7 +130,7 @@ def transfer_summary(exec_host_pattern, site_name, method_regexp=DEFAULT_METHOD_
         _ = send_metric_data(**data)
 
 
-def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
+def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern_regexp):
     '''
     '''
     search_pattern = BASE_NAME+'_{e_h_p}'
@@ -138,7 +138,7 @@ def get_transfer_summary_metricnames_from_desdmdashboard(exec_host_pattern):
     req = http_requests.Request()
     req.GET(url=http_requests.POST_URL,
         params={
-            'name': search_pattern.format(e_h_p=exec_host_pattern),
+            'name': search_pattern.format(e_h_p=exec_host_pattern_regexp),
             'format': 'json',
             'owner': 'gdaues'
             }
