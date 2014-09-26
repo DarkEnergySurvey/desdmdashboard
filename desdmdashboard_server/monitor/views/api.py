@@ -17,9 +17,9 @@ class ListCreateMetricView(ListCreateAPIView):
                        many=False, partial=False):
         if isinstance(data, list):
             many = True
-        return super(ListCreateMetricView, self).get_serializer(instance, data,
-                                                            files, many,
-                                                            partial)
+        return super(ListCreateMetricView, self).get_serializer(
+                instance, data, files, many, partial)
+
     def pre_save(self, obj):
         obj.owner = self.request.user
 
