@@ -68,7 +68,7 @@ def transfer_summary(exec_host_pattern_regexp, site_name,
                 AND
                     t.start_time > sysdate-1
                 AND
-                    REGEXP_LIKE (t.exec_host '{exec_host_pattern_regexp}')
+                    REGEXP_LIKE (t.exec_host, '{exec_host_pattern_regexp}')
                 GROUP BY
                     b.transfer_class
             """
