@@ -10,7 +10,7 @@ from desdmdashboard_collect.collect_functions.xfermetric import transfer_summary
 def main():
     transfer_summary('^fnpc\d{4}\.fnal\.gov$', 'fermigrid')
     # FIXME : replace ?????? name
-    transfer_summary('^wnitb\d{3}\.fnal\.gov$', '????????')
+    transfer_summary('^wnitb\d{3}\.fnal\.gov$', 'fermiwnitb')
 
     transfer_summary('^c\d{4}$', 'nersc')
 
