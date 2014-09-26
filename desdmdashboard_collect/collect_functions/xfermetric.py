@@ -38,7 +38,8 @@ def get_method_string(method, regexp):
 
 
 
-def transfer_summary(exec_host_pattern_regexp, site_name, method_regexp=DEFAULT_METHOD_REGEXP):
+def transfer_summary(exec_host_pattern_regexp, site_name,
+        method_regexp=DEFAULT_METHOD_REGEXP):
     '''
     '''
 
