@@ -28,7 +28,7 @@ def write_tar_dump_for_app(appname, dataformat='json'):
     tar.close()
 
 
-def load_json_tar_dump_into_db(filename, dataformat='json'):
+def load_json_tar_dump_into_db(filename, dataformat='json', update_only=True):
     tar = tarfile.open(filename, 'r')
 
     for member in tar.getmembers():
@@ -36,4 +36,12 @@ def load_json_tar_dump_into_db(filename, dataformat='json'):
         datastr = fi.read()
 
         for desmet in serializers.deserialize(dataformat, datastr):
-            desmet.save()
+
+            if update_only:
+                model = type(desmet.object)
+                if model.objects.filter(pk=desmet.object.pk):
+                    continue
+                else:
+                    desmet.save()
+            else:
+                desmet.save()
