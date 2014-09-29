@@ -135,7 +135,8 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'GMT'
+TIME_ZONE = 'America/Chicago'
+#TIME_ZONE = 'GMT'
 
 USE_I18N = True
 
