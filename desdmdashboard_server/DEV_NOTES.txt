@@ -4,16 +4,24 @@ DESDM DASHBOARD - DEVELOPMENT NOTES
 
 TODO
 -------------------------------------------------------------------------------
--   dashboard app
--   json to pandas dataframe functions
-
 
 
 IDEAS
 -------------------------------------------------------------------------------
+- dashboard y-range specification
+- data collect host name field (metric or metric data?)
+- use eeups templates
+
+
+
+DONE 
+-------------------------------------------------------------------------------
+-   dashboard app
+-   json to pandas dataframe functions
 -   we need to have an eups package that allows quick access data
     desdmdashboard data : open api for data download, direct conversion to df
 -   quick access to plotting on dashboard : (plotting) code field
+
 
 
 django extentsions (super cool)
@@ -24,7 +32,12 @@ python manage.py graph_models monitor auth | dot -Tpng -o test.png
 
 PACKAGES TO INSTALL SERVERSIDE
 -------------------------------------------------------------------------------
--   djangorestframework 2.3.7+1
--   pygments 1.6+3
--   pandas 0.13.1+1
--   django 1.6.2+1
+-   djangorestframework 2.3.7+2
+-   pandas 0.14.0+1
+-   django 1.6.2+2
+-   CoreUtils 0.8.4+2
+-   docutils 0.11+4
+
+=> PACKAGES BUNDLED IN METAPACKAGE DASHBOARDSERVER currently v2+4
+
+(-  south to be added)
