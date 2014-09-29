@@ -15,14 +15,14 @@ from docutils.core import publish_parts
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.utils.timezone import now
+from django.utils.timezone import now, activate
 from django.utils.functional import cached_property
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from jsonfield.fields import JSONField
 
 from .managers import MetricManager, MetricDataManager
-
 
 
 class Metric(models.Model):
@@ -295,8 +295,12 @@ class Metric(models.Model):
                 qs = self.data_queryset.filter(**filter)
             else:
                 qs = self.data_queryset
-            return pandas.DataFrame.from_records(qs.values(*fields),
-                    index=index)
+
+            df = pandas.DataFrame.from_records(qs.values(*fields), index=index)
+            # convert timezone to project timezone !!
+            df.index = df.index.tz_convert(settings.TIME_ZONE)
+            return df
+
         except:
             raise
 
