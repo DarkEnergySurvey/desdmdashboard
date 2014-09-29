@@ -23,9 +23,9 @@ plt.rc('font', **font)
 def dashboard(request, owner=None):
 
     if owner:
-        ms = Metric.objects.filter(owner__username=owner).order_by('timestamp_created')
+        ms = Metric.objects.filter(owner__username=owner).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     else:
-        ms = Metric.objects.all().order_by('timestamp_created')
+        ms = Metric.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
 
     metrices = []
     for metric in ms:
