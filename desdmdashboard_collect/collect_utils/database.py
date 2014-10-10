@@ -27,8 +27,10 @@ def make_db_query(QUERY,
     and return all records.
     '''
     with coreutils.DesDbi(desfile=desfile, section=section) as dbh:
+        logger.debug('DesDbi database handler intantiated.')
         cursor = dbh.cursor()
         records = cursor.execute(QUERY).fetchall()
+        logger.debug('Query executed.')
 
     if logger and not records:
         logger.warning('empty record set returned: %s' % records)
