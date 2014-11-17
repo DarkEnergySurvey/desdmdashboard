@@ -24,23 +24,26 @@ plt.rc('font', **font)
 def dashboard(request, owner=None):
 
     if owner:
-        ms = Metric.objects.filter(owner__username=owner).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+        ms = Metric.objects.filter(owner__username=owner)
     else:
-        ms = Metric.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+        ms = Metric.objects.all()
+        
+    ms = ms.extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    ms = ms.select_related('owner').prefetch_related('cache')
 
     metrices = []
     for metric in ms:
 
-        mc = metric.metriccache_set.first()
-        if not mc:
-            mc = MetricCache.create_or_update(metric)
-
         if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_PLOT:
             try:
                 #data_display = plot_svgbuf_for_metric(metric, size='small')
+                data_display = metric.cache.get().current_dashboard_figure
+            except MetricCache.DoesNotExist:
+                mc = MetricCache.create_or_update(metric)
                 data_display = mc.current_dashboard_figure
             except Exception, e:
                 data_display = e
+
         elif metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_TABLE:
             try:
                 df = metric.get_data_dataframe()
