@@ -8,7 +8,7 @@ from .content_generators import create_svg_plot_for_metric
 
 class MetricCache(models.Model):
 
-    metric = models.ForeignKey(Metric, unique=True)
+    metric = models.ForeignKey(Metric, unique=True, related_name='cache')
 
     # figures
     current_dashboard_figure = models.TextField(blank=True, null=True)
