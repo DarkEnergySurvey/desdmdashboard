@@ -27,7 +27,9 @@ try:
 except:
     USERNAME = 'mgraber'
     PASSWORD = 'dummypwd'
-    API_URL = 'http://10.0.2.2:8000/monitor/api/'
+    #API_URL = 'http://10.0.2.2:8000/monitor/api/'
+    #API_URL = 'http://127.0.0.1:8000/monitor/api/'
+    API_URL = 'http://desdash.cosmology.illinois.edu/dev/desdmdashboard/monitor/api'
 
 POST_URL = API_URL
 GET_URL = API_URL + 'data/' if API_URL[-1] == '/' else API_URL + '/data/' 

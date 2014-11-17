@@ -22,6 +22,8 @@ class MetricCache(models.Model):
             obj.save()
         obj.update_cache()
 
+        return obj
+
 
     def update_cache(self):
 

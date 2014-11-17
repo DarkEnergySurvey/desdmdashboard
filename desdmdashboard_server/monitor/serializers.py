@@ -13,7 +13,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from monitor import models
-from monitor_cache.models import MetricCache
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -79,10 +78,6 @@ class MetricSerializer(serializers.ModelSerializer):
         obj._save_latest_values_to_data_table()
         # we simply save here again to update the alert_triggered variable
         super(MetricSerializer, self).save_object(obj, **kwargs)
-        try:
-            _ = MetricCache.create_or_update(obj)
-        except:
-            pass
 
 
 class MetricDataJSONSerializer(serializers.ModelSerializer):

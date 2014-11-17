@@ -1,6 +1,5 @@
 import StringIO
 
-import pandas
 import matplotlib.pyplot as plt
 
 from django.shortcuts import render, render_to_response, get_object_or_404
@@ -32,7 +31,7 @@ def dashboard(request, owner=None):
 
         mc = metric.metriccache_set.first()
         if not mc:
-            MetricCache.create_or_update(metric)
+            mc = MetricCache.create_or_update(metric)
 
         if metric.dashboard_display_option == metric.DASHBOARD_DISPLAY_OPTION_PLOT:
             try:

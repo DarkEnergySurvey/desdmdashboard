@@ -1,5 +1,8 @@
 
 import pandas
+
+from django.conf import settings
+
 from .models import Metric
 from .serializers import MetricDataJSONSerializer
 
@@ -44,6 +47,9 @@ def get_metric_dataframe(owner, name, fields=('time','value', ),
             df = df.set_index(index)
         except:
             print 'could not set dataframe index to ', index
+
+        if index == 'time':
+            df.index = df.index.tz_convert(settings.TIME_ZONE)
 
     if 'value' in df:
         columns = df.columns.tolist()

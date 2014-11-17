@@ -9,8 +9,7 @@ https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 import sys
 import os
 
-sys.path.append('/webapps/releases/0.1.0+0/desdmdashboard_server') #parent directory of project
-sys.path.append('/webapps/releases/0.1.0+0/desdmdashboard_server/desdmdashboard')
+sys.path.append('/webapps/releases/current/desdmdashboard_server')
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "desdmdashboard.settings.settings_desdash_production"
 
