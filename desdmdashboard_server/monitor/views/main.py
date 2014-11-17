@@ -7,6 +7,8 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 from monitor.models import Metric
 from monitor_cache.models import MetricCache
 
+from monitor.pandas_utils import get_dataframe
+
 from django.utils.timezone import now
 from datetime import timedelta
 
@@ -81,7 +83,7 @@ def plot_svgbuf_for_metric(metric, size='big'):
             metric.dashboard_display_window_length_days)
 
     # get the data for the metric
-    df = metric.data_dataframe
+    df = get_dataframe(metric, period_from=plot_after-timedelta(1))
 
     imgdata = StringIO.StringIO()
 

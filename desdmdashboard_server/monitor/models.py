@@ -15,7 +15,7 @@ from docutils.core import publish_parts
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.utils.timezone import now, activate
+from django.utils.timezone import now
 from django.utils.functional import cached_property
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -291,10 +291,9 @@ class Metric(models.Model):
             filter=None):
         try:
             import pandas
+            qs = self.get_data_queryset()
             if filter:
-                qs = self.data_queryset.filter(**filter)
-            else:
-                qs = self.data_queryset
+                qs = qs.filter(**filter)
 
             df = pandas.DataFrame.from_records(qs.values(*fields), index=index)
             # convert timezone to project timezone !!

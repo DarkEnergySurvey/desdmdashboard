@@ -1,26 +1,49 @@
 
+from datetime import timedelta 
+
 import pandas
 
 from django.conf import settings
+from django.utils.timezone import now
 
 from .models import Metric
 from .serializers import MetricDataJSONSerializer
 
 
+DEFAULT_PERIOD_LENGTH = timedelta(5)
+
+
 def get_metric_dataframe(owner, name, fields=('time','value', ),
-        index='time'):
+        index='time', period_from=now()-DEFAULT_PERIOD_LENGTH, period_to=None):
     '''
-    possible fields:
+    Possible fields:
     fields = ('time', 'value', 'has_error', 'error_message', 'tags', )
 
     MetricDataJSON value fields are automatically expanded if 'value' is in
     fields.
+
+    With the period_from and period_to keywords arguments you can specify the
+    period your data should originate from. If these arguments are None there
+    are simply no restrictions with respect to the boundary.
     '''
     metric = Metric.objects.get_by_natural_key(owner, name)
+    return get_dataframe(metric, **kwargs), metric
     
+
+def get_dataframe(metric, fields=('time','value', ), index='time',
+        period_from=now()-DEFAULT_PERIOD_LENGTH, period_to=None):
+    '''
+    '''
     if metric.value_type.model == 'metricdatajson':
+        
+        mdata = metric.get_data_queryset()
+        if period_from:
+            mdata = mdata.filter(time__gte=period_from)
+        if period_to:
+            mdata = mdata.filter(time__lte=period_to)
+
         ser = MetricDataJSONSerializer(
-                instance=metric.get_data_queryset(), many=True)
+                instance=mdata, many=True)
 
         if 'value' in fields:
             value = True
@@ -40,6 +63,12 @@ def get_metric_dataframe(owner, name, fields=('time','value', ),
         
     else:
         mdata = metric.get_data_queryset().values(*fields)
+
+        if period_from:
+            mdata = mdata.filter(time__gte=period_from)
+        if period_to:
+            mdata = mdata.filter(time__lte=period_to)
+
         df = pandas.DataFrame(list(mdata))
 
     if index:
@@ -53,10 +82,10 @@ def get_metric_dataframe(owner, name, fields=('time','value', ),
 
     if 'value' in df:
         columns = df.columns.tolist()
-        columns[columns.index('value')] = name
+        columns[columns.index('value')] = metric.name
         df.columns = columns
 
-    return df, metric
+    return df
 
 
 def get_multimetric_dataframe(owner_name_pairs, resample='D'):
