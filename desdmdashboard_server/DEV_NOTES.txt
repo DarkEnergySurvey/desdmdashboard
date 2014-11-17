@@ -4,13 +4,21 @@ DESDM DASHBOARD - DEVELOPMENT NOTES
 
 TODO
 -------------------------------------------------------------------------------
+- email notification if alert is triggered
+- standard virtual machine monitoring package
+    - discuss metrics with stefan
+    - use python daemon approach
+    - use mojo to run collection pipeline??
+- use eeups templates
+
+- to_pandas : time_window WHERE
+
+- serve desdmdashboard server in docker container
 
 
 IDEAS
 -------------------------------------------------------------------------------
-- dashboard y-range specification
 - data collect host name field (metric or metric data?)
-- use eeups templates
 
 
 
