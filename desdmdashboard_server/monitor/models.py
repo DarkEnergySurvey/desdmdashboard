@@ -8,7 +8,7 @@ Django data model for saving system snapshot data for monitoring purposes.
 import operator
 import json
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from docutils.core import publish_parts
 
@@ -203,8 +203,8 @@ class Metric(models.Model):
                     op=self.get_alert_operator_display())
             troubles.append(alert_str)
         if self.has_no_value_warning:
-            troubles.append('NO VALUE UPDATE!! within %s seconds' %\
-                    self.warning_if_no_value_after_seconds)
+            troubles.append('NO VALUE UPDATE!! within %s' %\
+                    timedelta(seconds=self.warning_if_no_value_after_seconds))
         return troubles
 
     @classmethod
