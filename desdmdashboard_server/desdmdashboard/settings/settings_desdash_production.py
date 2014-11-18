@@ -25,6 +25,9 @@ DATABASES = {
 
 
 # https://docs.djangoproject.com/en/1.5/ref/settings/#std:setting-ALLOWED_HOSTS
-
 ALLOWED_HOSTS = ['desdash.cosmology.illinois.edu',]
 
+
+# this is a bit cheap but in order to be able to send emails containing the
+# entire url, incl. domain, i need to store the domain root someplace
+DOMAIN_ROOT = 'http://desdash.cosmology.illinois.edu/desdmdashboard'
