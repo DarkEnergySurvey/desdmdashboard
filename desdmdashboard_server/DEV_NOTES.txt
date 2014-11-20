@@ -5,13 +5,10 @@ DESDM DASHBOARD - DEVELOPMENT NOTES
 TODO
 -------------------------------------------------------------------------------
 
-- use eeups templates
-
 - standard virtual machine monitoring package
     - discuss metrics with stefan
     - use python daemon approach
     - use mojo to run collection pipeline??
-
 
 - serve desdmdashboard server in docker container
 - use CoreUtils for credentials
@@ -29,12 +26,6 @@ MODEL MODIFICATIONS
 - host of origin
 
 
-IDEAS
--------------------------------------------------------------------------------
-- data collect host name field (metric or metric data?)
-
-
-
 DONE 
 -------------------------------------------------------------------------------
 -   dashboard app
@@ -44,7 +35,7 @@ DONE
 -   quick access to plotting on dashboard : (plotting) code field
 -   to_pandas : time_window WHERE
 -   email notification if alert is triggered
-
+-   use eeups templates
 
 
 django extentsions (super cool)
