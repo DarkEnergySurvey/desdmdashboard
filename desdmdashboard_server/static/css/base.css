@@ -1,0 +1,311 @@
+/*                                                                           */
+/*  D E S   D A T A   M A N A G E M E N T                                    */
+/*  2 0 1 4                                                                  */
+/*                                                                           */
+/*  michael.graber@fhnw.ch                                                   */
+/*  martin.melchior@fhnw.ch                                                  */
+/*                                                                           */
+
+
+body {
+    background:#ffffff; 
+    font-family: 'Arial';
+    font-size: '12pt';
+    margin: 0;
+}
+    
+#container {
+    background: #ffffff; 
+    max-width: 1200px;
+    padding: .5em 4em 4em 4em; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#header {
+    position: relative;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    height: 5em;
+}
+
+#header a { 
+    text-decoration: none;
+    color: #000000;
+}
+
+#main_nav {
+    position: relative;
+    width: 100%;
+    height: 2.5em;
+}
+
+#site_title_container {
+    position: relative;
+    margin-bottom: 1em; 
+    padding: 0;
+}
+
+#site_logo {
+    position: absolute;
+    : 0em;
+    left: 1em;
+}
+
+#site_title_content {
+    position: absolute;
+    width: 100%;
+    left: 80px;
+    bottom: -2.5em;
+}
+
+#site_title {
+    float: left;
+    font-size: 160%;
+    padding: 0;
+    position: absolute;
+    bottom: 0;
+}
+
+#site_subtitle {
+    float: left;
+    font-size: 100%;
+    position: absolute;
+    bottom: 0.1em;
+    left: 17.5em;
+}
+
+#navigationbar {
+    position: absolute;
+    bottom: 0em;
+    right: 0em;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+#navigationbar .activesection {
+    color: #f00000;
+}
+
+#navigationbar ul {
+    list-style-type: none;
+}
+
+#navigationbar li {
+    float: right;
+    margin: 0 1em 0 1em;
+}
+
+#navigationbar a:hover {
+    color: #f00000;
+}
+
+#menubar {
+    width: 100%;
+    margin: 0.7em 0 0 0;
+    float: right;
+    color: #f0f0f0;
+    background:#000000;
+    font-size: 80%;
+    height: 2em;
+    font-weight: bold;
+}
+
+#menubar .activesection {
+    color: #f00a0a;
+}
+
+#menubar ul {
+    list-style-type: none;
+    margin: 0.5em 0;
+}
+
+#menubar li {
+    float: left;
+    margin: 0 2em 0 0;
+}
+
+#menu_status_info {
+    margin: 0 1em;
+    float: right;
+    font-weight: normal;
+}
+
+#menubar a:hover {
+    color: #f00f0f;
+}
+
+#menubar a {
+    color: #ffffff;
+}
+
+#content { 
+    padding: 1em;
+    line-height: 1.2;
+}
+
+#content a { 
+    text-decoration: none;
+    color: #000000;
+}
+
+#content p {
+    margin: 0.5em 0;
+}
+
+#content h1, h2, h3, h4, h5 {
+    color: #700000;
+    margin: 1.2em 0 0 0;
+}
+
+#content h1 { font-size: 150%; }
+#content h2 { font-size: 120%; }
+#content h3 { font-size: 110%; }
+#content h4 { font-size: 100%; }
+
+#content strong { 
+    font-weight: bold;
+}
+
+#docu {
+    border: dashed black 1pt;
+    padding: 0 3em 3em 3em;
+    margin: 1em;
+    text-align: justify;
+}
+
+.dashboard_container {
+    display: block;
+    overflow: hidden;
+}
+
+.dashboard_metric {
+    display: block;
+    float: left;
+    width: 45%;
+    padding: 0 1em ;
+    margin: 0.5em; 
+    border: 1px dashed black;
+}
+
+.metric_detail {
+    padding: 1em ;
+    margin: 0.5em; 
+}
+
+.dashboard_metric table, tr, td, th {
+    font-size: 150%;
+    border: 0;
+    padding: 0 3em 0 0;
+    line-height: 1.3em;
+}
+
+.dashboard_metric h2 {
+    font-size: 50%;
+}
+
+.dashboard_metric table, th {
+    font-weigth: 100; 
+    float: left;
+}
+
+.dashboard_metric_subtitle {
+    font-size: 90%;
+    vertical-align: bottom;
+    padding: 0.7em 0;
+}
+
+.dataframe table, td, th {
+    font-size:60%;
+    border: 0;
+}
+
+.dataframe th {
+    color: #C00000;
+}
+ 
+table.dataframe tr:nth-child(even) {
+    background-color: #EEEEEE;
+   }
+
+.metric_listing_container {
+    width: 100%;
+    margin: 1em;
+}
+
+.metric_listing_element {
+    border: 1px dashed black;
+    margin: 0.5em;
+    overflow: auto;
+    padding: 0.2em;
+}
+
+.metric_listing_cell {
+    margin: 0.2em;
+    float: left;
+}
+
+.metric_listing_wide_cell {
+    width: 30%;
+}
+
+.metric_listing_small_cell {
+    width: 10%;
+}
+
+strong {
+    font-weight: 100;
+}
+
+.trouble_message {
+    color: #E00000;
+}
+
+.alert-mode {
+    background: #FFF0F0;
+    border: 1px dashed red;
+}
+
+.error {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.shaded {
+    color: #a0a0a0;
+    float: right;
+    margin: 0 0 0 2em;
+}
+
+.icon {
+    margin: 0 1em 0 1em;
+}
+
+.figure_monitor_dashboard {
+    display: block;
+    width: 95%;
+    position: relative;
+    padding: 0em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#figure {
+    width: 576pt;
+    position: relative;
+    padding: 3em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#footer {
+    margin: 2em;
+    padding: 1em 3em;
+}
+
+.fine-print {
+    color:#ccc;
+    font-weight:100;
+    text-align: center;
+}
