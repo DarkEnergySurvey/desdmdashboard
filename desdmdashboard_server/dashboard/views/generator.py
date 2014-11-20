@@ -55,7 +55,6 @@ def dashboard_home(request):
 def dashboard_section(request, section=None):
     section_modules = get_section_modules()
     section_dicts = get_module_function_outputs(section_modules[section])
-    #section = get_object_or_404(models.DashboardSection, slug=section)
     section_names = {s: s.replace('_', ' ').title() for s in
             section_modules.keys() }
     context = {
