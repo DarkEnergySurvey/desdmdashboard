@@ -29,7 +29,7 @@ def desdf_overview(name_groups=name_groups):
 
     # setting up the figure for all subplots
     fig, ax = plt.subplots(nrows=len(name_groups), ncols=1,
-            figsize=(8, len(name_groups)*3))
+            figsize=(8, len(name_groups)*2.5))
     plot_after = now() - timedelta(SHOW_NUMBER_OF_DAYS)
 
     # create all subplots
@@ -39,7 +39,7 @@ def desdf_overview(name_groups=name_groups):
         ontups = tuple(('gdaues', name) for name in name_groups[namegroup])
 
         df, metrics = pandas_utils.get_multimetric_dataframe(ontups,
-                resample='D',)
+                resample='D', period_from=plot_after)
 
         # plotting
         df.last(str(SHOW_NUMBER_OF_DAYS)+'D').plot(
