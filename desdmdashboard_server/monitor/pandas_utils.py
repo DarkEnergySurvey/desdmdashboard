@@ -27,7 +27,9 @@ def get_metric_dataframe(owner, name, fields=('time','value', ),
     are simply no restrictions with respect to the boundary.
     '''
     metric = Metric.objects.get_by_natural_key(owner, name)
-    return get_dataframe(metric, **kwargs), metric
+    df = get_dataframe(metric, fields=fields, index=index,
+            period_from=period_from, period_to=period_to)
+    return df, metric
     
 
 def get_dataframe(metric, fields=('time','value', ), index='time',
