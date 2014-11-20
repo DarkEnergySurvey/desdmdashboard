@@ -19,8 +19,9 @@ TODO
 
 
 
-MODEL MODIFICATIONS
+IDEAS FOR MODEL MODIFICATIONS
 -------------------------------------------------------------------------------
+
 - add deprecated flag to metric
 -> add south to INSTALLED_APPLICATIONS
 - host of origin
