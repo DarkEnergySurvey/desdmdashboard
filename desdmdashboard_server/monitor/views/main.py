@@ -63,8 +63,13 @@ def dashboard(request, owner=None):
             }
         metrices.append(m)
 
-    return render_to_response('monitor_dashboard.html',\
-            { 'metrices': metrices, 'owner': owner, })
+    ctx = {
+            'navsection': 'metrics',
+            'metrices': metrices,
+            'owner': owner, 
+            }
+
+    return render_to_response('monitor_dashboard.html', ctx)
 
 
 def metric_detail(request, owner=None, nameslug=None):
@@ -76,8 +81,13 @@ def metric_detail(request, owner=None, nameslug=None):
     except Exception, e:
         imdata = e
 
-    return render_to_response('metric_detail.html',\
-            { 'metric': metric, 'figure': imdata })
+    ctx = {
+            'navsection': 'metrics',
+            'metric': metric,
+            'figure': imdata, 
+            }
+
+    return render_to_response('metric_detail.html', ctx)
 
 
 def plot_svgbuf_for_metric(metric, size='big'):

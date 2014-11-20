@@ -45,6 +45,7 @@ def dashboard_home(request):
     section_names = {s: s.replace('_', ' ').title() for s in
             section_modules.keys() }
     context = {
+            'navsection': 'dashboard',
             'sections': section_names,
             'section_dicts': section_dicts,
             }
@@ -58,6 +59,7 @@ def dashboard_section(request, section=None):
     section_names = {s: s.replace('_', ' ').title() for s in
             section_modules.keys() }
     context = {
+            'navsection': 'dashboard',
             'sections': section_names,
             'section_name': section.replace('_', ' ').title(),
             'section_dicts': section_dicts,

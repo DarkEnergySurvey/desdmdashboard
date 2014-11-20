@@ -5,21 +5,25 @@ from docutils.core import publish_parts
 from django.shortcuts import render, render_to_response, get_object_or_404
 
 
-def docu(request):
+def doc(request):
     '''
     '''
 
-    docufile = os.path.join(os.path.dirname(__file__), 
-            'desdmdashboard_docu.rst')
-    with open(docufile, 'r') as doc:
-        docu_string = doc.read()
+    docfile = os.path.join(os.path.dirname(__file__), 
+            'desdmdashboard_doc.rst')
+    with open(docfile, 'r') as doc:
+        doc_string = doc.read()
     
-    docu_html = publish_parts(docu_string, writer_name='html', 
+    doc_html = publish_parts(doc_string, writer_name='html', 
             settings_overrides={'doctitle_xform':False,
             'initial_header_level': 1,} )['html_body']
-    context = { 'docu_content': docu_html }
 
-    return render_to_response('dashboard_docu.html', context) 
+    context = { 
+            'navsection': 'doc',
+            'doc_content': doc_html,
+            }
+
+    return render_to_response('desdmdashboard_doc.html', context) 
 
 
 """

@@ -4,16 +4,29 @@ DESDM DASHBOARD - DEVELOPMENT NOTES
 
 TODO
 -------------------------------------------------------------------------------
-- email notification if alert is triggered
+
+- use eeups templates
+
 - standard virtual machine monitoring package
     - discuss metrics with stefan
     - use python daemon approach
     - use mojo to run collection pipeline??
-- use eeups templates
 
-- to_pandas : time_window WHERE
 
 - serve desdmdashboard server in docker container
+- use CoreUtils for credentials
+
+- update DASBHOARDSERVER eups metapackage
+    - install it on desdash
+    - set paths in wsgi.conf file accordingly
+
+
+
+MODEL MODIFICATIONS
+-------------------------------------------------------------------------------
+- add deprecated flag to metric
+-> add south to INSTALLED_APPLICATIONS
+- host of origin
 
 
 IDEAS
@@ -29,6 +42,8 @@ DONE
 -   we need to have an eups package that allows quick access data
     desdmdashboard data : open api for data download, direct conversion to df
 -   quick access to plotting on dashboard : (plotting) code field
+-   to_pandas : time_window WHERE
+-   email notification if alert is triggered
 
 
 
