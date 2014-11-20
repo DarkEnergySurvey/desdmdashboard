@@ -10,11 +10,11 @@ from .models import Metric
 from .serializers import MetricDataJSONSerializer
 
 
-DEFAULT_PERIOD_LENGTH = timedelta(5)
+DEFAULT_PERIOD_LENGTH = timedelta(10)
 
 
 def get_metric_dataframe(owner, name, fields=('time','value', ),
-        index='time', period_from=now()-DEFAULT_PERIOD_LENGTH, period_to=None):
+        index='time', period_from=None, period_to=None):
     '''
     Possible fields:
     fields = ('time', 'value', 'has_error', 'error_message', 'tags', )
@@ -90,7 +90,8 @@ def get_dataframe(metric, fields=('time','value', ), index='time',
     return df
 
 
-def get_multimetric_dataframe(owner_name_pairs, resample='D'):
+def get_multimetric_dataframe(owner_name_pairs, resample='D', period_from=None,
+        period_to=None):
     '''
     Returns a timeseries dataframe for multiple Metrics specified by 
     an iterable consisting of (owner__username, name) tuples.
