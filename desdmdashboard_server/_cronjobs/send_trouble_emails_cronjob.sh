@@ -4,7 +4,7 @@
 #
 # script to be run as cron job on desdash to 
 #
-# monitor whether a metrics cause troubles
+# monitor whether metrics cause troubles and send an email if
 #
 #
 # author: michael.graber@fhnw.ch
