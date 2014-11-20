@@ -29,9 +29,16 @@ class MetricCache(models.Model):
 
         # PUT HERE THE FUNCTIONALITY THAT UPDATES THE CACHE
 
-        self.current_dashboard_figure = create_svg_plot_for_metric(self.metric,
-                kind='dashboard')
-        self.current_detail_figure = create_svg_plot_for_metric(self.metric,
-                kind='detail')
+        try:
+            self.current_dashboard_figure = create_svg_plot_for_metric(
+                    self.metric, kind='dashboard')
+        except Exception, e:
+            self.current_dashboard_figure = e
+
+        try:
+            self.current_detail_figure = create_svg_plot_for_metric(
+                    self.metric, kind='detail')
+        except Exception, e:
+            self.current_detail_figure = e
 
         self.save()

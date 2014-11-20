@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 
 from django.utils.timezone import now
 
+from monitor.pandas_utils import get_dataframe
+
 
 
 def create_svg_plot_for_metric(metric, kind='detail'):
@@ -19,7 +21,8 @@ def create_svg_plot_for_metric(metric, kind='detail'):
             metric.dashboard_display_window_length_days)
 
     # get the data for the metric
-    df = metric.data_dataframe
+    #df = get_dataframe(metric, period_from=plot_after)
+    df = get_dataframe(metric, period_from=None)
 
     imgdata = StringIO.StringIO()
 
