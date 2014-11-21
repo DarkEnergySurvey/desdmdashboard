@@ -26,9 +26,12 @@ def measure_desdf():
         linels = [el for el in desdfline.rsplit(' ') if el]
 
         name = linels[0].rsplit('/')[-1]
-        size = 1024*float(linels[1])/10.**12 
-        used = 1024*float(linels[2])/10.**12 
-        avail = 1024*float(linels[3])/10.**12 
+        if linels[1][-1] == 'T': linels[1] = linels[1][:-1]
+        if linels[2][-1] == 'T': linels[2] = linels[2][:-1]
+        if linels[3][-1] == 'T': linels[3] = linels[3][:-1]
+        size = float(linels[1])
+        used = float(linels[2]) 
+        avail = float(linels[3]) 
 
 #       print 
 #       print 'NAME: ', name
