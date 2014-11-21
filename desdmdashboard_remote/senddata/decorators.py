@@ -60,7 +60,7 @@ class Monitor(object):
     
     def __init__(self, metric_name, **kwargs):
         self.request = Request()
-        self.data = DATA_TEMPLATE
+        self.data = DATA_TEMPLATE.copy()
         self.logger = kwargs.get('logger', None)
         if type(metric_name) == str:
             self.data['name'] = metric_name
@@ -80,52 +80,55 @@ class Monitor(object):
         decorator_self = self
 
         def wrappee(*args, **kwargs):
+
             # stuff before func execution
             # started_at = time.time()
 
-            if self.metric_name_generator:
-                self.data['name'] = self.metric_name_generator(*args, **kwargs)
-                if not type(self.data['name']) == str:
+            if decorator_self.metric_name_generator:
+                decorator_self.data['name'] = decorator_self.metric_name_generator(*args, **kwargs)
+                if not type(decorator_self.data['name']) == str:
                     mess = ('The output of the metric_name_generator function '
-                            'has to be of type str, %s was returned.' % type(self.data['name']))
+                            'has to be of type str, %s was returned.' % type(decorator_self.data['name']))
                     raise ValueError(mess)
 
-            if self.logger:
-                self.logger.info('Function execution in Monitor decorator: ' + func.func_name)
-                self.logger.debug('args: ' + str(args) + ' kwargs: ' + str(kwargs) )
+            if decorator_self.logger:
+                decorator_self.logger.info('Function execution in Monitor decorator: ' + func.func_name)
+                decorator_self.logger.debug('args: ' + str(args) + ' kwargs: ' + str(kwargs) )
+
             # func execution
             try:
-                self.data['value'] = func(*args, **kwargs)
-                if self.logger:
-                    self.logger.info('Function successfully executed.')
+                decorator_self.data['value'] = func(*args, **kwargs)
+                if decorator_self.logger:
+                    decorator_self.logger.info('Function successfully executed.')
             except Exception, err:
                 value = ''
-                self.data['has_error'] = True
-                self.data['error_message'] = err
-                if self.logger:
-                    self.logger.exception('Function execution failed:')
+                decorator_self.data['has_error'] = True
+                decorator_self.data['error_message'] = err
+                if decorator_self.logger:
+                    decorator_self.logger.exception('Function execution failed:')
 
-            if self.send_docstring:
+            if decorator_self.send_docstring:
                 if func.__doc__:
-                    self.data['doc'] = trim_docstring(func.__doc__)
+                    decorator_self.data['doc'] = trim_docstring(func.__doc__)
                 
             # stuff after func execution
             # exectime = time.time() - started_at
-            if self.logger:
+            if decorator_self.logger:
                 mess = 'Sending value {val} to metric {met}'
-                self.logger.info(mess.format(
-                    val=self.data['value'], met=self.data['name'])
+                decorator_self.logger.info(mess.format(
+                    val=decorator_self.data['value'], met=decorator_self.data['name'])
                     )
             try:
-                decorator_self.request.POST(data=self.data)
-                if self.logger:
+                decorator_self.request.POST(data=decorator_self.data)
+                if decorator_self.logger:
                     if decorator_self.request.error_status[0]:
-                        self.logger.error(decorator_self.request.error_status[1])
+                        decorator_self.logger.error(decorator_self.request.error_status[1])
                     else:
-                        self.logger.info('Metric value successfully sent.')
+                        decorator_self.logger.info('Metric value successfully sent to %s'\
+                                % decorator_self.request.url)
             except Exception, err:
-                if self.logger:
-                    self.logger.error(err)
+                if decorator_self.logger:
+                    decorator_self.logger.error(err)
 
         return wrappee
 
