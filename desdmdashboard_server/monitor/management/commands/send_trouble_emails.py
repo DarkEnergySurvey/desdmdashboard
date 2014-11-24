@@ -46,8 +46,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
     
         for metric in Metric.objects.all():
-#           if options['verbose']:
-#               print 'updating cache for metric ', metric.name
 
             if metric.is_in_trouble_status and (metric.dashboard_display_option
                     != Metric.DASHBOARD_DISPLAY_OPTION_NOSHOW):
@@ -65,10 +63,9 @@ class Command(BaseCommand):
                         cc=adminemails,
                         )
 
-                #mail.send()
+                mail.send()
 
                 if options['verbose']:
-                    print 'updating cache for metric ', metric.name
 
                     print
                     print '------------------------------------------------------------------'
