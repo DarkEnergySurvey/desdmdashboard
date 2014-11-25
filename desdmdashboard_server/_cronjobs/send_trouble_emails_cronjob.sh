@@ -17,7 +17,8 @@ source /eeups/eups/desdm_eups_setup.sh
 setup DASHBOARDSERVER
 setup docutils
 setup CoreUtils
+setup pygments
 
-export PYTHONPATH=$PYTHONPATH:/webapps/releases/current/desdmdashboard_server/
+export PYTHONPATH=/webapps/releases/current/desdmdashboard_server/:$PYTHONPATH
 
 python /webapps/releases/current/desdmdashboard_server/manage.py send_trouble_emails --settings=desdmdashboard.settings.settings_desdash_production

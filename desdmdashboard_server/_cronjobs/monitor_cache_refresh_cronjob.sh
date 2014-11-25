@@ -18,6 +18,6 @@ setup DASHBOARDSERVER
 setup docutils
 setup CoreUtils
 
-export PYTHONPATH=$PYTHONPATH:/webapps/releases/current/desdmdashboard_server/
+export PYTHONPATH=/webapps/releases/current/desdmdashboard_server/:$PYTHONPATH
 
 python /webapps/releases/current/desdmdashboard_server/manage.py refresh_cache --settings=desdmdashboard.settings.settings_desdash_production
