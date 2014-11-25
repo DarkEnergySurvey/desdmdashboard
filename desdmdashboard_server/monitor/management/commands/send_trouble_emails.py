@@ -9,7 +9,7 @@ from monitor.models import Metric
 from monitor_cache.models import MetricCache
 
 
-EMAIL_SUBJECT = "[desdmdashboard] !!! You're metric {metricname} is in TROUBLE !!"
+EMAIL_SUBJECT = "[desdmdashboard trouble] !!! You're metric {metricname} is in TROUBLE !!!"
 
 EMAIL_CONTENT = '''
 
