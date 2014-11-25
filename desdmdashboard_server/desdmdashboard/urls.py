@@ -27,7 +27,7 @@ urlpatterns = patterns('',
     url('^doc/*$', 'desdmdashboard.views.main.doc', {},
         name='doc_home'),
 
-    url(r'^metric/', include('monitor.urls')),
+    url(r'^monitor/', include('monitor.urls')),
     url(r'^dashboard/', include('dashboard.urls'), name='dashboard_home'),
     url(r'^admin/', include(admin.site.urls), name='admin_home'),
 
