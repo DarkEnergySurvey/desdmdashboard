@@ -154,10 +154,15 @@ def proc_meminfo(logger=logger):
     for metric in PROC_MEMINFO_FIELDS:
 
         data = {
-                'name' : METRIC_NAME_PATTERN.format(measure=metric), 
+                'name' : METRIC_NAME_PATTERN.format(measure='meminfo-'+metric), 
                 'value' : meminfo[metric],
                 'value_type' : 'int',
                 'logger' : logger,
                 }
 
-        _ send_metric_data(**data)
+        _ = send_metric_data(**data)
+
+
+if __name__ == '__main__':
+    avg_load_per_cpu()
+    proc_meminfo()
