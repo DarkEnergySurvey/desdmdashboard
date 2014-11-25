@@ -16,7 +16,7 @@ class DataCollectionCommandLineError(Exception):
     pass
 
 
-def shell_command(cmd):
+def shell_command(cmd, logger=None):
     if logger:
         logger.info('Executing shell command through subprocess module.')
         logger.debug('command: ' + ' '.join(cmd))
@@ -25,6 +25,7 @@ def shell_command(cmd):
     out, err = p.communicate()
     if logger and err:
         logger.error(err)
+
     elif err:
         raise DataCollectionCommandLineError(err)
     return out, err
