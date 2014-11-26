@@ -96,48 +96,48 @@ PROC_MEMINFO_FIELDS = (
             # info on /proc/meminfo:
             # http://superuser.com/questions/521551/cat-proc-meminfo-what-do-all-those-numbers-mean
 
-            'MemTotal', # Total amount of physical RAM, in kilobytes.
-            'MemFree', # The amount of physical RAM, in kilobytes, left unused by the system.
-            'Buffers', # The amount of physical RAM, in kilobytes, used for file buffers.
-            'Cached', # The amount of physical RAM, in kilobytes, used as cache memory.
-            'SwapCached', # The amount of swap, in kilobytes, used as cache memory.
-            'Active', # The total amount of buffer or page cache memory, in kilobytes, that is in active use. This is memory that has been recently used and is usually not reclaimed for other purposes.
-            'Inactive', # The total amount of buffer or page cache memory, in kilobytes, that are free and available. This is memory that has not been recently used and can be reclaimed for other purposes.
-          # 'Active(anon)',
-          # 'Inactive(anon)',
-          # 'Active(file)',
-          # 'Inactive(file)',
-          # 'Unevictable',
-          # 'Mlocked', 
-            'SwapTotal', # The total amount of swap available, in kilobytes.
-            'SwapFree', #  The total amount of swap free, in kilobytes.
-          # 'Dirty',
-          # 'Writeback',
-          # 'AnonPages',
-          # 'Mapped',
-          # 'Shmem',
-          # 'Slab',
-          # 'SReclaimable',
-          # 'SUnreclaim',
-          # 'KernelStack',
-          # 'PageTables',
-          # 'NFS_Unstable',
-          # 'Bounce',
-          # 'WritebackTmp',
-          # 'CommitLimit',
-          # 'Committed_AS',
-          # 'VmallocTotal',
-          # 'VmallocUsed',
-          # 'VmallocChunk',
-          # 'HardwareCorrupted',
-          # 'AnonHugePages',
-          # 'HugePages_Total',
-          # 'HugePages_Free',
-          # 'HugePages_Rsvd',
-          # 'HugePages_Surp',
-          # 'Hugepagesize',
-          # 'DirectMap4k',
-          # 'DirectMap2M',
+            # Total amount of physical RAM, in kilobytes.
+            'MemTotal', 
+
+            # The amount of physical RAM, in kilobytes, left unused by the
+            # system.
+            'MemFree',
+
+            # The amount of physical RAM, in kilobytes, used for file buffers.
+            'Buffers',
+
+            # The amount of physical RAM, in kilobytes, used as cache memory.
+            'Cached',
+
+            # The amount of swap, in kilobytes, used as cache memory.
+            'SwapCached',
+
+            # The total amount of buffer or page cache memory, in kilobytes,
+            # that is in active use. This is memory that has been recently used
+            # and is usually not reclaimed for other purposes.
+            'Active',
+            
+            # The total amount of buffer or page cache memory, in
+            # kilobytes, that are free and available. This is memory that has
+            # not been recently used and can be reclaimed for other purposes.
+            'Inactive', 
+
+          # 'Active(anon)', 'Inactive(anon)', 'Active(file)', 'Inactive(file)',
+          # 'Unevictable', 'Mlocked', 
+
+            # The total amount of swap available, in kilobytes.
+            'SwapTotal', 
+
+            #  The total amount of swap free, in kilobytes.
+            'SwapFree', 
+
+          # 'Dirty', 'Writeback', 'AnonPages', 'Mapped', 'Shmem', 'Slab',
+          # 'SReclaimable', 'SUnreclaim', 'KernelStack', 'PageTables',
+          # 'NFS_Unstable', 'Bounce', 'WritebackTmp', 'CommitLimit',
+          # 'Committed_AS', 'VmallocTotal', 'VmallocUsed', 'VmallocChunk',
+          # 'HardwareCorrupted', 'AnonHugePages', 'HugePages_Total',
+          # 'HugePages_Free', 'HugePages_Rsvd', 'HugePages_Surp',
+          # 'Hugepagesize', 'DirectMap4k', 'DirectMap2M',
         )
 
 
@@ -162,6 +162,78 @@ def proc_meminfo(logger=logger):
 
         _ = send_metric_data(**data)
 
+
+# -----------------------------------------------------------------------------
+# DISK SPACE
+# -----------------------------------------------------------------------------
+def disk_space(logger=logger):
+
+    logger.info('evaluating disk space')
+
+#   try:
+#       mounts, err = commandline.shell_command('mount', logger=logger)
+#   except:
+#       raise
+#   if err:
+#       return
+
+#   mounts = [line for line in mounts.rsplit('\n') if line]
+#   mounts = [[el for el in line.rsplit(' ') if el] for line in mounts]
+
+#   mounts = [{'name': line[0], 'path': line[2], 'type': line[4]} for line in mounts]
+
+    try:
+        # discard (-x) fs of type iso9660 (cd) and tmpfs
+        df, err = commandline.shell_command('df -T -x iso9660 -x tmpfs --block-size 1000', logger=logger)
+
+        '''
+	    $ df -T -x iso9660 -x tmpfs --block-size 1000
+	    Filesystem           Type 1kB-blocks     Used Available Use% Mounted on
+	    /dev/mapper/vg_michael-lv_root
+                     	     ext4   12623987 10258822   2236945  83% /
+	    /dev/sda1            ext4     507745   113087    368444  24% /boot
+        '''
+
+    except:
+        raise
+    if err:
+        return
+
+    df = [[el for el in line.rsplit(' ') if el] for line in df.rsplit('\n') if line]
+
+    # the first line is the header, see above
+    header = df[0]
+    # 'Mounted on' is split in two elements
+    header[-2] = ' '.join(header[-2:])
+    header = header[:-1]
+
+    i = 1
+    dfs = []
+    while i < len(df):
+        els = df[i]
+        while len(els) < len(header):
+            els.extend(df[i+1])
+            i += 1
+        dfs.append(dict(zip(header, els)))
+        i += 1
+
+    for fs in dfs:
+
+        for m in ['1kB-blocks', 'Used', 'Available', ]:
+            mname = METRIC_NAME_PATTERN.format(measure='df-'+fs['Filesystem']+'-'+m)
+            data = {
+                    'name' : mname, 
+                    'value' : int(fs[m]),
+                    'value_type' : 'int',
+                    'logger' : logger,
+                    }
+
+            _ = send_metric_data(**data)
+
+
+# -----------------------------------------------------------------------------
+# MAIN 
+# -----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     avg_load_per_cpu()
