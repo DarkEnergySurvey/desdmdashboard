@@ -166,6 +166,7 @@ def proc_meminfo(logger=logger):
 # -----------------------------------------------------------------------------
 # DISK SPACE
 # -----------------------------------------------------------------------------
+
 def disk_space(logger=logger):
 
     logger.info('evaluating disk space')
@@ -229,6 +230,25 @@ def disk_space(logger=logger):
                     }
 
             _ = send_metric_data(**data)
+
+
+# -----------------------------------------------------------------------------
+# network load 
+# -----------------------------------------------------------------------------
+@Monitor(METRIC_NAME_PATTERN.format(measure='tcp-connections'), value_type='int', logger=logger)
+def established_tcp_connections():
+    try:
+        netstat, err = commandline.shell_command(
+                'netstat --tcp | grep ESTABLISHED', logger=logger)
+    except:
+        raise
+    if err:
+        return
+
+    # split lines
+    netstat = [l for l in netstat.rsplit('\n') if l]
+    return len(netstat)
+
 
 
 # -----------------------------------------------------------------------------
