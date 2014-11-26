@@ -8,7 +8,7 @@ from ..http_requests import Request, GET_URL, POST_URL
 
 
 def get_metric_dataframe(name, owner=None, fields=('time', 'value'),
-        index='time'):
+        index='time', ):
     '''
     '''
 
@@ -41,7 +41,7 @@ def get_metric_dataframe(name, owner=None, fields=('time', 'value'),
             }
 
     data_request = Request()
-    data_request.GET(params=md_getparams)
+    data_request.GET(params=md_getparams, url=GET_URL)
 
     if md_getparams['value_type'] == 'metricdatajson':
         data = json.loads(data_request.response.read())
@@ -63,7 +63,8 @@ def get_metric_dataframe(name, owner=None, fields=('time', 'value'),
         df = pandas.DataFrame(dfdata)
 
     else:
-        df = pandas.io.api.read_json(data_request.response.read())
+        data = data_request.response.read()
+        df = pandas.io.api.read_json(data)
         for col in df.columns.tolist():
             if col not in fields:
                 del(df[col])
