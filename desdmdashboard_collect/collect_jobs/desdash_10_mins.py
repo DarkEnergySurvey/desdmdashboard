@@ -34,6 +34,9 @@ def main():
     # call collect functions	
     vm_monitoring.avg_load_per_cpu()
     vm_monitoring.proc_meminfo()
+    vm_monitoring.disk_space()
+    vm_monitoring.established_tcp_connections()
+    vm_monitoring.iostat_cpu()
     
 
 if __name__ == '__main__':
