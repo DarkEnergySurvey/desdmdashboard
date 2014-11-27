@@ -250,6 +250,36 @@ def established_tcp_connections():
     return len(netstat)
 
 
+def iostat_cpu():
+    '''
+    '''
+    try:
+        # discard (-x) fs of type iso9660 (cd) and tmpfs
+        iostatc, err = commandline.shell_command('iostat -c', logger=logger)
+    except:
+        raise
+    if err:
+        return
+
+    iostatc = [l for l in iostatc.rsplit('\n') if l][1:]
+    header = [el for el in iostatc[0].rsplit(' ') if el][1:]
+    data = [el for el in iostatc[1].rsplit(' ') if el]
+
+    iostatc = dict(zip(header, data))
+
+    for stat in iostatc:
+
+        mname = METRIC_NAME_PATTERN.format(measure='iostatc-'+stat)
+        data = {
+                'name' : mname, 
+                'value' : float(iostatc[stat]),
+                'value_type' : 'float',
+                'logger' : logger,
+                }
+
+        _ = send_metric_data(**data)
+
+
 
 # -----------------------------------------------------------------------------
 # MAIN 
