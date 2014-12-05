@@ -141,7 +141,11 @@ PROC_MEMINFO_FIELDS = (
         )
 
 
-def proc_meminfo(logger=logger):
+def proc_meminfo(logger=logger, platform=PLATFORM):
+
+    if not is_valid_platform():
+        logger.info('cannot read /proc/meminfo on this platform: ' + PLATFORM)
+        return
 
     logger.info('reading /proc/meminfo')
     with open('/proc/meminfo', 'r') as fid:
@@ -233,10 +237,11 @@ def disk_space(logger=logger):
 
 
 # -----------------------------------------------------------------------------
-# network load 
+# NETWORK LOAD 
 # -----------------------------------------------------------------------------
 @Monitor(METRIC_NAME_PATTERN.format(measure='tcp-connections'), value_type='int', logger=logger)
 def established_tcp_connections():
+    ''' the number of currently established tcp connections '''
     try:
         netstat, err = commandline.shell_command(
                 'netstat --tcp | grep ESTABLISHED', logger=logger)
@@ -250,6 +255,55 @@ def established_tcp_connections():
     return len(netstat)
 
 
+def network_io():
+    '''network io summary'''
+
+    if not is_valid_platform():
+        logger.info('cannot read /proc/net/dev on this platform: ' + PLATFORM)
+        return
+
+    logger.info('reading /proc/meminfo')
+    with open('/proc/net/dev', 'r') as fid:
+        netdev = fid.readlines()
+
+    '''
+    -bash-4.1$ cat /proc/net/dev
+    Inter-|   Receive                                                |  Transmit
+     face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+        lo:52492637  399164    0    0    0     0          0         0 52492637  399164    0    0    0     0       0          0
+      eth1:26403780235 24842946    0    0    0     0          0    774878 10839841500 19304623    0    0    0     0       0          0
+    docker0:       0       0    0    0    0     0          0         0      468       6    0    0    0     0       0          0
+    virbr0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+    virbr0-nic:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+    '''
+
+    header = [ 'interface',
+            'rec-bytes', 'rec-packets', 'rec-errs', 'rec-drop', 'rec-fifo',
+            'rec-frame', 'rec-compressed', 'rec-multicast',
+            'trans-bytes', 'trans-packets', 'trans-errs', 'trans-drop',
+            'trans-fifo', 'trans-colls', 'trans-carrier', 'trans-compressed',
+            ]
+
+    interfaces = []
+
+    for line in netdev[2:]:
+        lineels = [el for el in line.rsplit(' ') if el]
+        interfaces.append(dict(zip(header, lineels)))
+
+
+    return interfaces
+
+
+# -----------------------------------------------------------------------------
+# LOG PARSING 
+# -----------------------------------------------------------------------------
+
+
+
+
+# -----------------------------------------------------------------------------
+# CPU STATS
+# -----------------------------------------------------------------------------
 def iostat_cpu():
     '''
     '''
@@ -281,10 +335,11 @@ def iostat_cpu():
 
 
 
+
 # -----------------------------------------------------------------------------
 # MAIN 
 # -----------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    avg_load_per_cpu()
-    proc_meminfo()
+
+    print 'nothing done here'
