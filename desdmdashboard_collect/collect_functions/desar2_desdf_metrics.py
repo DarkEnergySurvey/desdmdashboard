@@ -26,12 +26,23 @@ def measure_desdf():
         linels = [el for el in desdfline.rsplit(' ') if el]
 
         name = linels[0].rsplit('/')[-1]
-        if linels[1][-1] == 'T': linels[1] = linels[1][:-1]
-        if linels[2][-1] == 'T': linels[2] = linels[2][:-1]
-        if linels[3][-1] == 'T': linels[3] = linels[3][:-1]
-        size = float(linels[1])
-        used = float(linels[2]) 
-        avail = float(linels[3]) 
+
+        measures = {
+                'size': None,
+                'avail': None,
+                'used': None,
+                }
+
+        for elidx, meas in ((1, 'size'), (2, 'used'), (3, 'avail'), ):
+
+            if linels[elidx][-1] == 'T':
+                measures[meas] = float(linels[elidx][:-1])
+            elif linels[elidx][-1] == 'G':
+                measures[meas] = 0.001*float(linels[elidx][:-1])
+            else:
+                logger.error('cannot handle disk space specified in ' + linels[elidx][-1])
+                logger.debug(desdfline)
+                continue
 
 #       print 
 #       print 'NAME: ', name
@@ -39,11 +50,11 @@ def measure_desdf():
 #       print 'used: ', used
 #       print 'avail: ', avail
 
-        _ = send_metric_data(name='desdf_'+name+'_size', value=size,
+        _ = send_metric_data(name='desdf_'+name+'_size', value=measures['size'],
                 value_type='float', logger=logger)
-        _ = send_metric_data(name='desdf_'+name+'_avail', value=avail,
+        _ = send_metric_data(name='desdf_'+name+'_avail', value=measures['avail'],
                 value_type='float', logger=logger)
-        _ = send_metric_data(name='desdf_'+name+'_used', value=used,
+        _ = send_metric_data(name='desdf_'+name+'_used', value=measures['used'],
                 value_type='float', logger=logger)
 
 
