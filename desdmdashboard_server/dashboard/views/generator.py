@@ -17,6 +17,7 @@ EXCLUDE_FILENAME_REGEXPS = [
         '__init__.py',
         '.*.pyc$',
         'home.py',
+        'virtualmachines.py', # treat separately
         ]
 
 INCLUDE_FILENAME_REGEXP = '.*\.py$'
