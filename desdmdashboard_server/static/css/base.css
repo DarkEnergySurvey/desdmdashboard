@@ -290,7 +290,7 @@ body {
 }
 #cssmenu ul ul li a {
   padding: 1em 2em;
-  width: 15em;
+  width: 20em;
   font-size: 90%;
   text-decoration: none;
   color: #ffffff;
@@ -506,16 +506,13 @@ body {
 /* ------------------------------------------------------------------------- */ 
 
 
-
-
-
 #content { 
     padding: 1em;
     line-height: 1.2;
 }
 
 #content a { 
-    text-decoration: none;
+    text-decoration: underline;
     color: #000000;
 }
 
