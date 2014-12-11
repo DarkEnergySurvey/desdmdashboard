@@ -34,8 +34,17 @@ def get_section_modules():
             continue
 
         module_name = sf.replace('.py', '')
-        section_modules[module_name] = import_module(
-                'dashboard.views.sections.'+module_name)
+        
+        module = import_module('dashboard.views.sections.'+module_name)
+        if not hasattr(module, 'ACTIVE'):
+            section_modules[module_name] = import_module(
+                    'dashboard.views.sections.'+module_name)
+        elif module.ACTIVE == True:
+            section_modules[module_name] = import_module(
+                    'dashboard.views.sections.'+module_name)
+        else:
+            continue
+
     return section_modules
 
 
