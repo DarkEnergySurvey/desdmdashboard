@@ -1,8 +1,14 @@
+from datetime import timedelta
+from django.utils.timezone import now
+
 from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 # SHOW, ie is ACTIVE?
 ACTIVE = False
+
+PERIOD_SHOWN = 8 # days
+PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
 
 def connections2D_summary():
 
@@ -13,10 +19,11 @@ def connections2D_summary():
                 ('gdaues', 'desar_conn_to_gpfs', ),
                 ('gdaues', 'connections_to_stken', ),),
             resample='20Min',
+            period_from=PERIOD_FROM,
             )
     # do anything with panda you want
 
-    #get serillizes plot
+    # do the plotting
     figstring = plot_df_to_svg_string(df.last('2D'), 
             metrics=metrics,
             style='.-', y_label='# Connections',
@@ -37,10 +44,11 @@ def connections_summary():
                 ('gdaues', 'desar_conn_to_gpfs', ),
                 ('gdaues', 'connections_to_stken', ),),
             resample='H',
+            period_from=PERIOD_FROM,
             )
     # do anything with panda you want
 
-    #get serillizes plot
+    # do the plotting
     figstring = plot_df_to_svg_string(df.last('7D'), 
             metrics=metrics,
             style='-', y_label='# Connections',

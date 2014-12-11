@@ -20,6 +20,7 @@ def plot_df_to_svg_string(df, **kwargs):
     line_width = kwargs.pop('lw', 1.5)
     y_label = kwargs.pop('y_label', None)
     ylim = kwargs.pop('ylim', None)
+    legend_loc = kwargs.pop('legend_loc', 'best')
 
     if ylim and (ylim[0]=='auto' or ylim[1]=='auto'):
         autoylim=True
@@ -39,7 +40,7 @@ def plot_df_to_svg_string(df, **kwargs):
 
     ax = df.plot(fontsize=fonts, figsize=figs, lw=line_width, legend=False, **kwargs)
     columns = df.columns
-    ax.legend(columns, loc='lower left')
+    ax.legend(columns, loc=legend_loc)
 
     if autoylim:
         if ylim[0] == 'auto' and not ylim[1] == 'auto':

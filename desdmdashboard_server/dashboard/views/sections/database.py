@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils.timezone import now
 
 from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
@@ -5,16 +7,24 @@ from dashboard.views.plotutils import plot_df_to_svg_string
 # SHOW, ie is ACTIVE?
 ACTIVE = False
 
+PERIOD_SHOWN = 31 # days
+PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
+
 def desoper():
+    '''
+    Read, write and mydb operations on desoper.
+    :View Author: Michael Graber
+    '''
     df, metrics = pandas_utils.get_multimetric_dataframe(
             (('gdaues', 'desoper_write_GB', ),
                 ('gdaues', 'desoper_read_GB', ),
                 ('gdaues', 'desoper_mydb_GB', ), ),
             resample='D',
+            period_from=PERIOD_FROM,
             )
     # do anything with panda you want
 
-    #get serillizes plot
+    # do the plotting
     figstring = plot_df_to_svg_string(df.last('30D'),
             metrics=metrics,
             style='.-', colormap='jet',
@@ -30,28 +40,19 @@ def desoper():
 
 def dessci():
     '''
-    Read, write and **MyDB** operations ..
-
-    - list item 1
-    - list item 2
-    - list item 3
-
-    .. sourcecode:: python
-
-        def say_hi():
-            print 'hi!'
-
-    :Author: Michael Graber
+    Read, write and mydb operations on dessci.
+    :View Author: Michael Graber
     '''
     df, metrics = pandas_utils.get_multimetric_dataframe(
             (('gdaues', 'dessci_write_GB', ),
                 ('gdaues', 'dessci_read_GB', ),
                 ('gdaues', 'dessci_mydb_GB', ),),
             resample='D',
+            period_from=PERIOD_FROM,
             )
     # do anything with panda you want
 
-    #get serillizes plot
+    # do the plotting
     figstring = plot_df_to_svg_string(df.last('30D'),
             metrics=metrics,
             style='.-', y_label='GB')

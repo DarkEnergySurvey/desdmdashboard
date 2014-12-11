@@ -64,7 +64,7 @@ def memory_overview(vmname):
     figstring = plot_df_to_svg_string(df, 
             metrics=metrics,
             style='.-', y_label='GB',
-            ylim=(0, 'auto'), logy=True,
+            ylim=(0, 'auto'), logy=True, legend_loc='lower left',
             figsize=(8, 4), colormap='spectral', )
 
     section_dict = {
