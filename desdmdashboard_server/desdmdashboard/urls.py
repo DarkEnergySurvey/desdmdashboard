@@ -13,9 +13,12 @@ def template_test(request):
     A utility view function to test templates.
     '''
     ctx = {
-            'navsection': 'metrics',
+            'navsection': 'dashboard',
+            'sections': {'bla': 'bla', 'blu': 'blu'},
+            'section_name': 'VMs',
+            'virtualmachines': ['desdash.cosmology', 'desbuild.cosmology', 'tre', ],
             }
-    return render_to_response('base_monitor.html', ctx)
+    return render_to_response('dashboard.html', ctx)
 
 
 urlpatterns = patterns('',
