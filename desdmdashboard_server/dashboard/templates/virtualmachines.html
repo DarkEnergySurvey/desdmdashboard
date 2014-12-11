@@ -1,0 +1,22 @@
+{% extends 'dashboard_base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+{% if vmdict %}
+<h1>Virtual Machines</h1>
+</br>
+We currently monitor the following virtual machines:
+<ul>
+    {% for vm_name, vm_url in vmdict.items %}
+    <li><a href='{% url "vm_detail" vm_url %}'>{{ vm_name }}</a></li>
+    {% endfor %}
+{% elif section_dicts %}
+
+<h2>Hoi .. duuu!</h2>
+
+{% endif %}
+
+
+
+{% endblock %}

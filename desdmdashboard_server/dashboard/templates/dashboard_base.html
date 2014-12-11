@@ -1,0 +1,17 @@
+{% extends 'base_desdmdashboard.html' %}
+{% load staticfiles %}
+
+{% block menubar %}
+    {% for sec, secname in sections.iteritems %}
+    <li><a href='{% url "dashboard_section" sec %}'{% if secname == section_name %} class='activesection'{% endif %}>{{ secname }}</a></li>
+    {% endfor %}
+
+    <a href='{% url "vm_overview" %}' {% if "virtualmachines" == section_name %}class="activesection"{% endif %}><li>VMs</a>
+    <ul>
+    {% for vm_name, vm_url in virtualmachines.items %}
+    <li><a href='{% url "vm_detail" vm_url %}' class='dropdown'>{{ vm_name }}</a></li>
+    {% endfor %}
+    </ul>
+    </li>
+
+{% endblock %}
