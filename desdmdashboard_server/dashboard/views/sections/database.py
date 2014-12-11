@@ -3,7 +3,7 @@ from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 # SHOW, ie is ACTIVE?
-ACTIVE = True 
+ACTIVE = False
 
 def desoper():
     df, metrics = pandas_utils.get_multimetric_dataframe(

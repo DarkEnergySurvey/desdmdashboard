@@ -102,7 +102,7 @@ def get_multimetric_dataframe(owner_name_pairs, resample='D', period_from=None,
 
     for i, metricspec in enumerate(owner_name_pairs):
         dfs[metricspec[1]], metrics[metricspec[1]] = get_metric_dataframe(
-                metricspec[0], metricspec[1])
+                metricspec[0], metricspec[1], period_from=period_from)
 
     df = pandas.concat(dfs.values(), join='outer', axis=0,)
 

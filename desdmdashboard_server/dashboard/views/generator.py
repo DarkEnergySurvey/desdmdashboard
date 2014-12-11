@@ -52,7 +52,12 @@ def virtualmachines(request, vm=None):
     if vm is None:
         context.update({ 'vmdict': get_vm_dict() })
     else:
-        context.update({ 'section_dicts': get_vm_section_dict(vm) })
+        vm_name = vm.replace('_', '.')
+        context.update({
+            'section_dicts': get_vm_section_dict(vm_name),
+            'vm_name': vm_name,
+            })
+
     return render_to_response('virtualmachines.html', context)
 
 

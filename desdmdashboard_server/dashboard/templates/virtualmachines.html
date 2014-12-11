@@ -4,7 +4,7 @@
 {% block content %}
 
 {% if vmdict %}
-<h1>Virtual Machines</h1>
+<h2>Virtual Machines</h2>
 </br>
 We currently monitor the following virtual machines:
 <ul>
@@ -13,7 +13,16 @@ We currently monitor the following virtual machines:
     {% endfor %}
 {% elif section_dicts %}
 
-<h2>Hoi .. duuu!</h2>
+<h2>{{ vm_name }}</h2>
+
+{% for sectiondict in section_dicts %}
+    <h3>{{ sectiondict.title }} </h3>
+    {% if sectiondict.content_html %}
+        <div id='figure'>
+            {{ sectiondict.content_html|safe }}
+        </div>
+    {% endif %}
+{% endfor %}
 
 {% endif %}
 

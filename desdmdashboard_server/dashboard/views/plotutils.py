@@ -39,7 +39,7 @@ def plot_df_to_svg_string(df, **kwargs):
 
     ax = df.plot(fontsize=fonts, figsize=figs, lw=line_width, legend=False, **kwargs)
     columns = df.columns
-    ax.legend(columns, loc='best')
+    ax.legend(columns, loc='lower left')
 
     if autoylim:
         if ylim[0] == 'auto' and not ylim[1] == 'auto':
@@ -51,6 +51,7 @@ def plot_df_to_svg_string(df, **kwargs):
         ax.set_ylabel(y_label)
 
     fig = ax.get_figure()
+    fig.tight_layout()
 
     imgdata = StringIO.StringIO()
     fig.savefig(imgdata, format='svg')
