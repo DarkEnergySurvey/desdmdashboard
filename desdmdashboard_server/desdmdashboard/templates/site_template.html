@@ -57,19 +57,35 @@
         </div>
 
         <!-- MENU -->
-        <div id="menubar">
-            <div id="menu">
-                <ul>
-                {% block menubar %}
-                    <a><li>uno</li></a>
-                    <a><li>due</li></a>
-                    <a><li>tre</li></a>
-                {% endblock %}
-                </ul>
-            </div>
-            <div id="menu_status_info">
-                {% block menu_status_info %}####### // {% now "M. j, Y, P" %}{% endblock %}
-            </div>
+        <div id='cssmenu'>
+        <ul>
+          {% block menubar %}
+           <li><a href='#'>hi</a>
+           <li class='active'><a href='#'>hello</a>
+              <ul>
+                 <li><a href='#'>UNO</a>
+                    <ul>
+                       <li><a href='#'>uno</a></li>
+                       <li><a href='#'>due</a></li>
+                    </ul>
+                 </li>
+                 <li><a href='#'>DUE</a>
+                    <ul>
+                       <li><a href='#'>one</a></li>
+                       <li><a href='#'>two</a></li>
+                    </ul>
+                 </li>
+              </ul>
+           </li>
+           <li><a href='#'>bonjour</a></li>
+           <li><a href='#'>salute</a></li>
+          {% endblock %}
+
+          <div id="menu_status_info">
+              {% block menu_status_info %}####### // {% now "M. j, Y, P" %}{% endblock %}
+          </div>
+
+        </ul>
         </div>
 
     </div>
