@@ -13,9 +13,6 @@ from monitor.pandas_utils import get_multimetric_dataframe
 
 from dashboard.views.plotutils import plot_df_to_svg_string
 
-PERIOD_SHOWN = 2 # days
-PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
-
 
 def get_vm_section_dict(vm_name):
     if not Metric.objects.filter(name__startswith='VM_'+vm_name):
@@ -56,16 +53,18 @@ def tcp_connections(vmname):
     return section_dict 
 
 
-def memory_overview(vmname):
+def memory_overview(vmname, show_num_days=2):
     '''
     A plot about the development of the system memory.
     '''
+    plot_after = now()-timedelta(show_num_days)
+
     metrics = Metric.objects.filter(name__startswith='VM_'+vmname+'_meminfo')
     owner_name_list = [(vm['owner__username'], vm['name'])
             for vm in metrics.values('name', 'owner__username')]
 
     df, metrics = get_multimetric_dataframe(owner_name_list, resample='30Min',
-            period_from=PERIOD_FROM)
+            period_from=plot_after)
 
     # convert to MB, we have bytes
     df = df / 1000000
@@ -75,7 +74,7 @@ def memory_overview(vmname):
             metrics=metrics,
             style='-', y_label='GB',
             ylim=(.1, 'auto'), logy=True, legend_loc='lower left',
-            figsize=(8, 4), colormap='spectral', )
+            figsize=(8, 4), colormap='spectral', xlim=(plot_after, now()))
 
     section_dict = {
             'title' : 'Memory Overview',
@@ -102,7 +101,8 @@ def cpu_usage_overview(vmname, show_num_days=2):
             metrics=metrics,
             style='.-', y_label='%',
             ylim=(1., 'auto'), logy=True, legend_loc='lower left',
-            figsize=(8, 4), colormap='spectral', )
+            figsize=(8, 4), colormap='spectral', 
+            xlim=(plot_after, now()))
 
     section_dict = {
             'title' : 'CPU Usage Overview',
