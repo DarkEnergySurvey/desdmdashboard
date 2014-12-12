@@ -5,12 +5,15 @@ from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 # SHOW, ie is ACTIVE?
-ACTIVE = False
+ACTIVE = True 
 
 PERIOD_SHOWN = 8 # days
 PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
 
 def connections2D_summary():
+    '''
+    :View Author: Michael Graber
+    '''
 
     df, metrics = pandas_utils.get_multimetric_dataframe(
             (('gdaues', 'desar_conn_to_any', ),
@@ -27,6 +30,7 @@ def connections2D_summary():
     figstring = plot_df_to_svg_string(df.last('2D'), 
             metrics=metrics,
             style='.-', y_label='# Connections',
+            legend_loc='upper left',
             ylim=(0, 'auto'), colormap='spectral')
 
     sectiondict = {
@@ -37,6 +41,9 @@ def connections2D_summary():
     return sectiondict
 
 def connections_summary():
+    '''
+    :View Author: Michael Graber
+    '''
     df, metrics = pandas_utils.get_multimetric_dataframe(
             (('gdaues', 'desar_conn_to_any', ),
                 ('gdaues', 'connections_to_fermigrid', ),
@@ -52,6 +59,7 @@ def connections_summary():
     figstring = plot_df_to_svg_string(df.last('7D'), 
             metrics=metrics,
             style='-', y_label='# Connections',
+            legend_loc='upper left',
             ylim=(0, 'auto'), colormap='spectral')
 
     sectiondict = {

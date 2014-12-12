@@ -14,6 +14,8 @@ PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
 
 
 def get_vm_section_dict(vm):
+    if not Metric.objects.filter(name__startswith='VM_'+vm):
+        return []
     content_generators = (
             memory_overview, 
             cpu_load, 

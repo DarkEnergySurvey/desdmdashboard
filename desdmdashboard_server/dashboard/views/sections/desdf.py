@@ -11,7 +11,7 @@ from dashboard.views.plotutils import plot_df_to_svg_string
 
 
 # SHOW, ie is ACTIVE?
-ACTIVE = False
+ACTIVE = True 
 
 # some constants
 SHOW_NUMBER_OF_DAYS = 10
@@ -28,6 +28,8 @@ for name in desdf_names:
 def desdf_overview(name_groups=name_groups):
     '''
     Evolution of disk space over time.
+
+    :View Author: Michael Graber
     '''
 
     # setting up the figure for all subplots
@@ -47,10 +49,11 @@ def desdf_overview(name_groups=name_groups):
         # plotting
         df.last(str(SHOW_NUMBER_OF_DAYS)+'D').plot(
                 style='.-', colormap='jet', ax=ax[i], legend=False,
-                xlim=(plot_after, now()))
+                xlim=(plot_after, now()),)
 
         # tweaking the plot
-        ax[i].set_ylim(0,ax[i].get_ylim()[1])
+        maxy = ax[i].get_ylim()[1]
+        ax[i].set_ylim(0,maxy+0.1*maxy)
         ax[i].set_ylabel('TB')
         ax[i].legend(sorted(name_groups[namegroup]), loc='best')
 

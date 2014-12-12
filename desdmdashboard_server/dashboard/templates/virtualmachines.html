@@ -11,8 +11,8 @@ We currently monitor the following virtual machines:
     {% for vm_name, vm_url in vmdict.items %}
     <li><a href='{% url "vm_detail" vm_url %}'>{{ vm_name }}</a></li>
     {% endfor %}
-{% elif section_dicts %}
 
+{% elif section_dicts %}
 <h2>{{ vm_name }}</h2>
 
 {% for sectiondict in section_dicts %}
@@ -23,6 +23,9 @@ We currently monitor the following virtual machines:
         </div>
     {% endif %}
 {% endfor %}
+
+{% else %}
+    <h2>Nothing to show here for now ..</h2>
 
 {% endif %}
 

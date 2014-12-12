@@ -43,10 +43,15 @@ def plot_df_to_svg_string(df, **kwargs):
     ax.legend(columns, loc=legend_loc)
 
     if autoylim:
+        autolim = ax.get_ylim()
+        autorange = autolim[1] - autolim[0]
+        limbuf = 0.1
         if ylim[0] == 'auto' and not ylim[1] == 'auto':
-            ax.set_ylim(ax.get_ylim()[0], ylim[1])
-        if ylim[1] == 'auto' and not ylim[0] == 'auto':
-            ax.set_ylim(ylim[0], ax.get_ylim()[1])
+            ax.set_ylim(autolim[0]-autorange*limbuf, ylim[1])
+        elif ylim[1] == 'auto' and not ylim[0] == 'auto':
+            ax.set_ylim(ylim[0], autolim[1]+autorange*limbuf)
+        else:
+            ax.set_ylim(autolim[0]-autorange*limbuf, autolim[1]+autorange*limbuf)
 
     if y_label:
         ax.set_ylabel(y_label)
