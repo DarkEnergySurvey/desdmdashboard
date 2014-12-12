@@ -46,15 +46,16 @@ def dashboard_section(request, section=None):
     return render_to_response('dashboard.html', context)
 
 
-def virtualmachines(request, vm=None):
+def virtualmachines(request, vm_slug=None):
     context = get_common_dashboard_context()
     context['section_name'] = 'virtualmachines'
-    if vm is None:
+    if vm_slug is None:
         context.update({ 'vmdict': get_vm_dict() })
     else:
-        vm_name = vm.replace('_', '.')
+        vm_name = vm_slug.replace('_', '.')
+        section_dict = get_vm_section_dict(vm_name)
         context.update({
-            'section_dicts': get_vm_section_dict(vm_name),
+            'section_dicts': section_dict,
             'vm_name': vm_name,
             })
 

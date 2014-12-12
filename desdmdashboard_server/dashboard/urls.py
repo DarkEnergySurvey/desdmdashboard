@@ -13,7 +13,7 @@ urlpatterns = patterns('dashboard.views',
     # virtualmachine views
     url(r'^vm/*$', 'generator.virtualmachines', 
         name='vm_overview'),
-    url(r'^vm/(?P<vm>\w+)/*$', 'generator.virtualmachines', 
+    url(r'^vm/(?P<vm_slug>\w+)/*$', 'generator.virtualmachines', 
         name='vm_detail'),
 
     # general dashboard sections

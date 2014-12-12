@@ -1,5 +1,9 @@
 
+import StringIO
+
 from datetime import timedelta
+
+from matplotlib import pyplot as plt
 
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.utils.timezone import now
@@ -13,17 +17,18 @@ PERIOD_SHOWN = 2 # days
 PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
 
 
-def get_vm_section_dict(vm):
-    if not Metric.objects.filter(name__startswith='VM_'+vm):
+def get_vm_section_dict(vm_name):
+    if not Metric.objects.filter(name__startswith='VM_'+vm_name):
         return []
     content_generators = (
             memory_overview, 
+            df_overview,
             cpu_load, 
             tcp_connections,
             )
     section_dicts = []
     for gen in content_generators:
-        section_dicts.append(gen(vm))
+        section_dicts.append(gen(vm_name))
     return section_dicts 
 
 
@@ -65,7 +70,7 @@ def memory_overview(vmname):
 
     figstring = plot_df_to_svg_string(df, 
             metrics=metrics,
-            style='.-', y_label='GB',
+            style='-', y_label='GB',
             ylim=(0, 'auto'), logy=True, legend_loc='lower left',
             figsize=(8, 4), colormap='spectral', )
 
@@ -75,6 +80,58 @@ def memory_overview(vmname):
             }
 
     return section_dict 
+
+
+def df_overview(vmname, show_num_days=10):
+
+    plot_after = now()-timedelta(show_num_days)
+
+    metrics = Metric.objects.filter(name__startswith='VM_'+vmname+'_df-')
+    owner_name_list = [(vm['owner__username'], vm['name'])
+            for vm in metrics.values('name', 'owner__username')]
+
+    filesystems = set([name.rsplit('_')[-1].rsplit('-')[1]
+        for _, name in owner_name_list])
+
+    fig, ax = plt.subplots(nrows=len(filesystems), ncols=1,
+            figsize=(8, len(filesystems)*3))
+
+    for i, fs in enumerate(filesystems):
+        metrics = Metric.objects.filter(
+                name__startswith='VM_'+vmname+'_df-'+fs+'-')
+        owner_name_list = [(vm['owner__username'], vm['name'])
+                for vm in metrics.values('name', 'owner__username')]
+
+        df, metrics = get_multimetric_dataframe(owner_name_list,
+                resample='6H', period_from=plot_after)
+
+        df.columns = [col.rsplit('_')[-1].rsplit('-')[-1] for col in df.columns]
+
+        df.plot(style='-', colormap='jet', ax=ax[i], legend=False,
+                xlim=(plot_after, now()),)
+
+        # tweaking the plot
+        maxy = ax[i].get_ylim()[1]
+        ax[i].set_ylim(0,maxy+0.1*maxy)
+        ax[i].set_ylabel('TB')
+        ax[i].legend(df.columns, loc='best')
+        ax[i].set_title(fs)
+
+    fig.tight_layout()
+
+    # getting the svg string
+    imgdata = StringIO.StringIO()
+    fig.savefig(imgdata, format='svg')
+    plt.close(fig)
+    imgdata.seek(0)
+    figstring = imgdata.buf
+
+    section_dict = {
+            'title': 'Filesystems overview',
+            'content_html': figstring, 
+            }
+
+    return section_dict
 
 
 
