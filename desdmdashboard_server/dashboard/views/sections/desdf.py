@@ -11,7 +11,7 @@ from dashboard.views.plotutils import plot_df_to_svg_string
 
 
 # SHOW, ie is ACTIVE?
-ACTIVE = True 
+ACTIVE = False 
 
 # some constants
 SHOW_NUMBER_OF_DAYS = 10

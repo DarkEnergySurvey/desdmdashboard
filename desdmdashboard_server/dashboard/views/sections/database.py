@@ -5,7 +5,7 @@ from monitor import pandas_utils
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 # SHOW, ie is ACTIVE?
-ACTIVE = True 
+ACTIVE = False 
 
 PERIOD_SHOWN = 31 # days
 PERIOD_FROM = now()-timedelta(PERIOD_SHOWN)
