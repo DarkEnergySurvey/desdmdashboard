@@ -21,8 +21,9 @@ def get_vm_section_dict(vm_name):
     if not Metric.objects.filter(name__startswith='VM_'+vm_name):
         return []
     content_generators = (
-            memory_overview, 
             df_overview,
+            memory_overview, 
+            cpu_usage_overview,
             cpu_load, 
             tcp_connections,
             )
@@ -78,6 +79,33 @@ def memory_overview(vmname):
 
     section_dict = {
             'title' : 'Memory Overview',
+            'content_html' : figstring,
+            }
+
+    return section_dict 
+
+
+def cpu_usage_overview(vmname, show_num_days=2):
+    plot_after = now()-timedelta(show_num_days)
+
+    metrics = Metric.objects.filter(name__startswith='VM_'+vmname+'_iostatc')
+    owner_name_list = [(vm['owner__username'], vm['name'])
+            for vm in metrics.values('name', 'owner__username')]
+
+    df, metrics = get_multimetric_dataframe(owner_name_list, resample='10Min',
+            period_from=plot_after)
+
+    # convert to MB, we have bytes
+    df.columns = [col.rsplit('-')[-1] for col in df.columns]
+
+    figstring = plot_df_to_svg_string(df, 
+            metrics=metrics,
+            style='.-', y_label='%',
+            ylim=(1., 'auto'), logy=True, legend_loc='lower left',
+            figsize=(8, 4), colormap='spectral', )
+
+    section_dict = {
+            'title' : 'CPU Usage Overview',
             'content_html' : figstring,
             }
 
