@@ -66,12 +66,14 @@ def memory_overview(vmname):
     df, metrics = get_multimetric_dataframe(owner_name_list, resample='30Min',
             period_from=PERIOD_FROM)
 
+    # convert to MB, we have bytes
+    df = df / 1000000
     df.columns = [col.rsplit('-')[-1] for col in df.columns]
 
     figstring = plot_df_to_svg_string(df, 
             metrics=metrics,
             style='-', y_label='GB',
-            ylim=(0, 'auto'), logy=True, legend_loc='lower left',
+            ylim=(.1, 'auto'), logy=True, legend_loc='lower left',
             figsize=(8, 4), colormap='spectral', )
 
     section_dict = {
@@ -105,7 +107,13 @@ def df_overview(vmname, show_num_days=10):
         df, metrics = get_multimetric_dataframe(owner_name_list,
                 resample='6H', period_from=plot_after)
 
+        # shorten the metric names
         df.columns = [col.rsplit('_')[-1].rsplit('-')[-1] for col in df.columns]
+        # rename 'blocks' to 'Size'
+        df.colums = [n for n in df.columns]
+
+        # convert to GB, we have KB so far
+        df = df / 1000000.
 
         df.plot(style='-', colormap='jet', ax=ax[i], legend=False,
                 xlim=(plot_after, now()),)
@@ -113,7 +121,7 @@ def df_overview(vmname, show_num_days=10):
         # tweaking the plot
         maxy = ax[i].get_ylim()[1]
         ax[i].set_ylim(0,maxy+0.1*maxy)
-        ax[i].set_ylabel('TB')
+        ax[i].set_ylabel('GB')
         ax[i].legend(df.columns, loc='best')
         ax[i].set_title(fs)
 
