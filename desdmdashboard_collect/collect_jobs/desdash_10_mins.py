@@ -37,6 +37,7 @@ def main():
     vm_monitoring.disk_space()
     vm_monitoring.established_tcp_connections()
     vm_monitoring.iostat_cpu()
+    vm_monitoring.network_io()
     
 
 if __name__ == '__main__':
