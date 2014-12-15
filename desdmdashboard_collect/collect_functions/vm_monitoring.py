@@ -33,6 +33,7 @@ import sys
 import socket
 import multiprocessing
 import json
+import datetime
 
 from desdmdashboard_remote.senddata.decorators import Monitor
 from desdmdashboard_remote.senddata.functions import send_metric_data
@@ -273,7 +274,8 @@ def network_io():
         return
 
     # setup the tmp directory where we store older states
-    TMP_FILE = '~/.desdmdashboard_collect/tmp/network_io.json'
+    HOME_PATH = os.environ['HOME']
+    TMP_FILE = os.path.join(HOME_PATH, '.desdmdashboard_collect/tmp/network_io.json')
     if not os.path.exists(os.path.dirname(TMP_FILE)):
         os.makedirs(os.path.dirname(TMP_FILE))
 
@@ -304,7 +306,9 @@ def network_io():
 
     for line in netdev[2:]:
         lineels = [el for el in line.replace('\n', '').rsplit(' ') if el]
-        interfaces[lineels[0].replace(':', '')] = dict(zip(header, [int(el) for el in lineels[1:]]))
+        if_name = lineels[0].replace(':', '')
+        interfaces[if_name] = dict(zip(header, [int(el) for el in lineels[1:]]))
+        interfaces[if_name]['timestamp'] = datetime.datetime.now().isoformat().rsplit('.')[0]
 
     # try to find data in an existing tmpfile
     if os.path.exists(TMP_FILE):
@@ -312,11 +316,15 @@ def network_io():
             olddata = json.loads(tmpfile.read())
     else:
         olddata = None
+        logger.info('no old data available to calculate difference with.')
 
     # write data to tmp file
     json_data = json.dumps(interfaces) 
     with open(TMP_FILE, 'w') as tmpfile:
         tmpfile.write(json_data)
+
+    if not olddata:
+        return
 
     # now calculate and send the diff values of new - old 
     for name, ifdata in interfaces.items():
@@ -327,17 +335,21 @@ def network_io():
             continue
 
         for measure in ['trans-bytes', 'rec-bytes', ]:
-            datapoint = ifdata[measure] - olddata[name][measure]
+            bytedelta = ifdata[measure] - olddata[name][measure]
+            oldtime = datetime.datetime.strptime(olddata[name]['timestamp'], '%Y-%m-%dT%H:%M:%S')
+            newtime = datetime.datetime.strptime(ifdata['timestamp'], '%Y-%m-%dT%H:%M:%S')
+            timediff = newtime-oldtime
+            datapoint = bytedelta/timediff.total_seconds()
             if datapoint < 0:
                 message = 'negative diff value new-old for interface {interf}, {dp}'
                 logger.info(message.format(interf=name, dp=datapoint))
                 continue
 
-            mname = METRIC_NAME_PATTERN.format(measure='networkIO:_'+name+'_'+measure)
+            mname = METRIC_NAME_PATTERN.format(measure='VM_networkIO_'+name+'-'+measure)
             data = {
                     'name' : mname, 
-                    'value' : int(datapoint),
-                    'value_type' : 'bytes',
+                    'value' : float(datapoint),
+                    'value_type' : 'float',
                     'logger' : logger,
                     }
 
