@@ -27,14 +27,17 @@ iostat
 
 '''
 
+import re
+import os
 import sys
 import socket
 import multiprocessing
+import json
 
 from desdmdashboard_remote.senddata.decorators import Monitor
 from desdmdashboard_remote.senddata.functions import send_metric_data
 
-from desdmdashboard_collect.collect_utils import log, commandline
+from desdmdashboard_collect.collect_utils import log, commandline, tmp
 
 
 logger = log.get_logger('desdmdashboard_collect')
@@ -258,10 +261,23 @@ def established_tcp_connections():
 def network_io():
     '''network io summary'''
 
+    DISCARD_NETWORK_INTERFACES_REGEXP = [
+            'docker', # do not monitor the docker host
+            'virbr', # do not monitor the virtual bridge interface
+            'lo', # do not monitor loopback interfaces
+            ]
+
+    # check the platform
     if not is_valid_platform():
         logger.info('cannot read /proc/net/dev on this platform: ' + PLATFORM)
         return
 
+    # setup the tmp directory where we store older states
+    TMP_FILE = '~/.desdmdashboard_collect/tmp/network_io.json'
+    if not os.path.exists(os.path.dirname(TMP_FILE)):
+        os.makedirs(os.path.dirname(TMP_FILE))
+
+    # read the /proc file
     logger.info('reading /proc/meminfo')
     with open('/proc/net/dev', 'r') as fid:
         netdev = fid.readlines()
@@ -277,28 +293,55 @@ def network_io():
     virbr0-nic:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
     '''
 
-    header = [ 'interface',
+    header = [
             'rec-bytes', 'rec-packets', 'rec-errs', 'rec-drop', 'rec-fifo',
             'rec-frame', 'rec-compressed', 'rec-multicast',
             'trans-bytes', 'trans-packets', 'trans-errs', 'trans-drop',
             'trans-fifo', 'trans-colls', 'trans-carrier', 'trans-compressed',
             ]
 
-    interfaces = []
+    interfaces = {}
 
     for line in netdev[2:]:
-        lineels = [el for el in line.rsplit(' ') if el]
-        interfaces.append(dict(zip(header, lineels)))
+        lineels = [el for el in line.replace('\n', '').rsplit(' ') if el]
+        interfaces[lineels[0].replace(':', '')] = dict(zip(header, [int(el) for el in lineels[1:]]))
 
+    # try to find data in an existing tmpfile
+    if os.path.exists(TMP_FILE):
+        with open(TMP_FILE, 'r') as tmpfile:
+            olddata = json.loads(tmpfile.read())
+    else:
+        olddata = None
 
-    return interfaces
+    # write data to tmp file
+    json_data = json.dumps(interfaces) 
+    with open(TMP_FILE, 'w') as tmpfile:
+        tmpfile.write(json_data)
 
+    # now calculate and send the diff values of new - old 
+    for name, ifdata in interfaces.items():
+        diss = []
+        for dis in DISCARD_NETWORK_INTERFACES_REGEXP:
+            diss.append(re.match(dis, name))
+        if any(diss):
+            continue
 
-# -----------------------------------------------------------------------------
-# LOG PARSING 
-# -----------------------------------------------------------------------------
+        for measure in ['trans-bytes', 'rec-bytes', ]:
+            datapoint = ifdata[measure] - olddata[name][measure]
+            if datapoint < 0:
+                message = 'negative diff value new-old for interface {interf}, {dp}'
+                logger.info(message.format(interf=name, dp=datapoint))
+                continue
 
+            mname = METRIC_NAME_PATTERN.format(measure='networkIO:_'+name+'_'+measure)
+            data = {
+                    'name' : mname, 
+                    'value' : int(datapoint),
+                    'value_type' : 'bytes',
+                    'logger' : logger,
+                    }
 
+            _ = send_metric_data(**data)
 
 
 # -----------------------------------------------------------------------------
