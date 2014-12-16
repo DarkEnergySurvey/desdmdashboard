@@ -111,7 +111,7 @@ def networkIO_overview(vmname, show_num_days=2):
     figstring = plot_df_to_svg_string(df, 
             metrics=metrics,
             style='.-', y_label='bytes/sec',
-            ylim=(1., 'auto'), legend_loc='lower left',
+            ylim=(1., 'auto'), colormap='winter', legend_loc='lower left',
             figsize=(8, 4), xlim=(plot_after, now()))
 
     section_dict = {
