@@ -14,10 +14,18 @@ from monitor.pandas_utils import get_multimetric_dataframe
 from dashboard.views.plotutils import plot_df_to_svg_string
 
 
+# content aggregator 
+# -----------------------------------------------------------------------------
+
 def get_vm_section_dict(vm_name):
+    '''
+    Returns a list of dictionaries that can be fed into a template to be
+    rendered on the website.
+    '''
     if not Metric.objects.filter(name__startswith='VM_'+vm_name):
         return []
     content_generators = (
+            networkIO_overview,
             df_overview,
             memory_overview, 
             cpu_usage_overview,
@@ -32,6 +40,9 @@ def get_vm_section_dict(vm_name):
 
 # content generators
 # -----------------------------------------------------------------------------
+'''
+The following functions all produce the content of one 'section', ie one plot.
+'''
 
 def cpu_load(vmname):
     metric = Metric.objects.get(name='VM_'+vmname+'_avg-load-per-cpu')
@@ -83,6 +94,32 @@ def memory_overview(vmname, show_num_days=2):
 
     return section_dict 
 
+
+def networkIO_overview(vmname, show_num_days=2):
+    plot_after = now()-timedelta(show_num_days)
+
+    metrics = Metric.objects.filter(name__startswith='VM_'+vmname+'_networkIO-')
+    owner_name_list = [(vm['owner__username'], vm['name'])
+            for vm in metrics.values('name', 'owner__username')]
+
+    df, metrics = get_multimetric_dataframe(owner_name_list, resample='10Min',
+            period_from=plot_after)
+
+    # convert to MB, we have bytes
+    df.columns = [' '.join(col.rsplit('-')[-2:]) for col in df.columns]
+
+    figstring = plot_df_to_svg_string(df, 
+            metrics=metrics,
+            style='.-', y_label='bytes/sec',
+            ylim=(1., 'auto'), legend_loc='lower left',
+            figsize=(8, 4), xlim=(plot_after, now()))
+
+    section_dict = {
+            'title' : 'NetworkIO Overview',
+            'content_html' : figstring,
+            }
+
+    return section_dict 
 
 def cpu_usage_overview(vmname, show_num_days=2):
     plot_after = now()-timedelta(show_num_days)
