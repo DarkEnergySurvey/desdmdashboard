@@ -42,6 +42,11 @@ def get_vm_section_dict(vm_name):
 # -----------------------------------------------------------------------------
 '''
 The following functions all produce the content of one 'section', ie one plot.
+
+
+FIXME : these content generator could be refactored .. there's a lot of code
+dublication ..
+
 '''
 
 def cpu_load(vmname):
@@ -121,6 +126,7 @@ def networkIO_overview(vmname, show_num_days=2):
 
     return section_dict 
 
+
 def cpu_usage_overview(vmname, show_num_days=2):
     plot_after = now()-timedelta(show_num_days)
 
@@ -137,7 +143,7 @@ def cpu_usage_overview(vmname, show_num_days=2):
     figstring = plot_df_to_svg_string(df, 
             metrics=metrics,
             style='.-', y_label='%',
-            ylim=(1., 'auto'), logy=True, legend_loc='lower left',
+            ylim=(-5, 105,), legend_loc='lower left',
             figsize=(8, 4), colormap='spectral', 
             xlim=(plot_after, now()))
 

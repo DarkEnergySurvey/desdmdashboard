@@ -27,7 +27,7 @@ def plot_df_to_svg_string(df, **kwargs):
     else:
         autoylim=False
         if ylim:
-            kwargs['ylim'] == ylim
+            kwargs['ylim'] = ylim
 
     # FIXME !!
 #   if metrics:
